@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title></title>
+
+</head>
+<body>
+<ul class="menu red">
+        <li><a href="index.php" title="">Home</a></li>
+     <li><a href="group.php" title="">Group</a></li>
+        <li><a href="pubs.php" title="" >Publications</a></li>
+        <li><a href="research.php" title="">Research</a></li>
+        <li><a href="teaching.php" title="">Teaching</a></li>
+        <li><a href="misc.php" title="">Miscellaneous</a></li>
+</ul>
+
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 6px;
+    font-size:16px;
+    border: none;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 680px;
+    width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+</style>
+</head>
+<body>
+
+<CENTER>
+<br><br>
+<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<COL WIDTH=256*>
+<TR>
+<TD WIDTH=100% VALIGN=TOP>
+
+<FONT SIZE=4>
+<FONT COLOR="blue">
+<B>Computational Chemistry in Molecular Biology and Molecular Physics</B>
+</FONT> 
+<BR> <BR>
+<div class="dropdown">
+  <button class="dropbtn"><B>Quantum Computing in Chemistry</B></button>
+  <div class="dropdown-content">
+<FONT SIZE=2>
+<UL>
+<LI VALUE=55><P>
+Benchmarking of Different Optimizers in the Variational Quantum Algorithms for Applications in Quantum Chemistry <BR>
+<FONT COLOR="red">
+H. Singh, S. Majumder, and S. Mishra</FONT> <BR>
+<A HREF="https://doi.org/10.1063/5.0161057" target="_blank">J. Chem. Phys.  159 (2023) 044117.</A><BR>
+
+<LI VALUE=55><P>
+On the Study of Partial Qubit Hamiltonian for Efficient Molecular Simulation using Variational Quantum Eigensolvers
+<FONT COLOR="red">
+H. Singh, S. Mishra, and S. Majumder </FONT> <BR>
+<A HREF="https://arxiv.org/abs/2308.12524" target="_blank">arXiv:2308.12524 [quant-ph].</A><BR>
+
+
+<LI VALUE=55><P>
+Hueckel Molecular Orbital Theory on a Quantum Computer: A Scalable System-Agnostic Variational Implementation with Compact Encoding <BR>
+<FONT COLOR="red">
+H. Singh, S. Majumder, and S. Mishra</FONT> <BR>
+<A HREF="https://arxiv.org/abs/2312.02020" target="_blank">arXiv:2312.02020 [quant-ph].</A><BR>
+<LI VALUE=55><P>
+Extracting Information from Partial Hamiltonian of Simple Molecules for Designing Efficient Variational Quantum Eigensolvers <BR>
+<FONT COLOR="red">
+H. Singh, S. Mishra, and S. Majumder </FONT> <BR> 
+<A HREF="https://opg.optica.org/abstract.cfm?uri=QUANTUM-2023-QT" target="_blank">in Optica Quantum 2.0 Conference and Exhibition, Technical Digest Series (Optica Publishing Group, 2023), paper QTu3A.18.</A><BR> 
+</UL>
+</div>
+</div>
+<BR> <BR>
+
+<div class="dropdown">
+  <button class="dropbtn"><B>Enzyme Catalysis with QM/MM Approach</B></button>
+  <div class="dropdown-content">
+<FONT SIZE=2>
+<UL>
+<LI VALUE=68><P>
+Deciphering the Role of the Two Metal–Binding Sites of DapE Enzyme via
+Metal Substitution<BR>
+<FONT COLOR="red">
+A. Paul  and S. Mishra </FONT> <BR>
+<A HREF="https://doi.org/10.1016/j.compbiolchem.2023.107832" target="_blank">Comput. Biol. Chem. 103 (2023) 107832.</A><BR>
+<LI VALUE=55><P>
+Metal-Ion Promiscuity of Microbial Enzyme DapE at its Second Metal Binding Site <BR>
+<FONT COLOR="red">
+A. Paul and S. Mishra </FONT> <BR>
+<A HREF="https://link.springer.com/article/10.1007/s00775-021-01875-7" target="_blank">J. Biol. Inorg. Chem. 26 (2021) 569-582.</A><BR>
+<LI VALUE=32><P> Active Site Dynamics in the Substrate Hydrolysis Catalyzed by DapE Enzyme and Its Mutants from Hybrid QM/MM Molecular Dynamics Simulation  <BR>
+<FONT COLOR="red">D. Dutta and S. Mishra </FONT> 
+<A HREF="http://pubs.acs.org/doi/10.1021/acs.jpcb.7b04431" target="_blank">J. Phys. Chem. B 121 (2017) 7075-7085.</A></P>
+<LI VALUE=28><P> Loss of Catalytic Activity in the E134D, H67A, and H349A Mutants of DapE: Mechanistic Analysis with QM/MM Investigation<BR>
+<FONT COLOR="red">D. Dutta and S. Mishra </FONT>  <BR>
+<A HREF="http://pubs.acs.org/doi/full/10.1021/acs.jpcb.6b07446" target="_blank">J. Phys. Chem. B 120 (2016) 11654-11664.</A></P>
+<LI VALUE=25><P>QM/MM Simulation of the Amide-I Band in the Raman Spectrum of Insulin <BR>
+<FONT COLOR="red">B. Tah, D. Dutta, P. Pal, G. B. Talapatra, and S. Mishra </FONT>  <BR>
+<A HREF=" http://dx.doi.org/10.1080/00268976.2016.1170220"target="_blank">Mol. Phys. 114 (2016) 1939-1951.</A></P>
+<LI VALUE=22><P>The structural and energetic aspects of substrate binding and the mechanism of action of the DapE-encoded N-succinyl-L,L-diaminopimelic acid desuccinylase (DapE) investigated using a hybrid QM/MM method<BR>
+<FONT COLOR="red"> D. Dutta and S. Mishra</FONT>  <BR>
+<A HREF="http://pubs.rsc.org/en/content/articlelanding/2014/cp/c4cp03986f"target="_blank">Phys. Chem. Chem. Phys. 16 (2014) 26348-26358.</A></P>
+</UL>
+</div>
+</div>
+
+<BR> <BR>
+<div class="dropdown">
+  <button class="dropbtn"><B>Multi-scale Molecular Simulations of Biochemical Systems</B></button>
+  <div class="dropdown-content">
+<FONT SIZE=2>
+<UL>
+<LI VALUE=66><P>
+Ligands-Induced Open-Close Conformational Change during DapE Catalysis: Insights from Molecular Dynamics Simulations<BR>
+<FONT COLOR="red">
+S. Muduli and S. Mishra </FONT> <BR>
+<A HREF="https://onlinelibrary.wiley.com/doi/full/10.1002/prot.26466" target="_blank">Proteins: Struct. Funct. Bioinform. 91 (2023) 781-797.</A><BR>
+<LI VALUE=49><P>
+Flipped Regiospecificity in L434F Mutant of 8-Lipoxygenase <BR>
+<FONT COLOR="red">V. K. Mishra and S. Mishra</FONT> <BR>
+<A HREF="https://pubs.rsc.org/en/content/articlehtml/2020/CP/D0CP02351E" target="_blank">Phys. Chem. Chem. Phys. 22 (2020) 16013-16022.</A><BR>
+<LI VALUE=45><P>
+On the Origin of Regio- and Stereo-Specific Catalysis by 8-Lipoxygenase <BR>
+<FONT COLOR="red">V. K. Mishra and S. Mishra</FONT> <BR>
+<A HREF="https://pubs.acs.org/doi/10.1021/acs.jpcb.9b07917" target="_blank">J. Phys. Chem. B 123 (2019) 10605-10621.</A><BR>
+<LI VALUE=32><P> L-Captopril and its Derivatives as Potential Inhibitors of Microbial Enzyme DapE: A Combined Approach of Drug Repurposing and Similarity Screening <BR>
+<FONT COLOR="red">D. Dutta and S. Mishra </FONT>  <BR>
+<A HREF="https://www.sciencedirect.com/science/article/pii/S1093326318301840" target="_blank">J. Mol. Graphics Modell. 84 (2018) 82-89.</A></P>
+<LI VALUE=26><P>Structural and mechanistic insight into the substrate binding from the conformational dynamics in apo and substrate-bound DapE enzyme<BR>
+<FONT COLOR="red"> D. Dutta and S. Mishra</FONT>  <BR>
+<A HREF="http://pubs.rsc.org/en/content/articlelanding/2015/cp/c5cp06024a"target="_blank">Phys. Chem. Chem. Phys. 18 (2016) 1671-1680.</A></P>
+<LI VALUE=24><P>Specific Inhibition of beta-Secretase Processing of the Alzheimer Disease Amyloid Precursor Protein<BR>
+<FONT COLOR="red"> S. B. Halima, S. Mishra, K. M. Raja, M. Willem, A. Baici, K. Simons, O. Brustle, P. Koch, C. Haass, A. Caflisch, L. Rajendran</FONT>  <BR>
+<A HREF="http://www.sciencedirect.com/science/article/pii/S2211124716300754"target="_blank">Cell Reports, 14 (2016) 2127-2141.</A>
+<LI VALUE=21><P>Interaction of insulin with anionic phospholipid (DPPG) vesicles<BR>
+<FONT COLOR="red"> B. Tah, P. Pal, S. Mishra, and G. B. Talapatra</FONT>  <BR>
+<A HREF="http://pubs.rsc.org/en/content/articlelanding/2014/cp/c4cp03028a"target="_blank">Phys. Chem. Chem. Phys. 16 (2014) 3987-3991.</A></P>
+</UL>
+</div>
+</div>
+
+
+
+<BR> <BR>
+<div class="dropdown">
+  <button class="dropbtn"><B>Molecular Structure and Spectroscopy in Excited States</B></button>
+  <div class="dropdown-content">
+<FONT SIZE=2>
+<UL>
+<LI VALUE=74><P>
+The Interplay of Vibronic and Spin-Orbit Coupling in the Fluorescence Quenching in trans-dithionated PDI<BR>
+<FONT COLOR="red">
+K. Dakua, K. Rajak, and S. Mishra</FONT> <BR>
+<A HREF="https://pubs.aip.org/aip/jcp/article/159/11/114303/2911499/The-interplay-of-vibronic-and-spin-orbit-coupling" target="_blank">J. Chem. Phys.  159 (2023) 114302.</A><BR>
+<LI VALUE=48><P>
+Correlation Effects in the Photoelectron Spectrum and Photoionization Dynamics of OsO4 <BR>
+<FONT COLOR="red">S. Manna and S. Mishra</FONT> <BR>
+<A HREF="https://pubs.rsc.org/en/Content/ArticleLanding/2019/CP/C9CP05062K#!divAbstract" target="_blank">Phys. Chem. Chem. Phys. 22 (2020) 628-641.</A><BR>
+<LI VALUE=37><P> Vibronic Structures and Photoelectron Angular Distribution in the Photoelectron Spectrum of ICN <BR>
+<FONT COLOR="red"> S. Manna and S. Mishra </FONT> <BR>
+<A HREF="" target="_blank">J. Chem. Phys. 149 (2018) 204308</A> 
+<LI VALUE=36><P> Electronic Structure and Photoelectron Spectroscopy of Manganese Dihalides from Quantum Chemical Methods and Dyson Orbitals  <BR>
+<FONT COLOR="red"> S. Roy Chowdhury, S. Manna, and S. Mishra </FONT> <BR>
+<A HREF="https://doi.org/10.1016/j.chemphys.2018.09.040" target="_blank">Chem. Phys.  (2018)</A> 
+<LI VALUE=27><P>The Role of Spin-Orbit Coupling in the Double-Ionization Photoelectron Spectra of XCN2+ (X = Cl, Br, and I)         <BR>
+<FONT COLOR="red">S. Manna and S. Mishra </FONT>  <BR>
+<A HREF="http://pubs.acs.org/doi/abs/10.1021/acs.jpca.5b12219"target="_blank">J. Phys. Chem. A 120 (2016) 1554-1561.</A></P>
+<LI VALUE=20><P>Quantum-mechanical DFT calculation supported Raman spectroscopic study of some amino acids in bovine insulin<BR>
+<FONT COLOR="red"> B. Tah, P. Pal, S. Roy, D. Dutta, S. Mishra, M. Ghosh, and G. B. Talapatra</FONT>  <BR>
+<A HREF="http://www.sciencedirect.com/science/article/pii/S1386142514004557"target="_blank">Spectrochim. Acta A 129 (2014) 345-351.</A></P>
+</UL>
+</div>
+</div>
+
+
+<BR> <BR>
+
+<div class="dropdown">
+<button class="dropbtn"><B>Molecular Magnetism</B></button>
+<div class="dropdown-content">
+<UL>
+<FONT SIZE=2>
+<LI VALUE=72><P>
+Spin-State Energetics and Magnetic Anisotropy in Penta-coordinated Fe(III) Complexes with Different Axial and Equatorial Ligand Environments <BR>
+<FONT COLOR="red">
+S. Joshi, S. Roy Chowdhury, and S. Mishra</FONT> <BR>
+<A HREF="https://pubs.rsc.org/en/Content/ArticleLanding/2023/CP/D3CP02182C" target="_blank">Phys. Chem. Chem. Phys. 25 (2023) 17680-17691.</A><BR>
+Spin-Vibronic Coupling in the Quantum Dynamics of a Fe(III) Trigonal Bipyramidal Complex
+<BR>
+<FONT COLOR="red">
+ K. K. Dakua, K. Rajak, and S. Mishra  </FONT> <BR>
+<A HREF="https://aip.scitation.org/doi/10.1063/5.0080611" target="_blank">J. Chem. Phys. 156 (2022) 134103.</A><BR>
+<LI VALUE=44><P>
+Light-Induced Spin Crossover in an Intermediate-Spin Penta-Coordinated Iron(III) Complex <BR>
+<FONT COLOR="red">S. Roy Chowdhury and S. Mishra</FONT> <BR>
+<A HREF="https://pubs.acs.org/doi/10.1021/acs.jpca.9b06490" target="_blank">J. Phys. Chem. A  123 (2019) 9883-9892.</A><BR>
+
+<LI VALUE=38><P>Ab Initio Investigation of Magnetic Anisotropy in Intermediate Spin Iron(III) Complexes<BR>
+<FONT COLOR="red"> S. Roy Chowdhury and S. Mishra </FONT> <BR>
+<A HREF="" target="_blank">J. Chem. Phys. 149 (2018) In press. </A> 
+<LI VALUE=31><P> Heavy Ligand Atom Induced Large Magnetic Anisotropy in Mn(II) Complexes <BR>
+<FONT COLOR="red">S. Roy Chowdhury and S. Mishra </FONT>  <BR>
+<A HREF="http://pubs.rsc.org/en/content/articlelanding/2017/cp/c7cp02957h#!divAbstract">Phys Chem Chem Phys 19 (2017) 16914-16922.</A></P>
+<LI VALUE=30><P> Large Magnetic Anisotropy in Linear Co(II) Complexes: Ab Initio Investigation of Role of Ligand Field, Structural Distortion, and Conformational Dynamics <BR>
+<FONT COLOR="red">S. Roy Chowdhury and S. Mishra </FONT>  <BR>
+<A HREF="http://onlinelibrary.wiley.com/doi/10.1002/ejic.201601192/abstract" target="_blank">Eur. J. Inorg. Chem. (2017) 659-668.</A></P>
+</UL>
+</div>
+</div>
+
+
+<BR> <BR>
+
+<div class="dropdown">
+<button class="dropbtn"><B>Electronic Structure in Complex Systems</B></button>
+<div class="dropdown-content">
+<UL>
+<FONT SIZE=2>
+Self-Assembling Behaviour of Perylene,  Perylene Diimide, and Thionated Perylene Diimide Deciphered through Non-Covalent Interactions
+<BR>
+<FONT COLOR="red">
+S. Parida, S. K. Patra, and S. Mishra </FONT> <BR>
+<A HREF="http://dx.doi.org/10.1002/cphc.202200361" target="_blank">ChemPhysChem 23 (2022) e202200361.</A><BR>
+<LI VALUE=53><P>
+Synthesis, Structural Characterization, and Bonding Analysis of Two-coordinate Copper(i) and Silver(i) Complexes of Pyrrole-based bis(phosphinimine): New Metal-Pyrrole Ring &pi;-Interactions  <BR>
+<FONT COLOR="red">
+V. K. Jha, S. Das, V. Subramaniyan, T. Guchhait, K. K. Dakua, S. Mishra and  G. Mani </FONT> <BR>
+<A HREF=" https://doi.org/10.1039/D1DT01091C" target="_blank">Dalton Trans. 50 (2021) 8036-8044.</A><BR>
+<LI VALUE=51><P>
+Aging Dependent Morphological Crystallinity Determines Membrane Activity of L-Phenylalanine Self-Assembles  <BR>
+<FONT COLOR="red"> P.  Banerjee, K. Rajak, P. Nandi, S. Pal, M. Ghosh, S. Mishra and N. Sarkar </FONT> <BR>
+<A HREF="https://pubs.acs.org/doi/10.1021/acs.jpclett.0c01831" target="_blank">J. Phys. Chem. Lett. 11 (2020) 8585-8591.</A><BR>
+<LI VALUE=40><P>
+Visible-Light-Activated Divergent Reactivity of Dienones: Dimerization in Neat Conditions and Regioselective E to Z Isomerization in the Solvent.<BR>
+<FONT COLOR="red"> S. Naskar<FONT SIZE=1><sup>#</sup></FONT>, S. Roy Chowdhury<FONT SIZE=1><sup>#</sup></FONT>, S. Mondal, D. K. Maiti, S. Mishra, and I. Das  <FONT SIZE=1>(<sup>#</sup>equal contribution)</FONT></FONT> <BR>
+<A HREF="https://pubs.acs.org/doi/10.1021/acs.orglett.9b00083" target="_blank">Org. Lett. 21 (2019) 1578-1582.</A> <BR>
+<LI VALUE=39><P>Synthesis, Structure, Electrochemical and Spectroscopic Properties of Hetero-Bimetallic Ru(II)/Fe(II)-Alkynyl Organometallic Complexes.<BR>
+<FONT COLOR="red"> A. Sil, U. Ghosh, V. K. Mishra, S. Mishra, and S. K. Patra </FONT> <BR>
+<A HREF="https://pubs.acs.org/doi/10.1021/acs.inorgchem.8b02440" target="_blank">Inorg. Chem. 58 (2019) 1155-1166.</A> <BR>
+
+</UL>
+</div>
+</div>
+
+</UL>
+</BODY>
+</HTML>
+

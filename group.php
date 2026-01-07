@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title></title>
+
+</head>
+<body>
+<ul class="menu red">
+        <li><a href="index.php" title="">Home</a></li>
+     <li><a href="group.php" title="">Group</a></li>
+        <li><a href="pubs.php" title="" >Publications</a></li>
+        <li><a href="research.php" title="">Research</a></li>
+        <li><a href="teaching.php" title="">Teaching</a></li>
+        <li><a href="misc.php" title="">Miscellaneous</a></li>
+</ul>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .member-container {
+            width: calc(50% - 20px); /* Adjust the width as needed */
+            height: 200px; /* Adjust the width as needed */
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            overflow: scroll;
+            box-sizing: border-box;
+            float: left;
+        }
+        .member-container:nth-child(odd) {
+            margin-right: 20px; /* Add margin to create space between columns */
+        }
+        .member-container img {
+            float: left;
+            margin-right: 20px;
+            width: 20%; /* Set the width of the image to fill the container */
+            height: auto; /* Automatically adjust the height to maintain aspect ratio */
+            max-width: 20%; /* E
+            object-fit: cover; /* Maintain aspect ratio */
+        }
+        .member-info {
+            overflow: hidden;
+        }
+        .member-info p {
+            margin: 5px 0;
+        }
+    </style>
+
+<CENTER>
+<h1><a href="gpnews.php" title="">Group News</a></h1>
+<IMG SRC="gppics/gppic_22_2.jpg" NAME="" ALT="" ALIGN=MIDDLE WIDTH=650  ><BR>
+
+<h1>Current Members</h1>
+<body>
+<div class="member-container">
+    <img src="gppics/SM_pic.jpeg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Sabyashachi Mishra</h2>
+        <p>Associate Professor</p>
+        <p>PhD: Technical University of Munich</p>
+        <p>Email: mishra [at] chem.iitkgp.ac.in</p>
+        <p><A href="mishra.php">CV</A></p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/pic_moromi.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Moromi Nath</h2>
+        <p> Senior Research Fellow</p>
+        <p>M.Sc. Pondicherry University</p>
+        <p>Email: moromi1593[at]gmail.com</p>
+        <p>Research Field: Molecular Magnetism</p>
+    </div>
+</div>
+
+
+<div class="member-container">
+    <img src="gppics/soumyajit.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Soumyajit Karmakar</h2>
+        <p>Prime Minister's Research Fellow</p>
+        <p>M.Sc. IIT Kharagpur</p>
+        <p>Email: [at]gmail.com</p>
+        <p>Research Field: Enzyme Catalysis</p>
+    </div>
+</div>
+
+
+<div class="member-container">
+    <img src="gppics/sourav_manna.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Sourav Manna</h2>
+        <p>Senior Research Fellow</p>
+        <p>M.Sc. IIT Kharagpur</p>
+        <p>Email: [at]gmail.com</p>
+        <p>Research Field: Enzyme Catalysis</p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/shubham.jpeg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Shubham Verma</h2>
+        <p>Junior Research Fellow</p>
+        <p>M.Sc. IIT Kharagpur</p>
+        <p>Email: [at]gmail.com</p>
+        <p>Research Field: Quantum Computing</p>
+    </div>
+</div>
+
+
+<div class="member-container">
+    <img src="gppics/rituparna_pic.jpeg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Rituparna Sinha</h2>
+        <p>Junior Research Fellow</p>
+        <p>M.Sc. IIT Hyderabad</p>
+        <p>Email: [at]gmail.com</p>
+        <p>Research Field: Spin Crossover</p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/abhinaba.jpeg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Abhinaba Pahari</h2>
+        <p>Junior Research Fellow</p>
+        <p>M.Sc. IIT Kharagpur</p>
+        <p>Email: [at]gmail.com</p>
+        <p>Research Field: Quantum Computing</p>
+    </div>
+</div>
+
+
+
+</body>
+
+
+
+<TABLE WIDTH=60% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<tr><td> <h2>Current  MS and BS Students: </h2><BR> </td>  </tr>
+<BR> 
+<tr><td> Mr. Arif Ahmed Begg  <BR> </td>  </tr>
+<tr><td> Ms. Ishita Mondal    <BR> </td>  </tr>
+<tr><td> Mr. Ambrish Tiwari  <BR> </td>  </tr>
+<tr><td> Mr. Sagar Ketul Nilesh	<BR> </td>  </tr>
+</table>
+
+<BR>
+
+<h1>Past Members</h1>
+
+<body>
+
+<div class="member-container">
+    <img src="gppics/sanjukta.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Sanjukta Parida</h2>
+        <p>PhD: 2019-2025</p>
+        <p>Thesis Title: Electronic Structure, Spectroscopy, and Charge Transport in Perylene-based Molecular Aggregates </p>
+        <p>Currently: </p>
+    </div>
+</div>
+
+
+<div class="member-container">
+    <img src="gppics/harshdeep.jpeg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Harshdeep Singh</h2>
+        <p>PhD: 2021-2025</p>
+        <p>Thesis Title: Hybrid Quantum-Classical Algorithms for Quantum Chemistry </p>
+        <p>Currently: Chalmers University of Technology, Sweden </p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/kishan.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Kishan Kumar Dakua</h2>
+        <p>PhD: 2019-2025</p>
+        <p>Thesis Title: Excited--State Quantum Dynamics of Photophysical Processes in Organic Chromophores and Transition--Metal Complexes </p>
+        <p>Currently:  </p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/pic_shalini.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Shalini Joshi</h2>
+        <p>PhD: 2019-2025</p>
+        <p>Thesis Title: Magnetic Anisotropy and Spin Crossover in Transition Metal Complexes with Multi-reference Electronic Structure Calculations </p>
+        <p>Currently: </p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/sunita.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Sunita Muduli</h2>
+        <p>PhD: 2019-2024</p>
+        <p>Thesis Title: Significance of Protein Dynamics in the Catalytic Activity of DapE and DapF Enzymes of the Lysine Biosynthetic Pathway </p>
+        <p>Currently: Department of Physics, IISc Bangalore</p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/atanuka.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Atanuka Paul</h2>
+        <p>PhD: 2015-2023</p>
+        <p>Thesis Title: Hybrid QM/MM Investigation of the Role of Metal Ions in the Substrate Binding and Catalysis of the Microbial Enzyme DapE</p>
+        <p>Currently: R&D Scientist at West Bengal Chemical Industries Limited </p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/karuna.png" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Karunamoy Rajak</h2>
+        <p>Postdoc: 2019-2022</p>
+        <p>Currently: Postdoc, IISER Kolkata</p>
+        <p>           </p>
+    </div>
+</div>
+
+
+<div class="member-container">
+    <img src="gppics/vipin.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Vipin Kumar Mishra</h2>
+        <p>PhD: 2015-2021</p>
+        <p>Thesis Title: Computational Study of Regio- and Stereo-Selective Catalysis by 8-Lipoxygenase</p>
+        <p>Currently: Assistant Professor, VIT Bhopal</p>
+    </div>
+</div>
+
+
+
+<div class="member-container">
+    <img src="gppics/soumitra.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Soumitra Manna</h2>
+        <p>PhD: 2014-2020</p>
+        <p>Thesis Title: Photoelectron Spectra and Photoionization Dynamics of Small Molecules with Heavy Atoms</p>
+        <p>Currently: Postdoc, University of Insubria, Italy</p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/sabyasachi.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Sabyasachi Roy Chowdhury</h2>
+        <p>PhD: 2014-2019</p>
+        <p>Thesis Title: Magnetic Anisotropy and Light-Induced Spin Crossover in Transition Metal Complexes</p>
+        <p>Currently: Assistant Professor, BITS Pilani, Dubai</p>
+    </div>
+</div>
+
+<div class="member-container">
+    <img src="gppics/ddutta_pic.png" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Debodyuti Dutta</h2>
+        <p>PhD: 2012-2017</p>
+        <p>Thesis Title: Catalytic Action of Microbial Enzyme DapE and Rational Design of its Potential Inhibitors</p>
+        <p>Currently: Revenue Services, Govt. of West Bengal</p>
+    </div>
+</div>
+
+
+<div class="member-container">
+    <img src="gppics/susanta_pic.jpg" alt="Member 1" >
+    <div class="member-info">
+        <h2>Dr. Susanta Ghanta</h2>
+        <p>Postdoc: 2014-2016</p>
+        <p>Currently: Assistant Professor at NIT Agartala</p>
+        <p>           </p>
+    </div>
+</div>
+</body>
+
+<TABLE WIDTH=60% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<tr><td> <B> Former MSc/BS Project Students:</B>  <BR> <BR> </td> </tr>
+<tr><td> Mr. Bankar Bhavesh Suresh (now at ) <BR> </td>  </tr>
+<tr><td> Mr. Arindam Bose (now at ) <BR> </td>  </tr>
+<tr><td> Mr. Biman Giri (now at ) <BR> </td>  </tr>
+<tr><td> Ms. Pritha Ghosh, 2024 (now at). <BR>  </td> </tr>
+<tr><td> Mr. Fakhruddin Hakim Hussain, 2024 (now at ). <BR>  </td> </tr>
+<tr><td> Ms. Muskan Agrawal, 2023 (now at IISc Bangalore). <BR>  </td> </tr>
+<tr><td> Ms. Swarnali Sarkar, 2023 (now at IIT Kharagpur). <BR>  </td> </tr>
+<tr><td> Mr. D. Pavan Kalyan, 2023. <BR>  </td> </tr>
+<tr><td> Mr. Sourav Manna, 2022 (now at IIT Kharagpur). <BR>  </td> </tr>
+<tr><td> Mr. Saptarshi Saha, 2022 (now at Uni Louisville, USA). <BR>  </td> </tr>
+<tr><td> Mr. Mohit Kumar, 2022. <BR>  </td> </tr>
+<tr><td> Mr. Soumyajit Karmakar, 2021 (now at IIT Kharagpur). <BR>  </td> </tr>
+<tr><td> Mr. Tamsuk Paul, 2021 (now at University of Chicago). <BR>  </td> </tr>
+<tr><td> Mr. Ankit K. Dubey, 2020. <BR>  </td> </tr>
+<tr><td> Mr. Mehul Vora, 2020. <BR>  </td> </tr>
+<tr><td> Mr. Kedarnath Bera, 2018 (now with ONGC, India). <BR>  </td> </tr>
+<tr><td> Mr. R. Sudhakar, 2018. <BR>  </td> </tr>
+<tr><td> Mr. Mrinal Arandhara, 2017 (now at IISc Bangalore). <BR>  </td> </tr>
+<tr><td> Mr. Suraj Verma, 2017 (now at IISER Bhopal). <BR>  </td> </tr>
+<tr><td> Mr. Sourav Dey, 2016 (now at IIT Bombay). <BR>  </td> </tr>
+<tr><td> Mr. Saransh Gour, 2016. <BR>  </td> </tr>
+<tr><td> Ms. Kajal Kumbhakar, 2015 (now at Bose Research Inst, Kolkata). <BR>  </td> </tr>
+<tr><td> Mr. Ayush Narsaria, 2015 (now at Vrije Uni, Amsterdam). <BR>  </td> </tr>
+<tr><td> Mr. Kartikeya Pradhan, 2014. <BR>  </td> </tr>
+<tr><td> Ms. Sucheta Banerjee, 2014 (now at IIT Bombay). <BR>  </td> </tr>
+<br><br>
+<br><tr><td> <B> Visitors:</B>  <BR> <BR> </td> </tr>
+
+<tr><td> Ms. B. Manasa, INSPIRE visitor from NISER Bhubaneswar.  <BR> </td>  </tr>
+<tr><td> Mr. Ashwini Balaji, Summer/Winter Intern, IIT Kharagpur.  <BR> </td>  </tr>
+<tr><td> Mr. Deepjoy Rudra Sarma, Summer/Winter Intern, IIT Kharagpur.  <BR> </td>  </tr>
+<tr><td> Mr. Mandar V. Deshpande, Academy Summer visitor from IISER Bhopal.  <BR> </td>  </tr>
+<tr><td> Mr. Palash Jyoti Boruah, Academy Summer visitor from NIT Meghalaya, Shillong.  <BR> </td>  </tr>
+<tr><td> Ms. Radhika Varshney, Summer visitor from NIT Rourkela.  <BR> </td>  </tr>
+<tr><td> Ms. Ankita Pradhan, Summer visitor from  VSSUT, Burla, Odisha.  <BR> </td>  </tr>
+<tr><td> Mr. Siddharth Maji, Summer visitor from BITS Mesra.  <BR> </td>  </tr>
+<tr><td> Mr. Anupam Anand Ojha, Summer visitor from IISER Thiruvanathpuram.  <BR> </td>  </tr>
+<tr><td> Mr. Sourav Ghosh, Summer visitor from IIT Guwahati.  <BR> </td>  </tr>
+<tr><td> Mr. Souroprobho Chowudhury, Summer visitor from Heritage Institute of Technology, Kolkata (now at Uni Manchester).  <BR> </td>  </tr>
+<tr><td> Mr. Manisit Das, Winter visitor from IIT-Kharagpur (now at Uni NC at Chapel Hill). <BR> </td>  </tr>
+<tr><td> Mr. Sayan Mukherjee, Winter visitor from IIT-Kanpur (now at Texas A&M Uni).  <BR> </td>  </tr>
+<tr><td> Dr. Bidisha Tah, Short-term visitor from IACS Kolkata (now at Ben-Gurion University, Israel). <BR> </td>  </tr>
+</table>
+</CENTER>
+
+
+</BODY>
+</HTML>
+

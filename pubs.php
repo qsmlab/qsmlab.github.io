@@ -1,0 +1,2284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+    <link rel='stylesheet' type='text/css' href='menu_style.css' />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .sort-menu, .filter-menu {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .publication-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .publication-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<ul class="menu red">
+	<li><a href="index.php" title="">Home</a></li>
+	<li><a href="group.php" title="">Group</a></li>
+	<li><a href="pubs.php" title="" >Publications</a></li>
+	<li><a href="research.php" title="">Research</a></li>
+	<li><a href="teaching.php" title="">Teaching</a></li>
+	<li><a href="misc.php" title="">Miscellaneous</a></li>
+</ul>
+
+
+<h1></h1>
+<BR>
+<IMG SRC="pub_pics/Cover_Collage.jpeg" NAME="" ALT="" ALIGN=MIDDLE WIDTH=650  ><BR
+<BR>
+
+<div class="sort-menu">
+    <label for="sortCriteria">Sort by: </label>
+    <select id="sortCriteria" onchange="sortPublications()">
+        <option value="year">Year</option>
+    </select>
+</div>
+
+<div class="filter-menu">
+     <em>Filter by:</em> <BR>
+    <label for="authorFilter">Author: </label>
+    <select id="authorFilter" onchange="filterPublications()">
+        <option value="all">All</option>
+        <!-- Author options will be dynamically populated -->
+    </select>
+
+    <label for="yearFilter">Year: </label>
+    <select id="yearFilter" onchange="filterPublications()">
+        <option value="all">All</option>
+        <!-- Year options will be dynamically populated -->
+    </select>
+
+    <label for="yearFilterStart">Year Range: </label>
+    <select id="yearFilterStart" onchange="filterPublications()">
+        <option value="all">Start Year</option>
+        <!-- Start Year options will be dynamically populated -->
+    </select>
+
+    <select id="yearFilterEnd" onchange="filterPublications()">
+        <option value="all">End Year</option>
+        <!-- End Year options will be dynamically populated -->
+    </select>
+<BR>
+    <label for="journalFilter">Journal: </label>
+    <select id="journalFilter" onchange="filterPublications()">
+        <option value="all">All</option>
+        <!-- Journal options will be dynamically populated -->
+    </select>
+
+    <label for="publisherFilter">Publisher: </label>
+    <select id="publisherFilter" onchange="filterPublications()">
+        <option value="all">All</option>
+        <!-- Publisher options will be dynamically populated -->
+    </select>
+<BR>
+    <label for="researchFieldFilter">Research Area: </label>
+    <select id="researchFieldFilter" onchange="filterPublications()">
+        <option value="all">All</option>
+        <!-- Research Field options will be dynamically populated -->
+    </select>
+<BR>
+    <button onclick="clearFilters()">Clear All Filters</button>
+<button id="downloadCsvBtn">Download CSV</button>
+<button onclick="generateBibTeX()">Download BibTeX</button>
+
+
+</div>
+
+<a href="independent_pubs.php" title="" >Independent publications of group members</a>
+
+
+<ul id="publicationsList" class="publication-list">
+    <!-- Publication items will go here -->
+</ul>
+
+
+
+
+<script>
+    const publications = [
+  {
+    "year": 2025,
+    "journal": "ACS Appl. Bio Mat.",
+    "volume": " ",
+    "pages": "In Press",
+"comments":"",
+    "authors": [
+      "P. Nandi",
+      "S. Parida",
+      "D. Das",
+      "S. Bose Dasgupta",
+      "S. Mishra",
+      "N. Sarkar"
+    ],
+    "title": "Ultrasound-Assisted Polyphenol Hydrogelation: Mechanistic Insights into Self-Assembly, Antioxidant and Dual Antibacterial Action Against Gram-Positive and Gram-Negative Pathogens",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "                                   ",
+    "researchFields": [
+      "Computation with Experiment",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2025,
+    "journal": "Resonance - J. Sci. Ed.",
+    "volume": "",
+    "pages": "In Press",
+"comments":"",
+    "authors": [
+      "H. Singh",
+      "S. Majumder",
+      "S. Mishra"
+    ],
+    "title": "Quantum Computing for Molecular Systems: Part I: Quantum Circuit and Measurement;  Part II: Quantum Encoding; and Part III: Quantum Algorithms",
+    "publisher": "Springer",
+    "url": " ",
+    "researchFields": [
+      "Computation/Theory",
+      "Quantum Computing"
+    ]
+  },
+  {
+    "year": 2025,
+    "journal": "Organometallics",
+    "volume": "44",
+    "pages": "2481-2486",
+    "comments": "#Featured on the <a href=\"https://pubs.acs.org/cms/10.1021/orgnd7.2025.44.issue-21/asset/orgnd7.2025.44.issue-21.xlargecover.jpg\" target=\"_blank\">Journal Front Cover</a>",
+    "authors": [
+      "S. Dolai",
+      "S. Karmakar",
+      "P. Das",
+      "S. Mishra",
+      "S. K. Patra",
+    ],
+    "title": "Bench-Stable Fe(III)-Bimetallic Photocatalyst for Controlled Polymerization of Acrylates via LMCT Excited State", 
+    "publisher": "American Chemical Society (ACS)", 
+    "url": "https://pubs.acs.org/doi/full/10.1021/acs.organomet.5c00241", 
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2025,
+    "journal": "J. Chem. Phys.",
+    "volume": "163",
+    "pages": "124104",
+"comments":"",
+    "authors": [
+      "H. Singh",
+      "S. Majumder",
+      "S. Mishra"
+    ],
+    "title": "Blockwise Optimization for Projective Variational Quantum Dynamics (BLOP-VQD): Algorithm and Implementation for Lattice Systems",
+    "publisher": "AIP Publishing",
+    "url": "https://doi.org/10.1063/5.0289105",
+    "researchFields": [
+      "Computation/Theory",
+      "Quantum Computing"
+    ]
+  },
+ {
+    "year": 2025,
+    "journal": "Chem. Eur. J.",
+    "volume": "  ",
+    "pages": "e01951",
+    "comments": "#Appeared as <a href=\"https://chemistry-europe.onlinelibrary.wiley.com/cms/asset/5aa422a2-c984-4d54-99a5-a6db5b94eb06/chem70297-gra-0001-m.jpg\" target=\"_blank\">Cover Feature</a>",
+    "authors": [
+      "S. Dolai",
+      "S. Karmakar",
+      "S. Kundu",
+      "S. Mishra",
+      "S. K. Patra",
+    ],
+    "title": "Redox-Assisted Controlled Radical Polymerization of Acrylates by Strategically Designed RuII-FeII Heterobimetallic Conjugate",
+    "publisher": "Wiley", 
+    "url": "https://chemistry-europe.onlinelibrary.wiley.com/doi/10.1002/chem.202501951",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+ {
+    "year": 2025,
+    "journal": "Inorg. Chem.",
+    "volume": "63",
+    "pages": "16323",
+    "comments": "#Featured on the <a href=\"https://pubs.acs.org/cms/10.1021/inocaj.2025.64.issue-32/asset/inocaj.2025.64.issue-32.xlargecover.jpg\" target=\"_blank\">Journal Front Cover</a>",
+    "authors": [
+      "K. K. Dakua",
+      "R. Sinha",
+      "S. Mishra",
+    ],
+    "title": "Photoluminescence in Square Planar Ni(II) Complexes: A Study of Electronic Structure and Quantum Dynamics",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "https://pubs.acs.org/doi/full/10.1021/acs.inorgchem.5c01237",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling",
+    ]
+  },
+ {
+    "year": 2025,
+    "journal": "J. Mat. Chem. A",
+    "volume": "13",
+    "pages": "24694",
+"comments":"",
+    "authors": [
+      "D. Patra",
+      "S. K. Pati",
+      "S. Muduli",
+      "S. Mishra",
+      "G. Kim",
+      "S. Park",
+    ],
+    "title": "Enhanced anodic charge storage in asymmetric hybrid supercapacitor featuring dione-diimide-based electron-deficient conjugated polymers", 
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "https://pubs.rsc.org/en/content/articlelanding/2025/ta/d5ta01316j",
+    "researchFields": [
+      "Computation with Experiment"
+    ]
+  },
+  {
+    "year": 2025,
+    "journal": "ChemSusChem",
+    "volume": "  ",
+    "pages": "e202501040",
+"comments":"",
+    "authors": [
+      "S. Mandal",
+      "S. Parida",
+      "S. Mishra",
+      "A. J. Bhattacharyya"
+    ],
+    "title": "Probing the Chemical Action of M–N4 Motif in Metal Phthalocyanine–Based Redox Mediators in Li–O<sub>2</sub> Batteries", 
+    "publisher": "Wiley", 
+    "url": "https://chemistry-europe.onlinelibrary.wiley.com/doi/abs/10.1002/cssc.202501040", 
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+ {
+    "year": 2025,
+    "journal": "J. Mat. Chem. A",
+    "volume": "13",
+    "pages": "20504-20518",
+"comments":"",
+    "authors": [
+      "S. K. Pati",
+      "S. Muduli",
+      "D. Patra",
+      "S. Oh",
+      "B. Kim",
+      "S. Mishra",
+      "S. Park",
+    ],
+    "title": "Energy Storage Behavior of Side Chain-Engineered Si-Bridged Redox-Active Donor-Acceptor Conjugated Polymers Operated in Organic Electrolyte",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "https://pubs.rsc.org/en/content/articlelanding/2025/ta/d5ta02268a",
+    "researchFields": [
+      "Computation with Experiment"
+    ]
+  },
+ {
+    "year": 2025,
+    "journal": "J. Phys. Chem. C",
+    "volume": "129",
+    "pages": "10264",
+    "comments": "#Featured on the <a href=\"https://pubs.acs.org/cms/10.1021/jpccck.2025.129.issue-22/asset/jpccck.2025.129.issue-22.xlargecover.jpg\" target=\"_blank\">Journal Front Cover</a>",
+    "authors": [
+      "S. Parida",
+      "S. K. Patra",
+      "S. Mishra",
+    ],
+    "title": "Hole and Electron Mobility in Sulfur- and BN-Functionalized Perylene Diimides: A Computational Study",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "https://pubs.acs.org/doi/full/10.1021/acs.jpcc.5c00902",
+    "researchFields": [
+      "Computation/Theory"
+    ]
+  },
+ {
+    "year": 2025,
+    "journal": "Crystal Growth and Design",
+    "volume": "25",
+    "pages": "2602",
+"comments":"",
+    "authors": [
+      "S. Joshi",
+      "S. R. Chowdhury",
+      "S. Mishra"
+    ],
+    "title": " Magnetostructural Correlation in Trigonal Bipyramidal Fe(III) Complexes: Tuning Spin-State Stability and Magnetic Anisotropy via Second Coordination Sphere Substitution", 
+    "publisher": "American Chemical Society (ACS)",
+    "url": "https://pubs.acs.org/doi/10.1021/acs.cgd.5c00110",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+ {
+    "year": 2025,
+    "journal": "Dalton Trans.",
+    "volume": "54",
+    "pages": "6081",
+"comments":"",
+    "authors": [
+      "S. Joshi",
+      "S. R. Chowdhury",
+      "S. Mishra"
+    ],
+    "title": "Conformational Isomerization in Co(acac)<sub>2</sub> via Spin-State Switch: A Computational Study",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "https://doi.org/10.1039/D5DT00052A",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2025,
+    "journal": "J. Chem. Phys.",
+    "volume": "162",
+    "pages": "114117",
+    "comments": "#Highlighed by the <a href=\"https://thesciencematters.org/new-quantum-algorithm-promises-faster-cleaner-molecular-simulations/\" target=\"_blank\">Science Matters</a>",
+    "authors": [
+      "H. Singh",
+      "S. Majumder",
+      "S. Mishra"
+    ],
+    "title": "SHARC-VQE: Simplified Hamiltonian Approach with Refinement and Correction enabled Variational Quantum Eigensolver for Molecular Simulation",
+    "publisher": "AIP Publishing",
+    "url": "https://doi.org/10.1063/5.0249447",
+    "researchFields": [
+      "Computation/Theory",
+      "Quantum Computing"
+    ]
+  },
+ {
+    "year": 2025,
+    "journal": "J. Phys. Chem. B",
+    "volume": "129",
+    "pages": "2828",
+    "comments": "#Featured on the <a href=\"https://pubs.acs.org/cms/10.1021/jpcbfk.2025.129.issue-11/asset/jpcbfk.2025.129.issue-11.xlargecover.jpg\" target=\"_blank\">Journal Front Cover</a>",
+    "authors": [
+      "S. Manna",
+      "S. Mishra",
+    ],
+    "title": "Modulating Enzyme’s Conformational Space: Impact of Substrate Binding, Mode Alteration, and Active Site Mutation in DapC, an Aminotransferase Enzyme of Lysine Biosynthetic Pathway",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "https://pubs.acs.org/doi/full/10.1021/acs.jpcb.4c06274",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+ {
+    "year": 2024,
+    "journal": "Biochemistry",
+    "volume": "63",
+    "pages": "3310",
+"comments":"",
+    "authors": [
+      "S. Karmakar",
+      "S. Mishra",
+    ],
+    "title": "Flavin-Mediated Reductive Deiodination: Conformational Events and Reactivity Pattern in the Active Site of Human Iodotyrosine Deiodinase",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "https://doi.org/10.1021/acs.biochem.4c00639",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+ {
+    "year": 2024,
+    "journal": "J. Phys. Chem. B",
+    "volume": "128",
+    "pages": "9873",
+    "comments": "#Featured on the <a href=\"https://pubs.acs.org/cms/10.1021/jpcbfk.2024.128.issue-40/asset/jpcbfk.2024.128.issue-40.xlargecover.jpg\" target=\"_blank\">Journal Front Cover</a>",
+    "authors": [
+      "S. Parida",
+      "S. K. Patra",
+      "S. Mishra",
+    ],
+    "title": "Structure-Spectroscopy Correlation in the Self-assembled Perylene-diimide based dimers via Inter-Chromophore Coupling",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "https://pubs.acs.org/doi/full/10.1021/acs.jpcb.4c04181",
+    "researchFields": [
+      "Computation/Theory"
+    ]
+  },
+  {
+    "year": 2024,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "26",
+    "pages": "15405-15416",
+"comments":"",
+    "authors": [
+      "M. Nath",
+      "S. Joshi",
+      "S. Mishra"
+    ],
+    "title": "<i>Ab initio</i> calculation of magnetic anisotropy and thermal spin transition in the variable temperature crystal conformations of [Co(terpy)<sub>2</sub>]<sup>2+</sup>",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/d4cp00591k",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2024,
+    "journal": "J. Chem. Phys.",
+    "volume": "160",
+    "pages": "194106",
+"comments":"",
+    "authors": [
+      "H. Singh",
+      "S. Majumder",
+      "S. Mishra"
+    ],
+    "title": "Hückel Molecular Orbital Theory on a Quantum Computer: A Scalable System-Agnostic Variational Implementation with Compact Encoding",
+    "comments": "#Highlighed by the <a href=\"https://quantumzeitgeist.com/quantum-computing-enhances-huckel-theory-simulations-promises-efficient-molecular-studies/\" target=\"_blank\">Quantum Zeitgeist</a>",
+    "publisher": "AIP Publishing",
+    "url": "https://doi.org/10.1063/5.0210597",
+    "researchFields": [
+      "Computation/Theory",
+      "Quantum Computing"
+    ]
+  },
+  {
+    "year": 2024,
+    "journal": "J. Chem. Inform. Model.",
+    "volume": "64",
+    "pages": "4250-4262",
+"comments":"",
+    "authors": [
+      "S. Muduli",
+      "S. Karmakar",
+      "S. Mishra"
+    ],
+    "title": "Conformational Dynamics in <i>Corynebacterium glutamicum</i> Diaminopimelate Epimerase: Insights from Ligand Parameterization, Atomistic Simulation, and Markov State Modeling",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.jcim.4c00480",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+ {
+    "year": 2024,
+    "journal": "Inorg. Chem.",
+    "volume": "63",
+    "pages": "15692",
+"comments":"",
+    "authors": [
+      "C. Mandal",
+      "S. Joshi",
+      "S. Mishra",
+      "D. Mukherjee"
+    ],
+    "title": "Heteroleptic Magnesium <i>n</i>-Butyl on a Chemically Non-innocent 2-Anilidomethylpyridine Ligand Leading to Diverse Magnesium Hydrides",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.inorgchem.4c01612",
+    "researchFields": [
+      "Computation with Experiment"
+    ]
+  },
+  {
+    "year": 2024,
+    "journal": "J. Mat. Chem. A",
+    "volume": "12",
+    "pages": "21165-21175",
+"comments":"",
+    "authors": [
+      "S. K. Pati",
+      "D. Patra",
+      "S. Muduli",
+      "S. Mishra",
+      "S. Park"
+    ],
+    "title": "Conjugated polymer electrodes fabricated using rylene-based acceptors toward high energy and power density symmetric supercapacitors operable in an organic electrolyte environment",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/d4ta03711a",
+    "researchFields": [
+      "Computation with Experiment"
+    ]
+  },
+  {
+    "year": 2024,
+    "journal": "Inorg. Chem.",
+    "volume": "63",
+    "pages": "4839-4854",
+"comments":"",
+    "authors": [
+      "A. Maity",
+      "V. K. Mishra",
+      "S. Dolai",
+      "S. Mishra",
+      "S. K. Patra"
+    ],
+    "title": "Design, Synthesis, and Characterization of Organometallic BODIPY-Ru(II) Dyads: Redox and Photophysical Properties with Singlet Oxygen Generation Capability",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.inorgchem.3c03610",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2024,
+    "journal": "Chemical Eng. J.",
+    "volume": "482",
+    "pages": "149162",
+"comments":"",
+    "authors": [
+      "D. Patra",
+      "S. K. Pati",
+      "S. Muduli",
+      "S. Mishra",
+      "S. Park"
+    ],
+    "title": "Highly planar pseudocapacitive semiconducting polymer electrodes toward symmetric supercapacitors with a wide range of operating potentials",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.cej.2024.149162",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2024,
+    "journal": "Inorg. Chem.",
+    "volume": "63",
+    "pages": "739-751",
+"comments":"",
+    "authors": [
+      "C. Mandal",
+      "S. Joshi",
+      "S. Das",
+      "S. Mishra",
+      "D. Mukherjee"
+    ],
+    "title": "2-Anilidomethylpyridine-Derived Three-Coordinate Zinc Hydride: The Journey Unveils Anilide Backbone’s Reactive Nature",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.inorgchem.3c03673",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2024,
+    "journal": "ACS Appl. Bio Mat.",
+    "volume": "7",
+    "pages": "154-167",
+"comments":"",
+    "authors": [
+      "R. Majumder",
+      "S. Karmakar",
+      "S. Mishra",
+      "A. B. Mallick",
+      "C. D. Mukhopadhyay"
+    ],
+    "title": "Functionalized Carbon Nano-Onions as a Smart Drug Delivery System for the Poorly Soluble Drug Carmustine for the Management of Glioblastoma",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acsabm.3c00688",
+    "researchFields": [
+      "Computation with Experiment",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "J. Chem. Phys.",
+    "volume": "159",
+    "pages": "044117",
+"comments":"",
+    "authors": [
+      "H. Singh",
+      "S. Majumder",
+      "S. Mishra"
+    ],
+    "title": "Benchmarking of different optimizers in the variational quantum algorithms for applications in quantum chemistry",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/5.0161057",
+    "researchFields": [
+      "Computation/Theory",
+      "Quantum Computing"
+    ]
+  },
+ {
+    "year": 2023,
+    "journal": "J. Chem. Phys.",
+    "volume": "159",
+    "pages": "114302",
+"comments":"",
+    "authors": [
+      "K. K. Dakua",
+      "K. Rajak",
+      "S. Mishra"
+    ],
+    "title": "The interplay of vibronic and spin–orbit coupling in the fluorescence quenching in <i>trans</i>-dithionated PDI",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/5.0167127",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+{
+    "year": 2024,
+    "journal": "Book Chapter",
+    "volume": "Chapter 8",
+    "pages": "149",
+"comments":"",
+    "authors": [
+      "S. Karmakar",
+      "S. Muduli",
+      "A. Paul",
+      "S. Mishra"
+    ],
+    "title": "Electron Density in the Multiscale Treatment of Biomolecules IN <i> Fundamentals of Electron Density (Wiley) </i>",
+    "publisher": "Wiley",
+    "url": "https://onlinelibrary.wiley.com/doi/10.1002/9781394217656.ch8",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "IEEE iQ-CCHESS",
+    "volume": "",
+    "pages": "1-6",
+"comments":"",
+    "authors": [
+      "H. Singh",
+      "S. Mishra",
+      "S. Majumder"
+    ],
+    "title": "(conference paper:) On the Study of Partial Qubit Hamiltonian for Efficient Molecular Simulation Using Variational Quantum Eigensolvers IN <i>International Conference on Quantum Technologies, Communications, Computing, Hardware and Embedded Systems Security (iQ-CCHESS), Kottayam, India, 2023.</i>",
+    "publisher": "IEEE",
+    "url": "http://dx.doi.org/10.1109/iq-cchess56596.2023.10391502",
+    "researchFields": [
+      "Computation/Theory",
+      "Quantum Computing"
+    ]
+  },
+{
+    "year": 2024,
+    "journal": "Biophys. J.",
+    "volume": "3",
+    "pages": "208a",
+"comments":"",
+    "authors": [
+      "S. Muduli",
+      "S. Karmakar",
+      "S. Mishra"
+    ],
+    "title": "(conference proceeding:) Role of electrostatic environment in modulating structural dynamics and ligand binding in microbial CGDapF IN <i>Biophysical Society Meeting 2024, Philadelphia, Pennsylvania, USA., 2024.</i>",
+    "publisher": "Cell Press",
+    "url": "https://www.cell.com/biophysj/abstract/S0006-3495(23)02010-6",
+    "researchFields": [
+    "Computation/Theory",
+    "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+
+  {
+    "year": 2023,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "25",
+    "pages": "17680-17691",
+"comments":"",
+    "authors": [
+      "S. Joshi",
+      "S. R. Chowdhury",
+      "S. Mishra"
+    ],
+    "title": "Spin-state energetics and magnetic anisotropy in penta-coordinated Fe(<scp>iii</scp>) complexes with different axial and equatorial ligand environments",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/d3cp02182c",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "ChemPhysChem",
+    "volume": "24",
+    "pages": "e202300174",
+"comments":"",
+    "authors": [
+      "M. Ghosh",
+      "S. Parida",
+      "H. Khatoon",
+      "N. Bera",
+      "S. Mishra",
+      "N. Sarkar"
+    ],
+    "title": "Excited State Photophysics of Curcumin and its Modulation in Alkaline Non‐Aqueous Medium",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/cphc.202300174",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "J. Mol. Liq.",
+    "volume": "384",
+    "pages": "122292",
+"comments":"",
+    "authors": [
+      "S. K. Padhan",
+      "S. Muduli",
+      "N. Murmu",
+      "G. Sahoo",
+      "S. Mishra",
+      "S. N. Sahu"
+    ],
+    "title": "A coumarin-salicylidene based fluorescent chemodosimeter for sub-ppb level detection of aluminium ion via metal ion induced hydrolytic cleavage of aldimine bond",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.molliq.2023.122292",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "Small",
+    "volume": "19",
+    "pages": "2300689",
+"comments":"",
+    "authors": [
+      "S. K. Pati",
+      "D. Patra",
+      "S. Muduli",
+      "S. Mishra",
+      "S. Park"
+    ],
+    "title": "Energy Storage Application of Conducting Polymers Featuring Dual Acceptors: Exploring Conjugation and Flexible Chain Length Effects",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/smll.202300689",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "Comput. Biol. Chem.",
+    "volume": "103",
+    "pages": "107832",
+"comments":"",
+    "authors": [
+      "A. Paul",
+      "S. Mishra"
+    ],
+    "title": "Deciphering the role of the two metal–binding sites of DapE enzyme via metal substitution",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.compbiolchem.2023.107832",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "Biochim. Biophys. Acta (BBA)",
+    "volume": "1867",
+    "pages": "130320",
+"comments":"",
+    "authors": [
+      "S. Muduli",
+      "S. Karmakar",
+      "S. Mishra"
+    ],
+    "title": "The coordinated action of the enzymes in the L-lysine biosynthetic pathway and how to inhibit it for antibiotic targets",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.bbagen.2023.130320",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "Proteins: Struct. Func. Bioinform.",
+    "volume": "91",
+    "pages": "781-797",
+"comments":"",
+    "authors": [
+      "S. Muduli",
+      "S. Mishra"
+    ],
+    "title": "Ligands‐induced open‐close conformational change during <scp>DapE</scp> catalysis: Insights from molecular dynamics simulations",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/prot.26466",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "J. Mat. Chem. C",
+    "volume": "11",
+    "pages": "1457-1463",
+"comments":"",
+    "authors": [
+      "D. Patra",
+      "X. Zhan",
+      "R. Linthoinganbi",
+      "S. Muduli",
+      "S. Mishra",
+      "Y. Liu",
+      "S. Park"
+    ],
+    "title": "Synthesis and application of dual electron-deficient featured copolymers and their sequential fluorination for ambipolar organic thin film transistors",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/d2tc04646f",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2023,
+    "journal": "RSC Advances",
+    "volume": "13",
+    "pages": "5134-5148",
+"comments":"",
+    "authors": [
+      "H. Battula",
+      "M. Nath",
+      "S. Mishra",
+      "S. Jayanty"
+    ],
+    "title": "Spirocyclic rhodamine B benzoisothiazole derivative: a multi-stimuli fluorescent switch manifesting ethanol-responsiveness, photo responsiveness, and acidochromism",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/d2ra08022b",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2022,
+    "journal": "ChemPhysChem",
+    "volume": "23",
+    "pages": "e202200361",
+"comments":"",
+    "authors": [
+      "S. Parida",
+      "S. K. Patra",
+      "S. Mishra"
+    ],
+    "title": "Self‐Assembling Behaviour of Perylene, Perylene Diimide, and Thionated Perylene Diimide Deciphered through Non‐Covalent Interactions",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/cphc.202200361",
+    "researchFields": [
+      "Computation/Theory",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2022,
+    "journal": "ACS Appl. Mat. & Interf.",
+    "volume": "14",
+    "pages": "26714-26723",
+"comments":"",
+    "authors": [
+      "S. Mandal",
+      "R. N. Samajdar",
+      "S. Parida",
+      "S. Mishra",
+      "A. J. Bhattacharyya"
+    ],
+    "title": "Transition Metal Phthalocyanines as Redox Mediators in Li–O<sub>2</sub> Batteries: A Combined Experimental and Theoretical Study of the Influence of 3d Electrons in Redox Mediation",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acsami.2c04332",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2022,
+    "journal": "J. Chem. Phys.",
+    "volume": "156",
+    "pages": "134103",
+"comments":"",
+    "authors": [
+      "K. K. Dakua",
+      "K. Rajak",
+      "S. Mishra"
+    ],
+    "title": "Spin–vibronic coupling in the quantum dynamics of a Fe(III) trigonal-bipyramidal complex",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/5.0080611",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling",
+    ]
+  },
+  {
+    "year": 2022,
+    "journal": "J. Molec. Graph. Model.",
+    "volume": "115",
+    "pages": "108215",
+"comments":"",
+    "authors": [
+      "S. Rahman",
+      "K. Rajak",
+      "S. Mishra",
+      "A. K. Das"
+    ],
+    "title": "Identification of potential inhibitors against FemX of Staphylococcus aureus: A hierarchial in-silico drug repurposing approach",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.jmgm.2022.108215",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2022,
+    "journal": "ChemistrySelect",
+    "volume": "7",
+    "pages": "e202200152",
+"comments":"",
+    "authors": [
+      "A. Sil",
+      "S. S. Roy",
+      "V. K. Mishra",
+      "S. N. Islam",
+      "S. Mishra",
+      "S. K. Patra"
+    ],
+    "title": "Modulation of Electrochemical and Spectroscopic Properties in Ru(II)‐Terpyridyl End‐Capped Homobimetallic Organometallic Complexes by Varying π‐Conjugated Organic Spacers",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/slct.202200152",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2022,
+    "journal": "J. Photochem. Photobiol. A",
+    "volume": "426",
+    "pages": "113748",
+"comments":"",
+    "authors": [
+      "H. Battula",
+      "S. Muduli",
+      "S. P. Bandi",
+      "S. Kapoor",
+      "S. Mishra",
+      "H. Aggarwal",
+      "V. V. k. Venuganti",
+      "S. Jayanty"
+    ],
+    "title": "Selective and swift-responsive “off-on” rhodamine B based chemosensors: Recognition of multi-metal ions, on-site sensing of Fe(III) in water samples and bioimaging in aqueous media",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.jphotochem.2021.113748",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2022,
+    "journal": "J. Fluoresc.",
+    "volume": "32",
+    "pages": "115-124",
+"comments":"",
+    "authors": [
+      "A. Syed",
+      "S. Mishra",
+      "S. Jayanty"
+    ],
+    "title": "7,7-bis(N, N-diethylethylenediamino)-8,8-dicyanoquinodimethane: Effect of Ethyl Moiety on the Photophysical Property besides Thermal Stability",
+    "publisher": "Springer",
+    "url": "http://dx.doi.org/10.1007/s10895-021-02830-0",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2022,
+    "journal": "J. Biomolec. Struct. Dyn.",
+    "volume": "40",
+    "pages": "12917-12931",
+"comments":"",
+    "authors": [
+      "M. Rakshit",
+      "S. Muduli",
+      "P. P. Srivastav",
+      "S. Mishra"
+    ],
+    "title": "Pomegranate peel polyphenols prophylaxis against SARS-CoV-2 main protease by<i>in-silico</i>docking and molecular dynamics study",
+    "publisher": "Taylor & Francis",
+    "url": "http://dx.doi.org/10.1080/07391102.2021.1979427",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2021,
+    "journal": "J. Biol. Inorg. Chem.",
+    "volume": "26",
+    "pages": "569-582",
+"comments":"",
+    "authors": [
+      "A. Paul",
+      "S. Mishra"
+    ],
+    "title": "Metal–ion promiscuity of microbial enzyme DapE at its second metal-binding site",
+    "publisher": "Springer",
+    "url": "http://dx.doi.org/10.1007/s00775-021-01875-7",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2021,
+    "journal": "Dalton Trans.",
+    "volume": "50",
+    "pages": "8036-8044",
+"comments":"",
+    "authors": [
+      "V. K. Jha",
+      "S. Das",
+      "V. Subramaniyan",
+      "T. Guchhait",
+      "K. K. Dakua",
+      "S. Mishra",
+      "G. Mani"
+    ],
+    "title": "Synthesis, structural characterization, and bonding analysis of two-coordinate copper(<scp>i</scp>) and silver(<scp>i</scp>) complexes of pyrrole-based bis(phosphinimine): new metal–pyrrole ring π-interactions",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/d1dt01091c",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2021,
+    "journal": "ACS Omega",
+    "volume": "6",
+    "pages": "3090-3105",
+"comments":"",
+    "authors": [
+      "A. Syed",
+      "H. Battula",
+      "S. Mishra",
+      "S. Jayanty"
+    ],
+    "title": "Distinct Tetracyanoquinodimethane Derivatives: Enhanced Fluorescence in Solutions and Unprecedented Cation Recognition in the Solid State",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acsomega.0c05486",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2020,
+    "journal": "J. Phys. Chem. Lett.",
+    "volume": "11",
+    "pages": "8585-8591",
+"comments":"",
+    "authors": [
+      "P. Banerjee",
+      "K. Rajak",
+      "P. K. Nandi",
+      "S. Pal",
+      "M. Ghosh",
+      "S. Mishra",
+      "N. Sarkar"
+    ],
+    "title": "Aging-Dependent Morphological Crystallinity Determines Membrane Activity of <scp>l</scp>-Phenylalanine Self-Assembles",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.jpclett.0c01831",
+    "researchFields": [
+      "Computation with Experiment",
+      "Biomolecular Simulations / QM-MM Modelling",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2020,
+    "journal": "Chem. Asia. J.",
+    "volume": "15",
+    "pages": "3304-3313",
+"comments":"",
+    "authors": [
+      "S. S. Roy",
+      "S. R. Chowdhury",
+      "S. Mishra",
+      "S. K. Patra"
+    ],
+    "title": "Role of Substituents at 3‐position of Thienylethynyl Spacer on Electronic Properties in Diruthenium(II) Organometallic Wire‐like Complexes",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/asia.202000755",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2020,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "22",
+    "pages": "16013-16022",
+"comments":"",
+    "authors": [
+      "V. K. Mishra",
+      "S. Mishra"
+    ],
+    "title": "Flipped regiospecificity in L434F mutant of 8-lipoxygenase",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/d0cp02351e",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2020,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "22",
+    "pages": "628-641",
+"comments":"",
+    "authors": [
+      "S. Manna",
+      "S. Mishra"
+    ],
+    "title": "Correlation effects in the photoelectron spectrum and photoionization dynamics of OsO<sub>4</sub>",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/c9cp05062k",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2020,
+    "journal": "Adv. Synth. Catal.",
+    "volume": "362",
+    "pages": "3604-3612",
+"comments":"",
+    "authors": [
+      "A. Bankura",
+      "S. Naskar",
+      "S. R. Chowdhury",
+      "R. Maity",
+      "S. Mishra",
+      "I. Das"
+    ],
+    "title": "C<sub>3</sub>‐Thioester/‐Ester Substituted Linear Dienones: A Pluripotent Molecular Platform for Diversification via Cascade Pericyclic Reactions",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/adsc.202000362",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2020,
+    "journal": "RSC Advances",
+    "volume": "10",
+    "pages": "28422-28430",
+"comments":"",
+    "authors": [
+      "S. K. Padhan",
+      "V. K. Mishra",
+      "N. Murmu",
+      "S. Mishra",
+      "S. N. Sahu"
+    ],
+    "title": "Through bond energy transfer (TBET)-operated fluoride ion sensing <i>via</i> spirolactam ring opening of a coumarin–fluorescein bichromophoric dyad",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/d0ra05357k",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2019,
+    "journal": "J. Phys. Chem. B",
+    "volume": "123",
+    "pages": "10605-10621",
+"comments":"",
+    "authors": [
+      "V. K. Mishra",
+      "S. Mishra"
+    ],
+    "title": "Origin of Regio- and Stereospecific Catalysis by 8-Lipoxygenase",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.jpcb.9b07917",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2019,
+    "journal": "J. Phys. Chem. A",
+    "volume": "123",
+    "pages": "9883-9892",
+"comments":"",
+    "authors": [
+      "S. R. Chowdhury",
+      "S. Mishra"
+    ],
+    "title": "Light-Induced Spin Crossover in an Intermediate-Spin Penta-Coordinated Iron(III) Complex",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.jpca.9b06490",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling",
+    ]
+  },
+  {
+    "year": 2019,
+    "journal": "J. Chem. Phys.",
+    "volume": "151",
+    "pages": "114302",
+"comments":"",
+    "authors": [
+      "L. V. Poluyanov",
+      "W. Domcke",
+      "S. Mishra"
+    ],
+    "title": "Spin-orbit vibronic coupling in Π4 states of linear triatomic molecules",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/1.5119774",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2019,
+    "journal": "J. Ind. Chem. Soc.",
+    "volume": "96",
+    "pages": "767",
+"comments":"",
+    "authors": [
+      "D. Dutta",
+      "V. K. Mishra",
+      "S. Mishra"
+    ],
+    "title": "QM/MM-MD Simulation of the Catalytic Hydrolysis of L-Captopril by Microbial Enzyme DapE",
+    "publisher": "Springer",
+    "url": "https://zenodo.org/records/5644545",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2019,
+    "journal": "Molecular Neurobiology",
+    "volume": "56",
+    "pages": "6551-6565",
+"comments":"",
+    "authors": [
+      "S. S. Chaudhury",
+      "A. Sannigrahi",
+      "M. Nandi",
+      "V. K. Mishra",
+      "P. De",
+      "K. Chattopadhyay",
+      "S. Mishra",
+      "J. Sil",
+      "C. D. Mukhopadhyay"
+    ],
+    "title": "A Novel PEGylated Block Copolymer in New Age Therapeutics for Alzheimer’s Disease",
+    "publisher": "Springer",
+    "url": "http://dx.doi.org/10.1007/s12035-019-1542-1",
+    "researchFields": [
+      "Computation with Experiment",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2019,
+    "journal": "Org. Lett.",
+    "volume": "21",
+    "pages": "1578-1582",
+"comments":"",
+    "authors": [
+      "S. Naskar",
+      "S. R. Chowdhury",
+      "S. Mondal",
+      "D. K. Maiti",
+      "S. Mishra",
+      "I. Das"
+    ],
+    "title": "Visible-Light-Activated Divergent Reactivity of Dienones: Dimerization in Neat Conditions and Regioselective <i>E</i> to <i>Z</i> Isomerization in the Solvent",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.orglett.9b00083",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2019,
+    "journal": "Inorg. Chem.",
+    "volume": "58",
+    "pages": "1155-1166",
+"comments":"",
+    "authors": [
+      "A. Sil",
+      "U. Ghosh",
+      "V. K. Mishra",
+      "S. Mishra",
+      "S. K. Patra"
+    ],
+    "title": "Synthesis, Structure,  Electrochemical, and Spectroscopic Properties of Hetero-Bimetallic Ru(II)/Fe(II)-Alkynyl Organometallic Complexes",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.inorgchem.8b02440",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2018,
+    "journal": "J. Chem. Phys.",
+    "volume": "149",
+    "pages": "234302",
+"comments":"",
+    "authors": [
+      "S. R. Chowdhury",
+      "S. Mishra"
+    ],
+    "title": "<i>Ab initio</i> investigation of magnetic anisotropy in intermediate spin iron(<scp>iii</scp>) complexes",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/1.5050037",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2018,
+    "journal": "J. Chem. Phys.",
+    "volume": "149",
+    "pages": "204308",
+"comments":"",
+    "authors": [
+      "S. Manna",
+      "S. Mishra"
+    ],
+    "title": "Vibronic structure and photoelectron angular distribution in the photoelectron spectrum of ICN",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/1.5050461",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2018,
+    "journal": "Chem. Phys.",
+    "volume": "515",
+    "pages": "513-520",
+"comments":"",
+    "authors": [
+      "S. R. Chowdhury",
+      "S. Manna",
+      "S. Mishra"
+    ],
+    "title": "Electronic structure and photoelectron spectroscopy of manganese dihalides from quantum chemical methods and Dyson orbitals",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.chemphys.2018.09.040",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling",
+    ]
+  },
+  {
+    "year": 2018,
+    "journal": "J. Molec. Graph. Model.",
+    "volume": "84",
+    "pages": "82-89",
+"comments":"",
+    "authors": [
+      "D. Dutta",
+      "S. Mishra"
+    ],
+    "title": "L-Captopril and its derivatives as potential inhibitors of microbial enzyme DapE: A combined approach of drug repurposing and similarity screening",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.jmgm.2018.06.004",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+ {
+    "year": 2018,
+    "journal": "Dalton Trans.",
+    "volume": "47",
+    "pages": "14304-14317",
+"comments":"",
+    "authors": [
+      "S. S. Roy",
+      "A. Sil",
+      "D. Giri",
+      "S. R. Chowdhury",
+      "S. Mishra",
+      "S. K. Patra"
+    ],
+    "title": "Diruthenium(<scp>ii</scp>)-capped oligothienylethynyl bridged highly soluble organometallic<i>wires</i>exhibiting long-range electronic coupling",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/c8dt01818a",
+    "researchFields": [
+      "Computation/Theory",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2018,
+    "journal": "Dalton Trans.",
+    "volume": "47",
+    "pages": "9877-9888",
+"comments":"",
+    "authors": [
+      "A. Sil",
+      "S. R. Chowdhury",
+      "S. Mishra",
+      "S. K. Patra"
+    ],
+    "title": "Synthesis, structure, and photophysical and electrochemical properties of Ru(<scp>ii</scp>) complexes of arylene–vinylene terpyridyl conjugates",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/c8dt00881g",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2017,
+    "journal": "J. Phys. Chem. B",
+    "volume": "121",
+    "pages": "7075-7085",
+"comments":"",
+    "authors": [
+      "D. Dutta",
+      "S. Mishra"
+    ],
+    "title": "Active Site Dynamics in Substrate Hydrolysis Catalyzed by DapE Enzyme and Its Mutants from Hybrid QM/MM-Molecular Dynamics Simulation",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.jpcb.7b04431",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2017,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "19",
+    "pages": "16914-16922",
+"comments":"",
+    "authors": [
+      "S. R. Chowdhury",
+      "S. Mishra"
+    ],
+    "title": "Heavy ligand atom induced large magnetic anisotropy in Mn(<scp>ii</scp>) complexes",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/c7cp02957h",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2017,
+    "journal": "European Journal of Inorg. Chem.",
+    "volume": "2017",
+    "pages": "659-668",
+"comments":"",
+    "authors": [
+      "S. R. Chowdhury",
+      "S. Mishra"
+    ],
+    "title": "Large Magnetic Anisotropy in Linear Co<sup>II</sup> Complexes – Ab Initio Investigation of the Roles of Ligand Field, Structural Distortion, and Conformational Dynamics",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/ejic.201601192",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling",
+    ]
+  },
+  {
+    "year": 2018,
+    "journal": "Colloids Surf. A",
+    "volume": "537",
+    "pages": "310-317",
+"comments":"",
+    "authors": [
+      "B. A. Kumar",
+      "S. R. Chowdhury",
+      "S. Mishra",
+      "R. R. Nayak"
+    ],
+    "title": "Synthesis and studies on gelation ability of phenol based maleate amphiphile and its application in nutraceutical release",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.colsurfa.2017.08.031",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2016,
+    "journal": "J. Phys. Chem. B",
+    "volume": "120",
+    "pages": "11654-11664",
+"comments":"",
+    "authors": [
+      "D. Dutta",
+      "S. Mishra"
+    ],
+    "title": "Loss of Catalytic Activity in the E134D, H67A, and H349A Mutants of DapE: Mechanistic Analysis with QM/MM Investigation",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.jpcb.6b07446",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2016,
+    "journal": "J. Phys. Chem. A",
+    "volume": "120",
+    "pages": "1554-1561",
+"comments":"",
+    "authors": [
+      "S. Manna",
+      "S. Mishra"
+    ],
+    "title": "The Role of Spin–Orbit Coupling in the Double-Ionization Photoelectron Spectra of XCN<sup>2+</sup> (X = Cl, Br, and I)",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/acs.jpca.5b12219",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2016,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "18",
+    "pages": "1671-1680",
+"comments":"",
+    "authors": [
+      "D. Dutta",
+      "S. Mishra"
+    ],
+    "title": "Structural and mechanistic insight into substrate binding from the conformational dynamics in apo and substrate-bound DapE enzyme",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/c5cp06024a",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2016,
+    "journal": "Molecular Physics",
+    "volume": "114",
+    "pages": "1939-1951",
+"comments":"",
+    "authors": [
+      "B. Tah",
+      "D. Dutta",
+      "P. Pal",
+      "G. B. Talapatra",
+      "S. Mishra"
+    ],
+    "title": "QM/MM simulation of the amide-I band in the Raman spectrum of insulin",
+    "publisher": "Taylor & Francis",
+    "url": "http://dx.doi.org/10.1080/00268976.2016.1170220",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2016,
+    "journal": "Cell Reports",
+    "volume": "14",
+    "pages": "2127-2141",
+"comments":"",
+    "authors": [
+      "S. Ben Halima",
+      "S. Mishra",
+      "K. Raja",
+      "M. Willem",
+      "A. Baici",
+      "K. Simons",
+      "O. Brüstle",
+      "P. Koch",
+      "C. Haass",
+      "A. Caflisch",
+      "L. Rajendran"
+    ],
+    "title": "Specific Inhibition of β-Secretase Processing of the Alzheimer Disease Amyloid Precursor Protein",
+    "publisher": "Cell Press",
+    "url": "http://dx.doi.org/10.1016/j.celrep.2016.01.076",
+    "researchFields": [
+      "Computation with Experiment",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2016,
+    "journal": "ChemistrySelect",
+    "volume": "1",
+    "pages": "64-75",
+"comments":"",
+    "authors": [
+      "T. S. Mahapatra",
+      "A. Bauza",
+      "D. Dutta",
+      "S. Mishra",
+      "A. Frontera",
+      "D. Ray"
+    ],
+    "title": "Carboxylate Coordination Assisted Aggregation for Quasi‐Tetrahedral and Partial‐Dicubane [Cu<sub>4</sub>] Coordination Clusters",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/slct.201600006",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2014,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "16",
+    "pages": "26348-26358",
+"comments":"",
+    "authors": [
+      "D. Dutta",
+      "S. Mishra"
+    ],
+    "title": "The structural and energetic aspects of substrate binding and the mechanism of action of the DapE-encoded N-succinyl-diaminopimelic acid desuccinylase (DapE) investigated using a hybrid QM/MM method",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/c4cp03986f",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling",
+    ]
+  },
+  {
+    "year": 2014,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "16",
+    "pages": "21657-21663",
+"comments":"",
+    "authors": [
+      "B. Tah",
+      "P. Pal",
+      "S. Mishra",
+      "G. B. Talapatra"
+    ],
+    "title": "Interaction of insulin with anionic phospholipid (DPPG) vesicles",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/c4cp03028a",
+    "researchFields": [
+      "Computation with Experiment",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2014,
+    "journal": "Spectrochim. Acta A",
+    "volume": "129",
+    "pages": "345-351",
+"comments":"",
+    "authors": [
+      "B. Tah",
+      "P. Pal",
+      "S. Roy",
+      "D. Dutta",
+      "S. Mishra",
+      "M. Ghosh",
+      "G. B. Talapatra"
+    ],
+    "title": "Quantum-mechanical DFT calculation supported Raman spectroscopic study of some amino acids in bovine insulin",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.saa.2014.03.044",
+    "researchFields": [
+      "Computation with Experiment",
+      "Biomolecular Simulations / QM-MM Modelling",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2014,
+    "journal": "Inorg. Chem.",
+    "volume": "53",
+    "pages": "700-709",
+"comments":"",
+    "authors": [
+      "S. Kumar",
+      "G. Mani",
+      "D. Dutta",
+      "S. Mishra"
+    ],
+    "title": "Structural Diversity of Copper(I) Complexes Formed by Pyrrole- and Dipyrrolylmethane-Based Diphosphine Ligands with Cu–X···HN Hydrogen Bonds",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/ic402253y",
+    "researchFields": [
+      "Computation with Experiment",
+      "DFT Applications"
+    ]
+  },
+  {
+    "year": 2011,
+    "journal": "Biochemistry",
+    "volume": "50",
+    "pages": "9328-9339",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "A. Caflisch"
+    ],
+    "title": "Dynamics in the Active Site of β-Secretase: A Network Analysis of Atomistic Simulations",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/bi2011948",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2010,
+    "journal": "Biophys. J.",
+    "volume": "99",
+    "pages": "3969-3978",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "M. Meuwly"
+    ],
+    "title": "Quantitative Analysis of Ligand Migration from Transition Networks",
+    "publisher": "Cell Press",
+    "url": "http://dx.doi.org/10.1016/j.bpj.2010.09.068",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+{
+    "year": 2010,
+    "journal": "Book Chapter", 
+    "volume": "Chapter 5",
+    "pages": "137-155",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "M. Meuwly"
+    ],
+    "title": "Reactive Processes with Molecular Simulations IN <i> Kinetics and Dynamics: From Nano- to Bio-Scale<\i>",
+    "publisher": "Springer",
+    "url": "http://dx.doi.org/10.1007/978-90-481-3034-4_5",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2010,
+    "journal": "J. Am. Chem. Soc.",
+    "volume": "132",
+    "pages": "2968-2982",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "M. Meuwly"
+    ],
+    "title": "Atomistic Simulation of NO Dioxygenation in Group I Truncated Hemoglobin",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/ja9078144",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2009,
+    "journal": "Biophys. J.",
+    "volume": "96",
+    "pages": "2105-2118",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "M. Meuwly"
+    ],
+    "title": "Nitric Oxide Dynamics in Truncated Hemoglobin: Docking Sites, Migration Pathways, and Vibrational Spectroscopy from Molecular Dynamics Simulations",
+    "publisher": "Cell Press",
+    "url": "http://dx.doi.org/10.1016/j.bpj.2008.11.066",
+    "researchFields": [
+      "Computation/Theory",
+      "Biomolecular Simulations / QM-MM Modelling"
+    ]
+  },
+  {
+    "year": 2008,
+    "journal": "Phys. Chem. Chem. Phys.",
+    "volume": "10",
+    "pages": "3987",
+"comments":"",
+    "authors": [
+      "S. Mishra"
+    ],
+    "title": "Structural and spectroscopic study of the excited electronic states of silver dihalides by quantum chemical methods",
+    "publisher": "Royal Society of Chemistry (RSC)",
+    "url": "http://dx.doi.org/10.1039/b801910j",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2008,
+    "journal": "J. Chem. Phys.",
+    "volume": "128",
+    "pages": "124318",
+"comments":"",
+    "authors": [
+      "I. Sioutis",
+      "S. Mishra",
+      "L. V. Poluyanov",
+      "W. Domcke"
+    ],
+    "title": "Renner-Teller and spin-orbit vibronic coupling effects in linear triatomic molecules with a half-filled π shell",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/1.2840356",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2007,
+    "journal": "Chem. Phys. Lett.",
+    "volume": "446",
+    "pages": "256-261",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "W. Domcke",
+      "L. V. Poluyanov"
+    ],
+    "title": "A study of spin–orbit vibronic-coupling effects in the  tate of CCX (X = O, S, Se) and CNY (Y = N, P, As)",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.cplett.2007.08.065",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2007,
+    "journal": "J. Phys. Chem. A",
+    "volume": "111",
+    "pages": "9164-9168",
+"comments":"",
+    "authors": [
+      "S. Mishra"
+    ],
+    "title": "Theoretical Calculation of the Photodetachment Spectra of XAuY<sup>-</sup> (X, Y = Cl, Br, and I)",
+    "publisher": "American Chemical Society (ACS)",
+    "url": "http://dx.doi.org/10.1021/jp0736645",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2007,
+    "journal": "J. Chem. Phys.",
+    "volume": "126",
+    "pages": "134312",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "L. V. Poluyanov",
+      "W. Domcke"
+    ],
+    "title": "Spin-orbit vibronic coupling in Π3 states of linear triatomic molecules",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/1.2713382",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2007,
+    "journal": "Chem. Phys.",
+    "volume": "332",
+    "pages": "243-248",
+"comments":"",
+    "authors": [
+      "L. V. Poluyanov",
+      "S. Mishra",
+      "W. Domcke"
+    ],
+    "title": "Quasistationary upper-well states of E×E Jahn–Teller systems with spin-orbit coupling",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.chemphys.2006.12.003",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2007,
+    "journal": "Molecular Physics",
+    "volume": "105",
+    "pages": "1471-1485",
+"comments":"",
+    "authors": [
+      "L. V. Poluyanov",
+      "S. Mishra",
+      "W. Domcke"
+    ],
+    "title": "Quasiclassical theory of the dynamical<b><i>E</i></b> × <b><i>E</i></b>Jahn–Teller effect including spin–orbit interaction",
+    "publisher": "Taylor & Francis",
+    "url": "http://dx.doi.org/10.1080/00268970601150536",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2006,
+    "journal": "J. Chem. Phys.",
+    "volume": "125",
+    "pages": "164327",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "V. Vallet",
+      "L. V. Poluyanov",
+      "W. Domcke"
+    ],
+    "title": "Calculation of the vibronic structure of the photodetachment spectra of CCCl− and CCBr−",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/1.2363193",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2006,
+    "journal": "Chem. Phys.",
+    "volume": "327",
+    "pages": "457-467",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "W. Domcke",
+      "L. V. Poluyanov"
+    ],
+    "title": "Study of strong Σ–Π and spin–orbit vibronic coupling effects in linear triatomic molecules",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.chemphys.2006.05.023",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+{
+    "year": 2006,
+    "journal": "J. Chem. Phys.",
+    "volume": "124",
+    "pages": "04417",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "V. Vallet",
+      "L. V. Poluyanov",
+      "W. Domcke"
+    ],
+    "title": "Calculation of the vibronic structure of the X̃Π2 photoelectron spectra of XCN,X=F, Cl, and Br",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/1.2161186",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2006,
+    "journal": "ChemPhysChem",
+    "volume": "7",
+    "pages": "723-727",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "V. Vallet",
+      "W. Domcke"
+    ],
+    "title": "Importance of Spin–Orbit Coupling for the Assignment of the Photodetachment Spectra of AuX<sub>2</sub><sup>−</sup> (X=Cl, Br, and I)",
+    "publisher": "Wiley",
+    "url": "http://dx.doi.org/10.1002/cphc.200500554",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2006,
+    "journal": "Chem. Phys.",
+    "volume": "322",
+    "pages": "405-410",
+"comments":"",
+    "authors": [
+      "W. Domcke",
+      "S. Mishra",
+      "L. V. Poluyanov"
+    ],
+    "title": "The relativistic E×E Jahn–Teller effect revisited",
+    "publisher": "Elsevier BV",
+    "url": "http://dx.doi.org/10.1016/j.chemphys.2005.09.009",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  },
+  {
+    "year": 2005,
+    "journal": "J. Chem. Phys.",
+    "volume": "123",
+    "pages": "124104",
+"comments":"",
+    "authors": [
+      "S. Mishra",
+      "V. Vallet",
+      "L. V. Poluyanov",
+      "W. Domcke"
+    ],
+    "title": "Spectroscopic effects of first-order relativistic vibronic coupling in linear triatomic molecules",
+    "publisher": "AIP Publishing",
+    "url": "http://dx.doi.org/10.1063/1.2018702",
+    "researchFields": [
+      "Computation/Theory",
+      "Molecular Magnetism / Spin Crossover / Vibronic Coupling"
+    ]
+  }
+       // Add other publications here
+    ];
+
+    const allAuthors = Array.from(new Set(publications.flatMap(pub => pub.authors))).sort();
+    const allYears = Array.from(new Set(publications.map(pub => pub.year))).sort((a, b) => b - a);
+    const allJournals = Array.from(new Set(publications.map(pub => pub.journal))).sort();
+    const allResearchFields = Array.from(new Set(publications.flatMap(pub => pub.researchFields))).sort();
+    const allPublishers = Array.from(new Set(publications.map(pub => pub.publisher))).sort();
+
+    function populateFilterOptions() {
+        populateSelectOptions('authorFilter', allAuthors);
+        populateSelectOptions('yearFilter', allYears);
+        populateSelectOptions('yearFilterStart', allYears);
+        populateSelectOptions('yearFilterEnd', allYears);
+        populateSelectOptions('journalFilter', allJournals);
+        populateSelectOptions('researchFieldFilter', allResearchFields);
+        populateSelectOptions('publisherFilter', allPublishers);
+    }
+
+    function populateSelectOptions(selectId, options) {
+        const select = document.getElementById(selectId);
+        options.forEach(optionValue => {
+            const option = document.createElement('option');
+            option.value = optionValue;
+            option.textContent = optionValue;
+            select.appendChild(option);
+        });
+    }
+
+   function sortPublications() {
+    let criteria = document.getElementById('sortCriteria').value;
+    if (!criteria) {
+        criteria = 'year'; // Default criteria is 'year'
+    }
+    publications.sort((a, b) => {
+        if (criteria === 'year') {
+            return b.year - a.year; // Sort by year in reverse order
+        } else {
+            return a[criteria] > b[criteria] ? 1 : a[criteria] < b[criteria] ? 1 : 0;
+        }
+    });
+    filterPublications();
+    }
+
+
+
+    function filterPublications() {
+        const selectedAuthor = document.getElementById('authorFilter').value;
+        const selectedYear = document.getElementById('yearFilter').value;
+        const selectedYearStart = document.getElementById('yearFilterStart').value;
+        const selectedYearEnd = document.getElementById('yearFilterEnd').value;
+        const selectedJournal = document.getElementById('journalFilter').value;
+        const selectedResearchField = document.getElementById('researchFieldFilter').value;
+        const selectedPublisher = document.getElementById('publisherFilter').value;
+
+        const filteredPublications = publications.filter(pub => {
+            return (selectedAuthor === 'all' || pub.authors.includes(selectedAuthor)) &&
+                   (selectedYear === 'all' || pub.year === parseInt(selectedYear)) &&
+                   (selectedYearStart === 'all' || pub.year >= parseInt(selectedYearStart)) &&
+                   (selectedYearEnd === 'all' || pub.year <= parseInt(selectedYearEnd)) &&
+                   (selectedJournal === 'all' || pub.journal === selectedJournal) &&
+                   (selectedResearchField === 'all' || pub.researchFields.includes(selectedResearchField)) &&
+                   (selectedPublisher === 'all' || pub.publisher === selectedPublisher);
+        });
+
+        displayPublications(filteredPublications);
+    }
+
+    function displayPublications(publicationsToDisplay) {
+        const list = document.getElementById('publicationsList');
+        list.innerHTML = '';
+        publicationsToDisplay.forEach((pub, index) => {
+            const item = document.createElement('li');
+            item.className = 'publication-item';
+            item.innerHTML = `${publicationsToDisplay.length - index}. <strong> ${pub.title}</strong><br>
+                              <em>${pub.authors.join(', ')}</em><br>
+                              <a href="${pub.url}" target="_blank">  ${pub.journal} ${pub.volume} (${pub.year}) ${pub.pages}</a> 
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>${pub.comments}</em>`;
+            list.appendChild(item);
+        });
+    }
+
+    function clearFilters() {
+        document.getElementById('authorFilter').value = 'all';
+        document.getElementById('yearFilter').value = 'all';
+        document.getElementById('yearFilterStart').value = 'all';
+        document.getElementById('yearFilterEnd').value = 'all';
+        document.getElementById('journalFilter').value = 'all';
+        document.getElementById('researchFieldFilter').value = 'all';
+        document.getElementById('publisherFilter').value = 'all';
+        displayPublications(publications);
+    }
+
+
+document.getElementById('downloadCsvBtn').addEventListener('click', function() {
+  // Convert publications to CSV
+  let csvContent = 'S. No,Authors,Title,Journal,Volume,Pages,Year\n';
+
+publications.forEach((pub, index) => {
+    const sn = index + 1;
+    const authors = pub.authors.join('; ');
+    const title = `"${pub.title.replace(/"/g, '""')}"`; // escape quotes
+    const journal = pub.journal;
+    const volume = pub.volume;
+    const pages = pub.pages;
+    const year = pub.year;
+
+    csvContent += `${sn},"${authors}",${title},${journal},${volume},${pages},${year}\n`;
+  });
+
+  // Create blob and trigger download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', 'publications.csv');
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+
+
+function generateBibTeX() {
+    // Get filtered publications if you have a filter
+    const filteredPubs = window.filteredPublications || publications; // fallback if not using a filter
+
+    let bibtexEntries = '';
+
+    filteredPubs.forEach((pub, index) => {
+        const authors = pub.authors.join(' and ');
+        const year = pub.year || '????';
+        const journal = pub.journal || '';
+        const title = pub.title || '';
+        const volume = pub.volume || '';
+        const pages = pub.pages || '';
+        const publisher = pub.publisher || '';
+        const url = pub.url || '';
+
+        const key = `${pub.authors[0].split(' ')[1] || 'Author'}${year}`;
+
+        let entry = `@article{${key},
+  author    = {${authors}},
+  title     = {${title}},
+  journal   = {${journal}},
+  year      = {${year}},
+  volume    = {${volume}},
+  pages     = {${pages}},
+  publisher = {${publisher}},
+  url       = {${url}}
+}\n\n`;
+
+        bibtexEntries += entry;
+    });
+
+    // Create a Blob and trigger download
+    const blob = new Blob([bibtexEntries], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'publications.bib';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+    // Initial setup
+    populateFilterOptions();
+    sortPublications();
+
+</script>
+
+</body>
+</html>
