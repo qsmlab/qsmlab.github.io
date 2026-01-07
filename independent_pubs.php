@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+    <meta charset="UTF-8">
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title></title>
+
+
+</head>
+<body>
+<ul class="menu red">
+	<li><a href="index.php" title="">Home</a></li>
+	<li><a href="group.php" title="">Group</a></li>
+	<li><a href="pubs.php" title="" >Publications</a></li>
+	<li><a href="research.php" title="">Research</a></li>
+	<li><a href="teaching.php" title="">Teaching</a></li>
+	<li><a href="misc.php" title="">Miscellaneous</a></li>
+</ul>
+<CENTER>
+<br><br>
+<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<COL WIDTH=256*>
+<TR>
+<TD WIDTH=100% VALIGN=TOP>
+
+<OL>
+</P>
+
+<FONT SIZE=4> 
+
+ Independent publications of group members while working in the group
+
+<FONT SIZE=3> 
+<LI VALUE=7><P>  A Survey of Classical and Quantum Sequence Models <BR> 
+ <em> I. -C. Chen, <b> Harshdeep Singh</b>, V. L. Anukruti, B. Quanz and K. Yogaraj </em> <BR>
+<A HREF="https://ieeexplore.ieee.org/document/10426944" target="_blank">2024 16th International Conference on COMmunication Systems & NETworkS (COMSNETS), Bengaluru, India, 2024, pp. 1006-1011, doi: 10.1109/COMSNETS59351.2024.10426944.</A><BR>
+
+
+<LI VALUE=6><P>  Development of DNA intercalative, HSA binder pyridine-based novel Schiff base Cu(II), Ni(II) complexes with effective anticancer property: A combined experimental and theoretical approach<BR>
+ <em>D. Satapathi, M. Das, <b> Karunamoy Rajak</b> , S. Laha, Md. M. Islam, I.
+Choudhuri, N. Bhattacharyya, S. Das, B. C. Samanta and T. Maity  </em> <BR>
+<A HREF="https://onlinelibrary.wiley.com/doi/abs/10.1002/aoc.6473" target="_blank">Appl. Organomet. Chem. 36 (2022) e6473.</A><BR>
+
+
+<LI VALUE=5><P>  Development of moderately fluorescence active salen type chemosensor for judicious recognition and quantification of Zn(II), Al(III) and SO4=: Demonstration of molecular logic gate formation and live cell images studies  <BR>
+ <em>
+S. Das, M. Das, S. Laha, <b> Karunamoy Rajak</b>, I. Choudhuri, N.
+Bhattacharyya, B. C. Samanta, T. Maity  </em> <BR>
+<A HREF="https://www.sciencedirect.com/science/article/pii/S0022286022008717?via%3Dihub" target="_blank">J. Molec. Struct. 1263 (2022) 133214.</A><BR>
+
+<LI VALUE=4><P> Spectroscopic evidence of chirality in tetranuclear Cu(II)-Schiff base complexes, catalytic potential for oxidative kinetic resolution of racemic benzoin  <BR> 
+ <em> 
+D. Sadhukhan, P. Ghosh, and <b> Susanta Ghanta</b>  </em> <BR> 
+<A HREF="https://www.tandfonline.com/doi/full/10.1080/24701556.2020.1852425" target="_blank">
+Inorg. Nano-Metal Chem. 51 (2021) 1714.</A><BR>
+
+
+<LI VALUE=3><P> Pyrene radical cation and the diffuse interstellar band at 4430 Å: A theoretical survey
+<BR> 
+<em"><b> Susanta Ghanta </b> </em>  <BR>
+<A HREF="https://www.sciencedirect.com/science/article/pii/S0022286019304703#!" target="_blank"> Mol. Phys. 1191 (2019) 32-42.</A><BR> </P>
+
+
+<LI VALUE=2><P>  Jahn-Teller and pseudo-Jahn-Teller effects in trifluoromethane radical cation <BR>
+<em><b> Susanta Ghanta</b>  </em>  <BR>
+<A HREF="https://www.sciencedirect.com/science/article/pii/S002228601630360X" target="_blank"> J. Molec. Struct. 118 (2016) 293-300.</A><BR> </P>
+
+<LI VALUE=1><P> Theoretically predicted Fox-7 based new high energy density molecules  <BR>
+<em><b> Susanta Ghanta </b> </em>  <BR>
+<A HREF="https://www.sciencedirect.com/science/article/pii/S0022286016303015"  target="_blank">  J. Molec. Struct. 118 (2016) 28-33.</A> <BR> </P>
+
+</P>
+</OL>
+</TD>
+</body>
+</html>

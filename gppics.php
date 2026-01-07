@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title></title>
+
+</head>
+<body>
+<ul class="menu red">
+        <li><a href="index.php" title="">Home</a></li>
+     <li><a href="group.php" title="">Group</a></li>
+        <li><a href="pubs.php" title="" >Publications</a></li>
+        <li><a href="research.php" title="">Research</a></li>
+        <li><a href="teaching.php" title="">Teaching</a></li>
+        <li><a href="misc.php" title="">Miscellaneous</a></li>
+</ul>
+<CENTER>
+<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3></TABLE>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10;
+            padding: 10;
+        }
+
+        .album-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+        }
+
+         .album-item {
+            flex: 1 1 calc(35% - 20px); /* Adjust the percentage to fit the number of pictures per row */
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            border: 2px solid #ccc; /* Simple frame around each image */
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .album-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+
+<body>
+<center>
+    <div class="album-container">
+        <div class="album-item">
+            <img src="gppics/gppic_22_3.jpg" alt="Image 1">
+        </div>
+        <div class="album-item">
+            <img src="gppics/IMG-20200205-WA0008.jpg" alt="Image 2">
+        </div>
+        <div class="album-item">
+            <img src="gppics/IMG-20200206-WA0000.jpg" alt="Image 3">
+        </div>
+        <div class="album-item">
+            <img src="gppics/smgp_2019.JPG" alt="Image 4">
+        </div>
+        <div class="album-item">
+            <img src="gppics/smgp_2019_2.jpg" alt="Image 4">
+        </div>
+        <div class="album-item">
+            <img src="gppics/tcs_gp.jpg" alt="Image 4">
+        </div>
+        <div class="album-item">
+            <IMG SRC="gppics/gppic7.jpg" NAME="" ALT="" >
+        </div>
+        <div class="album-item">
+            <IMG SRC="gppics/smgp.JPG"   NAME="" ALT="" >
+        </div>
+        <div class="album-item">
+            <IMG SRC="gppics/gppic3.jpg" NAME="" ALT="" >
+        </div>
+        <div class="album-item">
+            <IMG SRC="gppics/gppic6.jpg" NAME="" ALT="" >
+        </div>
+        <div class="album-item">
+            <IMG SRC="gppics/gppic5.jpg" NAME="" ALT="" >
+        </div>
+        <div class="album-item">
+            <IMG SRC="gppics/gppic4.jpg" NAME="" ALT="" >
+        </div>
+        <div class="album-item">
+            <IMG SRC="gppics/gppic1.jpg" NAME="" ALT="" >
+        </div>
+    </div>
+
+</CENTER>
+
+
+</BODY>
+</HTML>

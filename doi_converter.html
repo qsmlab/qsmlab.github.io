@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOI Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .converter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        input, button, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            font-size: 16px;
+        }
+        .output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>DOI Converter</h1>
+
+<div class="converter-container">
+    <textarea id="doiInput" placeholder="Enter DOIs (one per line)"></textarea>
+    <select id="researchFieldInput" multiple>
+        <!-- Options will be populated dynamically -->
+    </select>
+    <input type="text" id="customResearchFieldInput" placeholder="Enter custom research field (optional)">
+    <button onclick="convertToBibTeX()">Convert to BibTeX</button>
+    <button onclick="convertToJSON()">Convert to JSON</button>
+    <div class="output" id="output"></div>
+</div>
+
+
+<script>
+    // Define research fields
+    const researchFields = [
+        'Computation/Theory',
+        'Computation with Experiment',
+        'Relativistic Vibronic Coupling',
+        'Molecular Magnetism and Spin Crossover',
+        'Biomolecular Simulations',
+        'QM/MM Methods',
+        'DFT Applications',
+        'Quantum Computing'
+            ];
+
+    // Function to populate research fields
+    function populateResearchFields() {
+        const researchFieldSelect = document.getElementById('researchFieldInput');
+        researchFields.forEach(field => {
+            const option = document.createElement('option');
+            option.value = field;
+            option.textContent = field;
+            researchFieldSelect.appendChild(option);
+        });
+    }
+
+    populateResearchFields();
+
+    // Rest of the code remains the same
+    async function convertToBibTeX() {
+        const dois = document.getElementById('doiInput').value.split('\n').map(doi => doi.trim()).filter(Boolean);
+        const output = document.getElementById('output');
+        let bibtex = '';
+
+        if (dois.length === 0) {
+            output.textContent = 'Please enter at least one DOI.';
+            return;
+        }
+
+        for (const doi of dois) {
+            try {
+                const response = await fetch(`https://doi.org/${doi}`, {
+                    headers: { 'Accept': 'application/x-bibtex' }
+                });
+                if (!response.ok) {
+                    throw new Error('DOI not found');
+                }
+                let bibtexPart = await response.text();
+                bibtex += abbreviateBibTeXAuthors(bibtexPart) + '\n\n';
+            } catch (error) {
+                bibtex += `Error for DOI ${doi}: ${error.message}\n\n`;
+            }
+        }
+
+        output.textContent = bibtex.trim();
+    }
+
+    async function convertToJSON() {
+        const dois = document.getElementById('doiInput').value.split('\n').map(doi => doi.trim()).filter(Boolean);
+        const researchFieldSelect = document.getElementById('researchFieldInput');
+        const customResearchField = document.getElementById('customResearchFieldInput').value.trim();
+        const output = document.getElementById('output');
+        const selectedFields = Array.from(researchFieldSelect.selectedOptions).map(option => option.value);
+        if (customResearchField) {
+            selectedFields.push(customResearchField);
+        }
+
+        let publications = [];
+
+        if (dois.length === 0) {
+            output.textContent = 'Please enter at least one DOI.';
+            return;
+        }
+
+        for (const doi of dois) {
+            try {
+                const response = await fetch(`https://api.crossref.org/works/${doi}`);
+                if (!response.ok) {
+                    throw new Error('DOI not found');
+                }
+                const data = await response.json();
+                const publication = parsePublicationData(data.message, selectedFields);
+                publications.push(publication);
+            } catch (error) {
+                publications.push({ error: `Error for DOI ${doi}: ${error.message}` });
+            }
+        }
+
+        output.textContent = JSON.stringify(publications, null, 2);
+    }
+
+    function abbreviateBibTeXAuthors(bibtex) {
+        return bibtex.replace(/author\s*=\s*{([^}]+)}/i, (match, authors) => {
+            const abbreviatedAuthors = authors.split(' and ').map(abbreviateName).join(' and ');
+            return `author = {${abbreviatedAuthors}}`;
+        });
+    }
+
+    function abbreviateName(name) {
+        const parts = name.trim().split(' ');
+        if (parts.length === 1) return name; // If there's only one part, return it as is.
+        const lastName = parts.pop();
+        const initials = parts.map(part => part.charAt(0) + '.').join(' ');
+        return `${initials} ${lastName}`;
+    }
+
+    function parsePublicationData(data, researchFields) {
+        return {
+            year: data['published-print'] ? data['published-print']['date-parts'][0][0] : (data['published-online'] ? data['published-online']['date-parts'][0][0] : 'N/A'),
+            journal: data['container-title'] ? data['container-title'][0] : 'N/A',
+            volume: data.volume || 'N/A',
+            pages: data.page || 'N/A',
+            authors: data.author ? data.author.map(author => `${abbreviateName(author.given + ' ' + author.family)}`) : ['N/A'],
+            title: data.title ? data.title[0] : 'N/A',
+            publisher: data.publisher || 'N/A',
+            url: data.URL || 'N/A',
+            researchFields: researchFields
+        };
+    }
+</script>
+
+</body>
+</html>
