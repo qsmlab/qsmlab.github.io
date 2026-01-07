@@ -1,1 +1,194 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title></title>
+
+</head>
+<body>
+<ul class="menu red">
+        <li><a href="index.php" title="">Home</a></li>
+     <li><a href="group.php" title="">Group</a></li>
+        <li><a href="pubs.php" title="" >Publications</a></li>
+        <li><a href="research.php" title="">Research</a></li>
+        <li><a href="teaching.php" title="">Teaching</a></li>
+        <li><a href="misc.php" title="">Miscellaneous</a></li>
+</ul>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .member-container {
+            width: calc(49% - 20px); /* Adjust the width as needed */
+            height: 250px; /* Adjust the width as needed */
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            overflow: scroll;
+            box-sizing: border-box;
+            float: left;
+        }
+        .member-container:nth-child(odd) {
+            margin-right: 20px; /* Add margin to create space between columns */
+        }
+        .member-info {
+            overflow: hidden;
+        }
+        .member-info p {
+            margin: 5px 0;
+        }
+    </style>
+
+<CENTER>
+
+<body>
+<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<COL WIDTH=256*>
+<TR>
+<TD WIDTH=100% VALIGN=TOP>
+<UL>
+Online Lecture Videos:
+<BR>
+<LI> IIT PAL Lecture Videos on <a href="https://www.youtube.com/watch?v=sjiU0-fHWNE&t=256s" title="" target="_blank" >Atomic Structure</a>.
+<LI> DST Swayam Lecture Videos on <a href="http://www.chemistry.iitkgp.ac.in/fac/SM/IQC_YT_LINKS.htm" title="" target="_blank" >Quantum Chemistry and Spectroscopy</a>.
+<LI> NPTEL Lecture Videos on <a href="https://www.youtube.com/playlist?list=PLbRMhDVUMngcGHvAEaDw7VQTR7U5PQLyr" title="" target="_blank" >Approximate Methods in Quantum Chemistry</a>.
+<LI> QM/MM Workshop Lecture  <a href="https://youtu.be/aqxjKpEH4ec" title="" target="_blank" >QM/MM Methods</a>.
+<LI> Quantum Computing for Chemistry (Hands-on) Workshop Lecture  <a href="https://youtu.be/XXCXG1OwDwI?t=7212" title="" target="_blank" >Quantum Computing</a>.
+</UL>
+</TABLE>
+
+<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<COL WIDTH=256*>
+<TR>
+<TD WIDTH=100% VALIGN=TOP>
+<UL>
+Web Tools
+<BR>
+<LI> <a href=ug_icexp1.php target="_blank" >Spectrophotometric pKa Determination</a>.
+<LI> <a href=enz_kin.php target="_blank" >Michaelis-Menten Kinetics Plotter</a>.
+<LI> <a href=quantstat.php target="_blank" >Quantum Statistics with Particle in a 1D Box Example</a>.
+<LI> <a href=CSFgenerator.php target="_blank" >CSF Generator</a>.
+</UL>
+</TABLE>
+
+<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<COL WIDTH=256*>
+<TD WIDTH=100% VALIGN=TOP>
+<FONT SIZE=4>
+<BR> <BR>
+Courses Taught in IIT Kharagpur (Since 2012) 
+
+<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<COL WIDTH=256*>
+<TD WIDTH=100% VALIGN=TOP>
+<FONT SIZE=4>
+<BR> <BR>
+<LI> Advanced Quantum Chemistry (CY61217), Autumn 2025.
+<LI> Chemistry Lab (CY19003), Autumn 2025. 
+<LI> Essential Tools in Computational Sciences (CD61203), Autumn 2025.
+<BR> <BR>
+<LI> Modelling of Quantum Systems and Processes (CY62206), Spring 2025.
+<LI> Biochemical Techniques Lab (CY49006), Spring 2025.
+<BR> <BR>
+<LI> Advanced Quantum Chemistry (CY61217), Autumn 2024.
+<LI> Chemistry Lab (CY19003), Autumn 2024. 
+<LI> Essential Tools in Computational Sciences (CD61203), Autumn 2024.
+<BR> <BR>
+<LI> Chemistry (CY11003), Spring 2024.
+<LI> Biochemical Techniques Lab (CY49006), Spring 2024.
+<LI> Quantum Methods in Molecular Simulations (CD61006), Spring 2024.
+<BR> <BR>
+<LI> Advanced Quantum Chemistry (CY61217), Autumn 2023.
+<LI> Essential Tools in Computational Sciences (CD61203), Autumn 2023.
+<LI> Chemistry Lab (CY19003), Autumn 2023. 
+<BR> 
+<BR> 
+<LI> Chemistry (CY11003), Spring 2023.
+<LI> Chemistry Lab (CY19003), Spring 2023. 
+<LI> Quantum Methods in Molecular Simulations (CD61006), Spring 2023.
+<BR> <BR>
+<LI> Chemistry (CY11003), Autumn 2022.
+<LI> Chemistry Lab (CY19003), Autumn 2022. 
+<BR> <BR>
+<LI> Molecular Thermodynamics and Kinetics (CY41012), Spring 2022.
+<LI> Chemistry Lab (CY19001), Spring 2022. 
+<BR> <BR>
+<LI> Introduction to Computational Chemistry (CY40014), Autumn 2021.
+<LI> Chemistry Lab (CY19001), Autumn 2021. 
+<BR> <BR>
+<LI> Quantum Methods in Molecular Simulations (TS62002), Spring 2021.
+<LI> Chemistry Lab (CY19001), Spring 2021. 
+<BR> <BR>
+<LI> Introduction to Computational Chemistry (CY40014), Autumn 2020.
+<LI> Chemistry Lab (CY19001), Autumn 2020. 
+<BR> <BR>
+<LI> Preparatory Chemistry (CY0001), Spring 2020.
+<LI> Quantum Methods in Molecular Simulations (TS62002), Spring 2020.
+<LI> Chemistry Lab (CY19001), Spring 2020. 
+<BR> <BR>
+<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2019.
+<LI> Physical Chemistry Lab II (CY39001), Autumn 2019.
+<BR> <BR>
+<LI> Quantum Methods in Molecular Simulations (TS62002), Spring 2019.
+<LI> Chemistry Lab (CY19001), Spring 2019. 
+<BR> <BR>
+<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2018.
+<LI> Chemistry Lab (CY19001), Autumn 2018. 
+<BR> <BR>
+<LI> Quantum Methods in Molecular Simulations (TS62002), Spring 2018.
+<LI> Chemistry (CY11001), Spring 2018.
+<LI> Chemistry Lab (CY19001), Spring 2018.
+<BR> <BR>
+<LI> Chemistry (CY11001), Autumn 2017.
+<LI> Chemistry Lab (CY19001), Autumn 2017. 
+<BR> <BR>
+<LI> Chemical Bonding and Reactivity (CY61010), Spring 2017. 
+<LI>Biochemical Techniques Laboratory (CY49006), Spring 2017
+<LI> Chemistry Lab (CY19001), Spring 2017. 
+<BR> <BR>
+<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2016. 
+<LI> Chemistry Lab (CY19001), Autumn 2016. 
+<BR> <BR>
+<LI> Chemistry (CY11001), Spring 2016.</a>
+<LI> Chemistry Lab (CY19001), Spring 2016. 
+<BR> <BR>
+<LI> Chemistry (CY11001), Autumn 2015.
+<LI> Chemistry Lab (CY19001), Autumn 2015. 
+<BR> <BR>
+<LI> Chemistry (CY11001), Spring 2015.  
+<LI> Biochemical Techniques Laboratory (CY49006), Spring 2015.  <a href="CY49006_SM.pdf" title="">(syllabus)</a> 
+<BR> <BR>
+<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2014.  
+ <a href="iqc_cos.pdf" title="">(syllabus)</a>
+<LI> Chemistry (CY11001), Autumn 2014.
+<BR> <BR>
+<LI> Molecular Spectroscopy and Molecular Structure (CY61044), Spring 2014.  <a href="mss_cos.pdf" title="">(syllabus)</a>  
+<LI> Biochemical Techniques Laboratory (CY49006), Spring 2014.  <a href="CY49006_SM.pdf" title="">(syllabus)</a> 
+<BR> <BR>
+<LI> Advanced Quantum Chemistry (CY60105), Autumn 2013. <a href="aqc_cos.pdf" title="">(syllabus)</a>
+<LI> Chemistry Lab (CY19001), Autumn 2013. 
+<BR> <BR>
+<LI> Chemical Bonding and Reactivity (CY61010/CY60032), Spring 2013. <a href="cbr_cos.pdf" title="">(syllabus)</a>
+<LI> Chemistry Lab (CY19001), Spring 2013. 
+<BR> <BR>
+<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2012. <a href="iqc_cos.pdf" title="">(syllabus)</a>
+</UL>
+</TD>
+</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+
+
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+</BODY>
+</HTML>
 
