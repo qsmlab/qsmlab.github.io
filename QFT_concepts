@@ -54,9 +54,8 @@
 <TD WIDTH=100% VALIGN=TOP>
 <UL>
 <BR>
-<LI> <a href=microcanonical.html target="_blank" >Micro canonical Ensemble</a>.
-<LI> <a href=canonical.html target="_blank" >Canonical Ensemble</a>.
-<LI> <a href=grandcanonical.html target="_blank" >Grand canonical Ensemble</a>.
+<LI> <a href=qft.html target="_blank" >QFT</a>.
+<LI> <a href=iqft target="_blank" >Inverse QFT</a>.
 </UL>
 </TABLE>
 
