@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quantum Fourier Transform Learning Lab</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+margin:30px;
+}
+
+section{
+margin-top:60px;
+padding-top:30px;
+border-top:2px solid #ddd;
+}
+
+canvas{
+border:1px solid #ccc;
+margin-top:10px;
+}
+
+.container{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+}
+
+table{
+border-collapse:collapse;
+margin:auto;
+}
+
+td,th{
+border:1px solid #aaa;
+padding:4px 8px;
+}
+
+button{
+padding:6px 12px;
+margin:6px;
+}
+
+#tooltip{
+position:absolute;
+background:white;
+border:1px solid gray;
+padding:6px;
+font-size:12px;
+display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Quantum Fourier Transform Learning Lab</h1>
+
+<!-- ================================================= -->
+<!-- SECTION 1 : BASIC QFT VISUALIZER -->
+<!-- ================================================= -->
+
+<section>
+
+<h2>1️⃣ QFT Visualizer</h2>
+
+Qubits
+<input id="q1_qubits" type="number" value="2" min="1" max="5">
+
+State k
+<input id="q1_k" type="number" value="0">
+
+<button onclick="runQFT()">Update</button>
+
+<div class="container">
+
+<div>
+<h3>Computational Basis</h3>
+<canvas id="q1_comp" width="320" height="320"></canvas>
+<div id="q1_compTable"></div>
+</div>
+
+<div>
+<h3>QFT State</h3>
+<canvas id="q1_qft" width="320" height="320"></canvas>
+<div id="q1_qftTable"></div>
+</div>
+
+</div>
+
+</section>
+
+<!-- ================================================= -->
+<!-- SECTION 2 : QFT PHASE ANIMATION -->
+<!-- ================================================= -->
+
+<section>
+
+<h2>2️⃣ QFT Phase Visualizer</h2>
+
+Qubits
+<input id="q2_qubits" type="number" value="3" min="1" max="5">
+
+<br><br>
+
+State k
+<input id="q2_slider" type="range" min="0" max="7" value="0" oninput="updatePhase()">
+
+<span id="q2_label">0</span>
+
+<br><br>
+
+<div class="container">
+
+<div>
+<h3>Computational Basis</h3>
+<canvas id="q2_comp" width="340" height="340"></canvas>
+</div>
+
+<div>
+<h3>QFT Phase State</h3>
+<canvas id="q2_qft" width="340" height="340"></canvas>
+</div>
+
+</div>
+
+</section>
+
+<!-- ================================================= -->
+<!-- SECTION 3 : INVERSE QFT PRACTICE -->
+<!-- ================================================= -->
+
+<section>
+
+<h2>3️⃣ Inverse QFT Practice</h2>
+
+Difficulty
+<select id="difficulty">
+<option value="easy">Easy</option>
+<option value="medium">Medium</option>
+<option value="hard">Hard</option>
+</select>
+
+<button onclick="newProblem()">New Problem</button>
+
+<label>
+<input type="checkbox" id="hintMode">
+Hint Mode
+</label>
+
+<br><br>
+
+Guess k
+<input id="guess" type="number">
+<button onclick="check()">Check</button>
+
+<p id="result"></p>
+
+<canvas id="circle" width="420" height="680"></canvas>
+
+<div id="tooltip"></div>
+
+</section>
+
+<script>
+
+/* =========================================
+COMMON UTILITIES
+========================================= */
+
+function label(i,n){
+return i.toString(2).padStart(n,'0')
+}
+
+function gcd(a,b){
+return b==0?a:gcd(b,a%b)
+}
+
+/* =========================================
+SECTION 1 : QFT VISUALIZER
+========================================= */
+
+function drawComp(n,k){
+
+let N=2**n
+let c=document.getElementById("q1_comp")
+let ctx=c.getContext("2d")
+
+ctx.clearRect(0,0,320,320)
+
+let cx=160
+let cy=160
+let R=110
+
+ctx.beginPath()
+ctx.arc(cx,cy,R,0,2*Math.PI)
+ctx.stroke()
+
+for(let j=0;j<N;j++){
+
+let th=2*Math.PI*j/N
+let x=cx+R*Math.cos(th)
+let y=cy-R*Math.sin(th)
+
+ctx.beginPath()
+ctx.fillStyle=(j==k)?"red":"lightgray"
+ctx.arc(x,y,8,0,2*Math.PI)
+ctx.fill()
+
+ctx.fillStyle="black"
+ctx.fillText("|"+label(j,n)+"⟩",x+8,y-6)
+
+}
+
+}
+
+function drawQFT(n,k){
+
+let N=2**n
+let c=document.getElementById("q1_qft")
+let ctx=c.getContext("2d")
+
+ctx.clearRect(0,0,320,320)
+
+let cx=160
+let cy=160
+let R=110
+
+ctx.beginPath()
+ctx.arc(cx,cy,R,0,2*Math.PI)
+ctx.stroke()
+
+let table="<table><tr><th>basis</th><th>amplitude</th></tr>"
+
+for(let j=0;j<N;j++){
+
+let th=2*Math.PI*j/N
+let x=cx+R*Math.cos(th)
+let y=cy-R*Math.sin(th)
+
+let phase=2*Math.PI*j*k/N
+let re=Math.cos(phase)/Math.sqrt(N)
+let im=Math.sin(phase)/Math.sqrt(N)
+
+ctx.beginPath()
+ctx.fillStyle="steelblue"
+ctx.arc(x,y,8,0,2*Math.PI)
+ctx.fill()
+
+let len=15
+let dx=len*Math.cos(phase)
+let dy=len*Math.sin(phase)
+
+ctx.beginPath()
+ctx.moveTo(x,y)
+ctx.lineTo(x+dx,y-dy)
+ctx.stroke()
+
+ctx.fillStyle="black"
+ctx.fillText("|"+label(j,n)+"⟩",x+8,y-6)
+
+table+=`<tr><td>|${label(j,n)}⟩</td><td>${re.toFixed(3)} + ${im.toFixed(3)}i</td></tr>`
+}
+
+table+="</table>"
+document.getElementById("q1_qftTable").innerHTML=table
+
+}
+
+function compTable(n,k){
+
+let N=2**n
+let t="<table><tr><th>basis</th><th>amplitude</th></tr>"
+
+for(let i=0;i<N;i++){
+
+if(i==k)
+t+=`<tr><td>|${label(i,n)}⟩</td><td>1</td></tr>`
+else
+t+=`<tr><td>|${label(i,n)}⟩</td><td>0</td></tr>`
+
+}
+
+t+="</table>"
+document.getElementById("q1_compTable").innerHTML=t
+
+}
+
+function runQFT(){
+
+let n=parseInt(document.getElementById("q1_qubits").value)
+let k=parseInt(document.getElementById("q1_k").value)
+
+let N=2**n
+k=k%N
+
+drawComp(n,k)
+drawQFT(n,k)
+compTable(n,k)
+
+}
+
+/* =========================================
+SECTION 2 : QFT PHASE VISUALIZER
+========================================= */
+
+function drawComputational(n,k){
+
+let canvas=document.getElementById("q2_comp")
+let ctx=canvas.getContext("2d")
+
+let N=2**n
+let cx=170
+let cy=170
+let R=120
+
+ctx.clearRect(0,0,340,340)
+
+ctx.beginPath()
+ctx.arc(cx,cy,R,0,2*Math.PI)
+ctx.stroke()
+
+for(let j=0;j<N;j++){
+
+let theta=2*Math.PI*j/N
+let x=cx+R*Math.cos(theta)
+let y=cy-R*Math.sin(theta)
+
+ctx.beginPath()
+ctx.fillStyle=(j==k)?"red":"#ddd"
+ctx.arc(x,y,8,0,2*Math.PI)
+ctx.fill()
+
+ctx.fillStyle="black"
+ctx.fillText("|"+label(j,n)+"⟩",x+8,y-6)
+
+}
+
+}
+
+function drawPhaseState(n,k){
+
+let canvas=document.getElementById("q2_qft")
+let ctx=canvas.getContext("2d")
+
+let N=2**n
+let cx=170
+let cy=170
+let R=120
+
+ctx.clearRect(0,0,340,340)
+
+ctx.beginPath()
+ctx.arc(cx,cy,R,0,2*Math.PI)
+ctx.stroke()
+
+let mag=1/Math.sqrt(N)
+
+for(let j=0;j<N;j++){
+
+let theta=2*Math.PI*j/N
+let x=cx+R*Math.cos(theta)
+let y=cy-R*Math.sin(theta)
+
+ctx.beginPath()
+ctx.fillStyle="steelblue"
+ctx.arc(x,y,8+12*mag,0,2*Math.PI)
+ctx.fill()
+
+let phase=2*Math.PI*j*k/N
+let len=16
+
+ctx.beginPath()
+ctx.moveTo(x,y)
+ctx.lineTo(x+len*Math.cos(phase),y-len*Math.sin(phase))
+ctx.stroke()
+
+ctx.fillStyle="black"
+ctx.fillText("|"+label(j,n)+"⟩",x+8,y-6)
+
+}
+
+}
+
+function updatePhase(){
+
+let k=document.getElementById("q2_slider").value
+document.getElementById("q2_label").innerText=k
+
+let n=parseInt(document.getElementById("q2_qubits").value)
+let N=2**n
+
+document.getElementById("q2_slider").max=N-1
+
+drawComputational(n,k)
+drawPhaseState(n,k)
+
+}
+
+/* =========================================
+SECTION 3 : INVERSE QFT PRACTICE
+========================================= */
+
+let n,N,secretK,states=[],hintState=null
+
+function phaseFraction(j){
+let num=j*secretK
+let den=N
+let g=gcd(num,den)
+num/=g
+den/=g
+return num+"/"+den
+}
+
+function newProblem(){
+
+let diff=document.getElementById("difficulty").value
+
+if(diff=="easy") n=2
+else if(diff=="medium") n=3
+else n=4
+
+N=2**n
+
+secretK=Math.floor(Math.random()*N)
+hintState=Math.floor(Math.random()*N)
+
+drawState()
+
+document.getElementById("result").innerText=""
+
+}
+
+function drawState(){
+
+let canvas=document.getElementById("circle")
+let ctx=canvas.getContext("2d")
+
+ctx.clearRect(0,0,420,680)
+
+states=[]
+
+let cx=210
+let cy=180
+let R=140
+
+ctx.beginPath()
+ctx.arc(cx,cy,R,0,2*Math.PI)
+ctx.stroke()
+
+for(let j=0;j<N;j++){
+
+let theta=2*Math.PI*j/N
+let x=cx+R*Math.cos(theta)
+let y=cy-R*Math.sin(theta)
+
+let phase=2*Math.PI*j*secretK/N
+
+ctx.beginPath()
+ctx.fillStyle=(j===hintState && document.getElementById("hintMode").checked)?"red":"steelblue"
+ctx.arc(x,y,6,0,2*Math.PI)
+ctx.fill()
+
+let len=16
+
+ctx.beginPath()
+ctx.moveTo(x,y)
+ctx.lineTo(x+len*Math.cos(phase),y-len*Math.sin(phase))
+ctx.stroke()
+
+ctx.fillStyle="black"
+ctx.fillText("|"+label(j,n)+"⟩",x+8,y-6)
+
+states.push({x,y,phase,index:j})
+
+}
+
+}
+
+function check(){
+
+let g=parseInt(document.getElementById("guess").value)
+
+if(g===secretK)
+document.getElementById("result").innerText="Correct!"
+else
+document.getElementById("result").innerText="Incorrect. k = "+secretK
+
+}
+
+document.getElementById("circle").addEventListener("mousemove",function(e){
+
+let rect=this.getBoundingClientRect()
+let mx=e.clientX-rect.left
+let my=e.clientY-rect.top
+
+for(let s of states){
+
+let d=Math.hypot(mx-s.x,my-s.y)
+
+if(d<10){
+
+let deg=(s.phase*180/Math.PI)%360
+
+let tooltip=document.getElementById("tooltip")
+
+tooltip.style.left=e.pageX+10+"px"
+tooltip.style.top=e.pageY+10+"px"
+
+tooltip.innerHTML="|"+label(s.index,n)+"⟩<br>phase="+deg.toFixed(1)+"°"
+
+tooltip.style.display="block"
+return
+}
+
+}
+
+document.getElementById("tooltip").style.display="none"
+
+})
+
+runQFT()
+updatePhase()
+newProblem()
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Inverse QFT Practice</title>
+
+<style>
+body{font-family:Arial;text-align:center}
+canvas{border:1px solid #ccc;margin-top:20px}
+button{padding:6px 12px;margin:5px}
+
+#tooltip{
+position:absolute;
+background:white;
+border:1px solid gray;
+padding:6px;
+font-size:12px;
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Inverse QFT Practice</h2>
+
+Difficulty
+<select id="difficulty">
+<option value="easy">Easy</option>
+<option value="medium">Medium</option>
+<option value="hard">Hard</option>
+</select>
+
+<button onclick="newProblem()">New Problem</button>
+
+<label>
+<input type="checkbox" id="hintMode">
+Hint Mode
+</label>
+
+<br><br>
+
+Guess k
+<input id="guess" type="number">
+<button onclick="check()">Check</button>
+
+<p id="result"></p>
+
+<canvas id="circle" width="420" height="680"></canvas>
+
+<div id="tooltip"></div>
+
+<script>
+
+let n,N,secretK
+let states=[]
+let hintState=null
+
+function label(i){
+return i.toString(2).padStart(n,'0')
+}
+
+function gcd(a,b){
+return b==0?a:gcd(b,a%b)
+}
+
+function phaseFraction(j){
+let num=j*secretK
+let den=N
+let g=gcd(num,den)
+num/=g
+den/=g
+return num+"/"+den
+}
+
+function newProblem(){
+
+let diff=document.getElementById("difficulty").value
+
+if(diff=="easy") n=2
+else if(diff=="medium") n=3
+else n=4+Math.floor(Math.random()*2)
+
+N=2**n
+
+secretK=Math.floor(Math.random()*N)
+
+hintState=Math.floor(Math.random()*N)
+
+drawState()
+
+document.getElementById("result").innerText=""
+}
+
+function drawState(){
+
+let canvas=document.getElementById("circle")
+let ctx=canvas.getContext("2d")
+
+ctx.clearRect(0,0,420,680)
+
+states=[]
+
+let cx=210
+let cy=180
+let R=140
+
+ctx.beginPath()
+ctx.arc(cx,cy,R,0,2*Math.PI)
+ctx.stroke()
+
+let firstPhase = 0
+let secondPhase = 2*Math.PI*secretK/N
+
+for(let j=0;j<N;j++){
+
+let theta=2*Math.PI*j/N
+
+let x=cx+R*Math.cos(theta)
+let y=cy-R*Math.sin(theta)
+
+let phase=2*Math.PI*j*secretK/N
+
+ctx.beginPath()
+
+if(j===hintState && document.getElementById("hintMode").checked)
+ctx.fillStyle="red"
+else
+ctx.fillStyle="steelblue"
+
+ctx.arc(x,y,6,0,2*Math.PI)
+ctx.fill()
+
+ctx.fillStyle="black"
+ctx.fillText("|"+label(j)+"⟩",x+8,y-6)
+
+let len=16
+let dx=len*Math.cos(phase)
+let dy=len*Math.sin(phase)
+
+ctx.beginPath()
+ctx.moveTo(x,y)
+ctx.lineTo(x+dx,y-dy)
+ctx.stroke()
+
+states.push({x,y,phase,index:j})
+
+}
+
+drawPhaseStep(ctx,cx,cy)
+
+drawRuler(ctx)
+drawSlopeGraph(ctx)
+
+}
+
+function drawPhaseStep(ctx,cx,cy){
+
+let r=50
+
+let stepAngle=2*Math.PI*secretK/N
+
+ctx.beginPath()
+ctx.arc(cx,cy,r,0,-stepAngle,true)
+ctx.strokeStyle="red"
+ctx.stroke()
+
+ctx.fillStyle="red"
+ctx.fillText("phase step = "+secretK+"/"+N+" × 2π",cx-60,cy-r-10)
+
+ctx.strokeStyle="black"
+ctx.fillStyle="black"
+
+}
+
+function drawRuler(ctx){
+
+let y=380
+let x1=40
+let x2=380
+
+ctx.beginPath()
+ctx.moveTo(x1,y)
+ctx.lineTo(x2,y)
+ctx.stroke()
+
+ctx.fillText("0",x1-5,y+15)
+ctx.fillText("1",x2-5,y+15)
+
+let frac=secretK/N
+let px=x1+(x2-x1)*frac
+
+ctx.fillStyle="red"
+
+ctx.beginPath()
+ctx.moveTo(px,y-8)
+ctx.lineTo(px-6,y)
+ctx.lineTo(px+6,y)
+ctx.fill()
+
+ctx.fillText("k/N = "+secretK+"/"+N,px-30,y-10)
+
+ctx.fillStyle="black"
+}
+
+function drawSlopeGraph(ctx){
+
+let gx=70
+let gy=450
+let w=280
+let h=180
+
+ctx.fillText("Wrapped Phase Pattern",gx+60,gy-15)
+
+ctx.strokeRect(gx,gy,w,h)
+
+let points=[]
+
+for(let j=0;j<N;j++){
+
+let phaseFrac=(j*secretK/N)%1
+
+let x=gx+(j/(N-1))*w
+let y=gy+h-(phaseFrac*h)
+
+points.push({x,y})
+
+ctx.beginPath()
+ctx.arc(x,y,4,0,2*Math.PI)
+ctx.fill()
+
+ctx.fillText(j,x-3,gy+h+15)
+
+}
+
+ctx.beginPath()
+
+for(let i=0;i<points.length;i++){
+
+if(i==0)
+ctx.moveTo(points[i].x,points[i].y)
+else
+ctx.lineTo(points[i].x,points[i].y)
+
+}
+
+ctx.stroke()
+
+}
+
+document.getElementById("circle").addEventListener("mousemove",function(e){
+
+let rect=this.getBoundingClientRect()
+
+let mx=e.clientX-rect.left
+let my=e.clientY-rect.top
+
+for(let s of states){
+
+let d=Math.hypot(mx-s.x,my-s.y)
+
+if(d<10){
+
+let deg=(s.phase*180/Math.PI)%360
+if(deg<0) deg+=360
+
+let tooltip=document.getElementById("tooltip")
+
+tooltip.style.left=e.pageX+10+"px"
+tooltip.style.top=e.pageY+10+"px"
+
+let text=
+"|"+label(s.index)+"⟩<br>"+
+"phase = "+deg.toFixed(1)+"°"
+
+if(document.getElementById("hintMode").checked){
+
+let j=s.index
+let frac=phaseFraction(j)
+
+text+="<br><br>= (j × k / N) × 2π"
+text+="<br>= ("+j+" × "+secretK+" / "+N+") × 2π"
+text+="<br>= "+frac+" × 2π"
+
+}
+
+tooltip.innerHTML=text
+tooltip.style.display="block"
+
+return
+}
+
+}
+
+document.getElementById("tooltip").style.display="none"
+
+})
+
+function check(){
+
+let g=parseInt(document.getElementById("guess").value)
+
+if(g===secretK)
+document.getElementById("result").innerText="Correct!"
+else
+document.getElementById("result").innerText="Incorrect. k = "+secretK
+
+}
+
+document.getElementById("hintMode").addEventListener("change",drawState)
+
+newProblem()
+
+</script>
+
+</body>
+</html>
