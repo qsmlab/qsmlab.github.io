@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shor Algorithm Simulator</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+margin:30px;
+background:#f5f5f5;
+}
+
+h1{
+text-align:center;
+}
+
+.panel{
+background:white;
+padding:20px;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+button{
+padding:10px 15px;
+margin:5px;
+cursor:pointer;
+}
+
+#log{
+background:#111;
+color:#0f0;
+padding:15px;
+font-family:monospace;
+height:200px;
+overflow:auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Shor Algorithm Period Finding Simulator</h1>
+
+<div class="panel">
+
+<label>N:</label>
+<input id="N" value="15">
+
+<label>a:</label>
+<input id="a" value="2">
+
+<button onclick="generateSequence()">Generate Sequence</button>
+<button onclick="showFourier()">Quantum Fourier View</button>
+
+</div>
+
+<div class="panel">
+
+<h3>Sequence Chart</h3>
+<canvas id="seqChart"></canvas>
+
+</div>
+
+<div class="panel">
+
+<h3>Fourier Spectrum</h3>
+<canvas id="fourierChart"></canvas>
+
+</div>
+
+<div class="panel">
+
+<h3>Console</h3>
+<div id="log"></div>
+
+</div>
+
+<script>
+
+let xValues=[]
+let yValues=[]
+let seqChart
+let fourierChart
+let period
+
+function log(msg){
+
+document.getElementById("log").innerHTML += msg + "<br>"
+}
+
+function modPow(base,exp,mod){
+
+let result=1
+
+for(let i=0;i<exp;i++)
+result=(result*base)%mod
+
+return result
+}
+
+function generateSequence(){
+
+let N=parseInt(document.getElementById("N").value)
+let a=parseInt(document.getElementById("a").value)
+
+xValues=[]
+yValues=[]
+
+document.getElementById("log").innerHTML=""
+
+log("Generating sequence a^x mod N")
+
+for(let x=0;x<16;x++){
+
+let y=modPow(a,x,N)
+
+xValues.push(x)
+yValues.push(y)
+
+log("x="+x+"  →  "+y)
+
+}
+
+drawSequence()
+
+}
+
+function drawSequence(){
+
+if(seqChart) seqChart.destroy()
+
+const ctx=document.getElementById("seqChart")
+
+seqChart=new Chart(ctx,{
+type:'line',
+data:{
+labels:xValues,
+datasets:[{
+label:'a^x mod N',
+data:yValues,
+fill:false
+}]
+}
+})
+
+}
+
+function showFourier(){
+
+if(yValues.length<4){
+alert("Generate sequence first")
+return
+}
+
+let targetLength=32
+let data=[]
+
+for(let i=0;i<targetLength;i++)
+data.push(yValues[i%yValues.length])
+
+let mean=data.reduce((a,b)=>a+b,0)/data.length
+
+for(let i=0;i<data.length;i++)
+data[i]-=mean
+
+let n=data.length
+
+let freq=[]
+let mag=[]
+
+let maxMag=0
+let peakIndex=0
+
+for(let k=0;k<n/2;k++){
+
+let re=0
+let im=0
+
+for(let t=0;t<n;t++){
+
+let angle=2*Math.PI*k*t/n
+
+re+=data[t]*Math.cos(angle)
+im-=data[t]*Math.sin(angle)
+
+}
+
+let m=Math.sqrt(re*re+im*im)
+
+freq.push(k)
+mag.push(m)
+
+if(m>maxMag && k>0){
+
+maxMag=m
+peakIndex=k
+
+}
+
+}
+
+let estimatedR=Math.round(n/peakIndex)
+
+let colors=[]
+
+for(let i=0;i<freq.length;i++){
+
+if(i===peakIndex)
+colors.push("red")
+else
+colors.push("steelblue")
+
+}
+
+if(fourierChart) fourierChart.destroy()
+
+const ctx=document.getElementById("fourierChart")
+
+fourierChart=new Chart(ctx,{
+type:'bar',
+data:{
+labels:freq,
+datasets:[{
+label:'Fourier magnitude',
+data:mag,
+backgroundColor:colors
+}]
+}
+})
+
+log("<b>Fourier peak at frequency "+peakIndex+"</b>")
+
+log("<b>Estimated period r = "+estimatedR+"</b>")
+
+period=estimatedR
+
+extractFactors()
+
+}
+
+function gcd(a,b){
+
+while(b!=0){
+
+let t=b
+b=a%b
+a=t
+
+}
+
+return a
+
+}
+
+function extractFactors(){
+
+let N=parseInt(document.getElementById("N").value)
+let a=parseInt(document.getElementById("a").value)
+
+if(period%2!==0){
+
+log("Period is odd. Try different a.")
+return
+
+}
+
+let x=Math.pow(a,period/2)
+
+let p=gcd(x-1,N)
+let q=gcd(x+1,N)
+
+if(p===1 || p===N){
+
+log("Factorization failed. Try another a.")
+return
+
+}
+
+log("<br><b>Factors found!</b>")
+log(N+" = "+p+" × "+q)
+
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Interactive Shor Algorithm Teaching Tool</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+margin:40px;
+max-width:950px;
+}
+
+button{
+padding:8px;
+margin:5px;
+}
+
+input,select{
+padding:6px;
+margin:5px;
+}
+
+table{
+border-collapse:collapse;
+margin-top:15px;
+}
+
+td,th{
+border:1px solid black;
+padding:6px;
+text-align:center;
+}
+
+.highlight{
+background:#ffd54f;
+}
+
+.box{
+background:#f4f4f4;
+padding:12px;
+margin-top:15px;
+border-left:4px solid #4CAF50;
+}
+
+.result{
+background:#e8f5e9;
+padding:15px;
+font-weight:bold;
+font-size:18px;
+margin-top:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Interactive Demonstration of Shor's Algorithm</h2>
+
+<button onclick="clearAll()">Clear All</button>
+
+<p>
+This simulator illustrates the classical steps behind Shor’s algorithm.
+A real quantum computer would detect the period using the Quantum Fourier Transform.
+</p>
+
+<hr>
+
+<div class="box">
+
+<b>Step 1 — Choose number to factor</b><br>
+
+Enter N (≤ 999):
+
+<input type="number" id="N">
+<button onclick="setN()">Set N</button>
+
+<div id="step1"></div>
+
+</div>
+
+
+<div class="box">
+
+<b>Step 2 — Choose value of a</b><br>
+
+a:
+
+<input type="number" id="a">
+<button onclick="setA()">Check gcd(a,N)</button>
+
+<div id="step2"></div>
+
+</div>
+
+
+<div class="box">
+
+<b>Step 3 — Search for the period</b><br>
+
+<select id="mode">
+<option value="manual">Manual search (x = x + 1)</option>
+<option value="random">Random guess of x</option>
+</select>
+
+<br>
+
+<button onclick="nextStep()">Compute next step</button>
+
+<table id="seqTable">
+
+<tr>
+<th>Attempt</th>
+<th>x used</th>
+<th>a^x mod N</th>
+</tr>
+
+</table>
+
+<div id="period"></div>
+
+</div>
+
+
+<div class="box">
+
+<h3>Visualizing the sequence a^x mod N</h3>
+
+<canvas id="sequenceChart" width="800" height="350"></canvas>
+
+</div>
+
+
+<div class="box">
+
+<b>Step 4 — Extract factors</b><br>
+
+<button onclick="factor()">Show factor extraction steps</button>
+
+<div id="factor"></div>
+
+</div>
+
+
+<div id="finalResult" class="result"></div>
+
+
+<script>
+
+let N;
+let a;
+let x=0;
+let attempt=0;
+let period=null;
+
+let chart;
+let xValues=[];
+let yValues=[];
+
+
+function gcd(a,b){
+
+while(b!=0){
+let t=b;
+b=a%b;
+a=t;
+}
+
+return a;
+
+}
+
+
+function modPow(base,exp,mod){
+
+let result=1;
+
+for(let i=0;i<exp;i++)
+result=(result*base)%mod;
+
+return result;
+
+}
+
+
+function setN(){
+
+N=parseInt(document.getElementById("N").value);
+
+document.getElementById("step1").innerHTML="You chose N = "+N;
+
+resetTable();
+
+x=0;
+attempt=0;
+period=null;
+
+xValues=[];
+yValues=[];
+
+if(chart){
+chart.destroy();
+}
+
+initChart();
+
+}
+
+
+function setA(){
+
+a=parseInt(document.getElementById("a").value);
+
+let g=gcd(a,N);
+
+if(g>1){
+
+document.getElementById("step2").innerHTML=
+"gcd("+a+","+N+") = "+g+" → A factor is already found.";
+
+document.getElementById("finalResult").innerHTML=
+"Immediate factorization:<br>"+N+" = "+g+" × "+(N/g);
+
+return;
+
+}
+else{
+
+document.getElementById("step2").innerHTML=
+"gcd("+a+","+N+") = 1 → Continue to search for the period.";
+
+}
+
+}
+
+
+function initChart(){
+
+const ctx=document.getElementById('sequenceChart');
+
+chart=new Chart(ctx,{
+
+type:'line',
+
+data:{
+labels:xValues,
+datasets:[{
+label:'a^x mod N',
+data:yValues,
+fill:false,
+borderWidth:2,
+tension:0
+}]
+},
+
+options:{
+responsive:true,
+
+scales:{
+
+x:{
+title:{display:true,text:'x'}
+},
+
+y:{
+title:{display:true,text:'a^x mod N'}
+}
+
+}
+
+}
+
+});
+
+}
+
+
+function nextStep(){
+
+if(period!=null) return;
+
+attempt++;
+
+let mode=document.getElementById("mode").value;
+
+let usedX;
+
+if(mode=="manual"){
+
+x++;
+usedX=x;
+
+}else{
+
+usedX=Math.floor(Math.random()*50)+1;
+
+}
+
+let value=modPow(a,usedX,N);
+
+let table=document.getElementById("seqTable");
+
+let row=table.insertRow(-1);
+
+row.insertCell(0).innerHTML=attempt;
+row.insertCell(1).innerHTML=usedX;
+row.insertCell(2).innerHTML=value;
+
+xValues.push(usedX);
+yValues.push(value);
+
+chart.data.labels=xValues;
+chart.data.datasets[0].data=yValues;
+
+chart.update();
+
+if(value==1){
+
+period=usedX;
+
+row.classList.add("highlight");
+
+document.getElementById("period").innerHTML=
+
+"Period candidate detected at x = "+period+
+"<br>It took "+attempt+" attempts.";
+
+}
+
+}
+
+
+function factor(){
+
+if(period==null){
+
+document.getElementById("factor").innerHTML=
+"First detect a period.";
+
+return;
+
+}
+
+let text="";
+
+text+="We discovered that a<sup>r</sup> ≡ 1 (mod N) with r = "+period+"<br><br>";
+
+if(period%2!=0){
+
+text+="The period is odd.<br>";
+text+="Choose another value of a and try again.<br>";
+
+document.getElementById("factor").innerHTML=text;
+
+resetPeriodSearch();
+
+return;
+
+}
+
+let ar2=modPow(a,period/2,N);
+
+text+="Compute a<sup>r/2</sup>:<br>";
+text+="a<sup>"+period+"/2</sup> mod N = "+ar2+"<br><br>";
+
+let f1=gcd(ar2-1,N);
+let f2=gcd(ar2+1,N);
+
+text+="gcd("+ (ar2-1) + ", "+N+") = "+f1+"<br>";
+text+="gcd("+ (ar2+1) + ", "+N+") = "+f2+"<br>";
+
+document.getElementById("factor").innerHTML=text;
+
+let resultText="Final Result:<br>";
+
+if(f1>1 && f1<N)
+resultText+=N+" = "+f1+" × "+(N/f1);
+
+else if(f2>1 && f2<N)
+resultText+=N+" = "+f2+" × "+(N/f2);
+
+else
+resultText+="This attempt did not produce non-trivial factors.";
+
+document.getElementById("finalResult").innerHTML=resultText;
+
+}
+
+
+function resetPeriodSearch(){
+
+x=0;
+attempt=0;
+period=null;
+
+resetTable();
+
+xValues=[];
+yValues=[];
+
+chart.data.labels=[];
+chart.data.datasets[0].data=[];
+chart.update();
+
+document.getElementById("period").innerHTML="";
+
+}
+
+
+function clearAll(){
+
+N=null;
+a=null;
+
+resetPeriodSearch();
+
+document.getElementById("N").value="";
+document.getElementById("a").value="";
+
+document.getElementById("step1").innerHTML="";
+document.getElementById("step2").innerHTML="";
+document.getElementById("factor").innerHTML="";
+document.getElementById("finalResult").innerHTML="";
+
+if(chart){
+chart.destroy();
+}
+
+}
+
+
+function resetTable(){
+
+document.getElementById("seqTable").innerHTML=
+"<tr><th>Attempt</th><th>x used</th><th>a^x mod N</th></tr>";
+
+}
+
+</script>
+
+</body>
+
+</html>
