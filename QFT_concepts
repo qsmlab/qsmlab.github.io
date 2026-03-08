@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title></title>
+
+</head>
+<body>
+<ul class="menu red">
+        <li><a href="index.html" title="">Home</a></li>
+     <li><a href="group.html" title="">Group</a></li>
+        <li><a href="pubs.html" title="" >Publications</a></li>
+        <li><a href="research.html" title="">Research</a></li>
+        <li><a href="teaching.html" title="">Teaching</a></li>
+        <li><a href="misc.html" title="">Miscellaneous</a></li>
+</ul>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .member-container {
+            width: calc(49% - 20px); /* Adjust the width as needed */
+            height: 250px; /* Adjust the width as needed */
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            overflow: scroll;
+            box-sizing: border-box;
+            float: left;
+        }
+        .member-container:nth-child(odd) {
+            margin-right: 20px; /* Add margin to create space between columns */
+        }
+        .member-info {
+            overflow: hidden;
+        }
+        .member-info p {
+            margin: 5px 0;
+        }
+    </style>
+
+<CENTER>
+
+<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
+<COL WIDTH=256*>
+<TR>
+<TD WIDTH=100% VALIGN=TOP>
+<UL>
+<BR>
+<LI> <a href=microcanonical.html target="_blank" >Micro canonical Ensemble</a>.
+<LI> <a href=canonical.html target="_blank" >Canonical Ensemble</a>.
+<LI> <a href=grandcanonical.html target="_blank" >Grand canonical Ensemble</a>.
+</UL>
+</TABLE>
+
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+</BODY>
+</HTML>
