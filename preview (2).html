@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QFT Explorer</title>
+
+<style>
+body{
+font-family:Arial;
+text-align:center;
+background:#f5f7fb;
+}
+
+table{
+border-collapse:collapse;
+margin:auto;
+margin-top:10px;
+}
+
+th,td{
+border:1px solid #444;
+padding:6px 10px;
+}
+
+button{
+padding:6px 12px;
+margin:4px;
+}
+
+.section{
+margin-top:20px;
+padding:10px;
+width:75%;
+margin-left:auto;
+margin-right:auto;
+background:white;
+border:1px solid #bbb;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Quantum Fourier Transform Explorer</h2>
+
+Number of qubits
+<select id="qubits" onchange="resetAll()">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3" selected>3</option>
+<option value="4">4</option>
+</select>
+
+<br><br>
+
+State (decimal)
+<input id="stateInput" type="number" style="width:60px">
+
+Weight
+<input id="weightInput" type="number" value="1" step="0.1" style="width:60px">
+
+θ (phase = 2πθ)
+<input id="phaseInput" type="number" value="0" step="0.1" style="width:60px">
+
+<br><br>
+
+<button onclick="addState()">Add State</button>
+<button onclick="showNormalized()">Show Normalized</button>
+<button onclick="runQFT()">Apply QFT</button>
+<button onclick="resetAll()">Reset</button>
+
+<div class="section">
+<h3>Input States</h3>
+<div id="stateTable"></div>
+</div>
+
+<div class="section">
+<h3>Normalized Input State</h3>
+<div id="normalized"></div>
+</div>
+
+<div class="section">
+<h3>QFT Output</h3>
+<div id="output"></div>
+</div>
+
+<div class="section">
+<h3>Things to Notice</h3>
+<div id="comments"></div>
+</div>
+
+<div class="section">
+<h3>Analytical Formula</h3>
+<div id="mathbox"></div>
+</div>
+
+<script>
+
+let states=[]
+
+function resetAll(){
+states=[]
+document.getElementById("stateTable").innerHTML=""
+document.getElementById("normalized").innerHTML=""
+document.getElementById("output").innerHTML=""
+document.getElementById("comments").innerHTML=""
+document.getElementById("mathbox").innerHTML=""
+}
+
+function decimalToBinary(x,n){
+return x.toString(2).padStart(n,'0')
+}
+
+function addState(){
+
+let n=parseInt(document.getElementById("qubits").value)
+let N=Math.pow(2,n)
+
+let d=parseInt(document.getElementById("stateInput").value)
+let w=parseFloat(document.getElementById("weightInput").value)
+let theta=parseFloat(document.getElementById("phaseInput").value)
+
+if(isNaN(d) || d<0 || d>=N){
+alert("State must be between 0 and "+(N-1))
+return
+}
+
+states.push({d,w,theta})
+
+displayStates()
+}
+
+function deleteState(i){
+states.splice(i,1)
+displayStates()
+}
+
+function displayStates(){
+
+let html="<table><tr><th>Decimal</th><th>Weight</th><th>θ</th><th></th></tr>"
+
+states.forEach((s,i)=>{
+html+=`<tr>
+<td>${s.d}</td>
+<td>${s.w}</td>
+<td>${s.theta}</td>
+<td><button onclick="deleteState(${i})">Delete</button></td>
+</tr>`
+})
+
+html+="</table>"
+
+document.getElementById("stateTable").innerHTML=html
+}
+
+function buildVector(){
+
+let n=parseInt(document.getElementById("qubits").value)
+let N=Math.pow(2,n)
+
+let vector=new Array(N).fill(0).map(()=>({re:0,im:0}))
+
+states.forEach(s=>{
+let angle=2*Math.PI*s.theta
+vector[s.d].re+=s.w*Math.cos(angle)
+vector[s.d].im+=s.w*Math.sin(angle)
+})
+
+let norm=0
+vector.forEach(v=>{
+norm+=v.re*v.re+v.im*v.im
+})
+
+norm=Math.sqrt(norm)
+
+if(norm===0) return vector
+
+vector=vector.map(v=>({
+re:v.re/norm,
+im:v.im/norm
+}))
+
+return vector
+}
+
+function showNormalized(){
+
+if(states.length===0){
+alert("Add states first")
+return
+}
+
+let n=parseInt(document.getElementById("qubits").value)
+let vector=buildVector()
+
+let html="<table><tr><th>k</th><th>Binary</th><th>Amplitude</th></tr>"
+
+vector.forEach((v,k)=>{
+if(Math.abs(v.re)>1e-6 || Math.abs(v.im)>1e-6){
+html+=`<tr>
+<td>${k}</td>
+<td>${decimalToBinary(k,n)}</td>
+<td>${v.re.toFixed(4)} + ${v.im.toFixed(4)} i</td>
+</tr>`
+}
+})
+
+html+="</table>"
+
+document.getElementById("normalized").innerHTML=html
+}
+
+function runQFT(){
+
+if(states.length===0){
+alert("Add states first")
+return
+}
+
+let n=parseInt(document.getElementById("qubits").value)
+let N=Math.pow(2,n)
+
+let vector=buildVector()
+
+let html="<table><tr><th>k</th><th>Amplitude</th><th>|A|</th><th>θ_true</th><th>θ_wrapped</th></tr>"
+
+let amps=[]
+
+for(let k=0;k<N;k++){
+
+let re=0
+let im=0
+
+for(let x=0;x<N;x++){
+
+let angle=2*Math.PI*k*x/N
+
+re+=vector[x].re*Math.cos(angle)-vector[x].im*Math.sin(angle)
+im+=vector[x].re*Math.sin(angle)+vector[x].im*Math.cos(angle)
+
+}
+
+let mag=Math.sqrt(re*re+im*im)
+
+let theta_true=Math.atan2(im,re)/(2*Math.PI)
+
+let theta_wrapped=((theta_true%1)+1)%1
+
+amps.push({k,mag})
+
+html+=`<tr>
+<td>${k}</td>
+<td>${re.toFixed(4)} + ${im.toFixed(4)} i</td>
+<td>${mag.toFixed(4)}</td>
+<td>${theta_true.toFixed(4)}</td>
+<td>${theta_wrapped.toFixed(4)}</td>
+</tr>`
+}
+
+html+="</table>"
+
+document.getElementById("output").innerHTML=html
+
+generateComments(amps)
+showMath()
+}
+
+function generateComments(amps){
+
+amps.sort((a,b)=>b.mag-a.mag)
+
+let peaks=amps.slice(0,3).map(x=>x.k)
+
+let text="Look where |A| is largest: k = "+peaks.join(", ")
+text+="<br><br>Are the peaks equally spaced?"
+text+="<br><br>Change θ of a state and observe interference."
+text+="<br><br>Some amplitudes become nearly zero due to destructive interference."
+
+document.getElementById("comments").innerHTML=text
+}
+
+function showMath(){
+
+let n=parseInt(document.getElementById("qubits").value)
+let N=Math.pow(2,n)
+
+let text="Input state:<br><br> |ψ⟩ = "
+
+states.forEach((s,i)=>{
+text+=`${s.w} e^(i2π${s.theta}) |${s.d}⟩`
+if(i<states.length-1) text+=" + "
+})
+
+text+="<br><br>QFT formula:<br>"
+text+=`A_k = (1/√${N}) Σ_x a_x e^(2πikx/${N})`
+
+document.getElementById("mathbox").innerHTML=text
+}
+
+</script>
+
+</body>
+</html>
