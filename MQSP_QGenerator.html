@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Quantum Chemistry Test Generator</title>
+
+<style>
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+margin:40px;
+background:#f4f4f4;
+}
+
+h1,h2,h3{
+margin:4px;
+}
+
+.controlBox{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.15);
+margin-bottom:30px;
+}
+
+label{
+font-weight:bold;
+margin-right:8px;
+}
+
+input{
+padding:5px;
+margin-right:15px;
+}
+
+button{
+padding:8px 16px;
+cursor:pointer;
+margin-right:10px;
+}
+
+#paper{
+background:white;
+padding:30px;
+border-radius:10px;
+}
+
+.header{
+text-align:center;
+margin-bottom:25px;
+}
+
+.course{
+font-size:22px;
+font-weight:bold;
+}
+
+.dept{
+font-size:16px;
+}
+
+.inst{
+font-size:15px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+border:1px solid black;
+padding:8px;
+}
+
+th{
+background:#eee;
+}
+
+.roll{
+width:120px;
+text-align:center;
+font-weight:bold;
+}
+
+.instructions{
+margin-top:30px;
+font-size:14px;
+}
+
+pre{
+background:#eee;
+padding:10px;
+}
+
+@media print{
+
+.controlBox{
+display:none;
+}
+
+body{
+margin:0;
+background:white;
+}
+
+#paper{
+box-shadow:none;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="controlBox">
+
+<label>Number of Questions (max 50):</label>
+<input id="numQ" type="number" value="10" min="1" max="50">
+
+<label>Random Seed:</label>
+<input id="seed" type="number" value="1">
+
+<label>Max Atoms:</label>
+<input id="maxAtoms" type="number" value="20">
+
+<button onclick="generate()">Generate</button>
+<button onclick="window.print()">Export PDF</button>
+
+</div>
+
+<div id="paper">
+
+<div class="header">
+
+<div class="course">
+Modelling Quantum Systems and Processes
+</div>
+
+<div class="dept">
+Department of Chemistry, IIT Kharagpur
+</div>
+
+<div class="inst">
+Instructor: Prof. Sabyashachi Mishra
+</div>
+
+</div>
+
+<table id="questionTable">
+
+<tr>
+<th class="roll">Roll Number</th>
+<th>Question</th>
+</tr>
+
+</table>
+
+<div class="instructions">
+
+<h3>Submission Instructions</h3>
+
+<ul>
+<li>Submit the input file used for the calculation.</li>
+<li>Submit the complete output file from the quantum chemistry software.</li>
+<li>Provide optimized molecular geometry (Cartesian coordinates).</li>
+<li>If relevant, include HOMO and LUMO visualization.</li>
+<li>Attach a short report (maximum one page) summarizing the calculation and the requested result.</li>
+</ul>
+
+<b>File Naming Convention</b>
+
+<p>Use the format:</p>
+
+<pre>
+RollNumber_Molecule_Property
+</pre>
+
+<p>Example:</p>
+
+<pre>
+05_Benzene_HOMO_LUMO.pdf
+05_Benzene_output.log
+</pre>
+
+</div>
+
+</div>
+
+<script>
+
+function RNG(seed){
+this.seed=seed;
+this.next=function(){
+this.seed=(this.seed*9301+49297)%233280;
+return this.seed/233280;
+}
+}
+
+function capitalize(s){
+return s.charAt(0).toUpperCase()+s.slice(1);
+}
+
+let molecules=[
+
+{name:"Methanol",atoms:6,type:"organic"},
+{name:"Formaldehyde",atoms:4,type:"organic"},
+{name:"Acetaldehyde",atoms:7,type:"organic"},
+{name:"Acetone",atoms:10,type:"organic"},
+{name:"Acetonitrile",atoms:6,type:"organic"},
+{name:"Ethylene",atoms:6,type:"organic"},
+{name:"Propene",atoms:9,type:"organic"},
+{name:"Benzene",atoms:12,type:"organic"},
+{name:"Toluene",atoms:15,type:"organic"},
+{name:"Nitrobenzene",atoms:14,type:"organic"},
+
+{name:"Glycine",atoms:10,type:"amino"},
+{name:"Alanine",atoms:13,type:"amino"},
+{name:"Serine",atoms:14,type:"amino"},
+{name:"Cysteine",atoms:14,type:"amino"},
+{name:"Proline",atoms:17,type:"amino"},
+
+{name:"Imidazole",atoms:9,type:"bio"},
+{name:"Pyridine",atoms:11,type:"bio"},
+{name:"Nicotinamide",atoms:15,type:"bio"},
+{name:"Paracetamol",atoms:20,type:"bio"},
+{name:"Isobutylbenzene fragment",atoms:19,type:"bio"},
+
+{name:"Fe(CO)5",atoms:11,type:"tm"},
+{name:"Ni(CO)4",atoms:9,type:"tm"},
+{name:"Cu(NH3)4^2+",atoms:9,type:"tm"},
+{name:"Fe(H2O)6^2+",atoms:19,type:"tm"},
+{name:"Co(NH3)6^3+",atoms:19,type:"tm"},
+{name:"Cr(CO)6",atoms:13,type:"tm"},
+{name:"TiCl4",atoms:5,type:"tm"},
+{name:"ZnCl2",atoms:3,type:"tm"}
+
+];
+
+let basis=[
+
+"STO-3G",
+"3-21G",
+"6-31G",
+"6-31G*",
+"6-31G(d)",
+"6-31+G(d)",
+"6-31++G(d,p)",
+"6-311G",
+"6-311G(d,p)",
+"6-311++G(d,p)",
+"def2-SVP",
+"def2-TZVP"
+
+];
+
+let methods=["HF","MP2","B3LYP","PBE0","M06-2X","ωB97X-D","CCSD"];
+
+let solvents=[
+"gas phase",
+"PCM (water)",
+"SMD (water)",
+"PCM (methanol)"
+];
+
+let questions=[
+
+"compute the dipole moment",
+"determine the HOMO-LUMO gap",
+"perform geometry optimisation and report total energy",
+"calculate Mulliken charge on the heteroatom",
+"compute zero-point energy",
+"calculate entropy at 298 K",
+"calculate Gibbs free energy at 298 K",
+"identify the highest frequency vibrational mode",
+"calculate the vertical ionization potential",
+"calculate the electron affinity",
+"calculate solvation free energy",
+"determine MP2 correlation energy",
+"determine CCSD correlation energy",
+"compute the five lowest singlet excited states and their oscillator strengths"
+
+];
+
+function generate(){
+
+let N=parseInt(document.getElementById("numQ").value);
+
+if(N>50){
+alert("Maximum allowed questions is 50.");
+return;
+}
+
+let seed=parseInt(document.getElementById("seed").value);
+let maxAtoms=parseInt(document.getElementById("maxAtoms").value);
+
+let rng=new RNG(seed);
+
+let table=document.getElementById("questionTable");
+table.innerHTML="<tr><th class='roll'>Roll Number</th><th>Question</th></tr>";
+
+let used=new Set();
+
+let filteredMol=molecules.filter(m=>m.atoms<=maxAtoms);
+
+while(used.size<N){
+
+let mol=filteredMol[Math.floor(rng.next()*filteredMol.length)];
+let method=methods[Math.floor(rng.next()*methods.length)];
+let bas=basis[Math.floor(rng.next()*basis.length)];
+let solv=solvents[Math.floor(rng.next()*solvents.length)];
+let q=questions[Math.floor(rng.next()*questions.length)];
+
+if(mol.type=="tm"){
+if(method=="HF"||method=="MP2"||method=="CCSD") continue;
+}
+
+if(q.includes("CCSD") && mol.type!="organic") continue;
+
+if(q.includes("excited") && (method=="HF"||method=="MP2"||method=="CCSD")) continue;
+
+if(q.includes("MP2") && method!="MP2") continue;
+
+if(q.includes("CCSD") && method!="CCSD") continue;
+
+if(q.includes("solvation") && solv=="gas phase") continue;
+
+let text=capitalize(q)+" of "+mol.name+
+" using "+method+"/"+bas+
+" in "+solv+".";
+
+if(!used.has(text)){
+used.add(text);
+}
+
+}
+
+let i=1;
+
+used.forEach(function(q){
+
+let row=document.createElement("tr");
+
+let r1=document.createElement("td");
+r1.className="roll";
+r1.innerText=i;
+
+let r2=document.createElement("td");
+r2.innerText=q;
+
+row.appendChild(r1);
+row.appendChild(r2);
+
+table.appendChild(row);
+
+i++;
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
