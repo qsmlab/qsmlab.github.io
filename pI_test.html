@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peptide pI Quiz</title>
+<style>
+body { font-family: Arial; margin:0; background:#f7f7f7; }
+.container { max-width:900px; margin:auto; padding:15px; }
+h2, h3 { text-align:center; }
+button { padding:10px; font-size:15px; margin:8px 0; width:100%; max-width:300px; }
+input { padding:8px; font-size:15px; width:100%; box-sizing:border-box; }
+.card { background:white; padding:15px; margin:10px 0; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+.row { display:flex; gap:10px; flex-wrap:wrap; }
+.col { flex:1 1 150px; }
+#result { margin-top:15px; font-weight:bold; }
+#phCanvas { width:100%; height:140px; border:1px solid #ccc; border-radius:6px; }
+table { width:100%; overflow-x:auto; display:block; }
+th, td { padding:6px; font-size:14px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="card">
+<button onclick="toggleHints()">Show / Hide Instructions</button>
+<div id="hints" style="display:none; text-align:left;">
+<p>
+1. Identify ionizable groups.<br>
+2. Charge at pH < 1.<br>
+3. Charge at pH > 13.<br>
+4. Sort pKa values.<br>
+5. Track charge changes.<br>
+6. Find zero crossing.<br>
+7. Average surrounding pKa → pI.
+</p>
+</div>
+</div>
+
+<div class="card">
+<h3>pKa Values</h3>
+<table border="1">
+<tr><th>N-term</th><th>C</th><th>D</th><th>E</th><th>H</th><th>C</th><th>Y</th><th>K</th><th>R</th></tr>
+<tr><td>9.5</td><td>2.0</td><td>4.0</td><td>4.5</td><td>6.0</td><td>8.5</td><td>10.0</td><td>10.5</td><td>12.5</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>Peptide pI Quiz</h2>
+<p id="peptide">Click generate</p>
+<button onclick="generatePeptide()">Generate Peptide</button>
+
+<div class="row">
+<div class="col"># of Ionisable groups<input id="q1" type="number"></div>
+<div class="col">Charge at pH<1<input id="q2" type="number"></div>
+<div class="col">Charge at pH>13<input id="q3" type="number"></div>
+<div class="col">pI<input id="guess" type="number" step="0.01"></div>
+</div>
+
+<button onclick="checkAll()">Check Answers</button>
+<div id="result"></div>
+</div>
+
+<div class="card">
+<button onclick="toggleSolution()">Show / Hide Solution</button>
+<div id="solution" style="display:none;">
+<div id="solText"></div>
+<hr>
+<input type="range" id="phSlider" min="0" max="14" step="0.1" value="0" oninput="updateCharge()">
+<p>pH = <span id="phVal">0.0</span> | Charge = <span id="chargeVal">0</span></p>
+<canvas id="phCanvas"></canvas>
+</div>
+</div>
+
+</div>
+
+<script>
+function toggleHints(){
+  const h = document.getElementById('hints');
+  h.style.display = (h.style.display === 'none') ? 'block' : 'none';
+}
+
+// Large meaningful peptide-like word database (ONLY words that already contain ≥1 titratable residue: D,E,K,R,H,Y,C)
+const words = [
+"MAGNET","PROTEIN","PEPTIDE","LIGAND","ACTIVE","BINDING",
+"GLYCINE","VALINE","LEUCINE","ISOLEUCINE","SERINE","THREONINE",
+"METHIONINE","PHENYLALANINE","TRYPTOPHAN","PROLINE","ASPARAGINE",
+"GLUTAMINE","HISTIDINE","TYROSINE","CYSTEINE","ALANINE",
+"GLYCERIN","VALIANT","LEADING","TENSION","MENTION","REGION",
+"VERSION","MISSION","PASSING","SIGNAL","ALIGNMENT","TRAINING",
+"PAINTER","PAINTING","PRINTING","MAPPING","GAINING","LEARNING",
+"HEATING","COATING","READING","WRITING","RINGING","STRING",
+"STRANGE","GRAVITY","ENERGY","MATERIAL","MINERAL","ORGANIC",
+"CHEMICAL","GENETIC","PROTONIC","ELECTRIC",
+"IONIC","NEUTRAL","ACIDIC","BASIC","BUFFER","TITRATION"
+].filter(w => /[DEKRHYC]/.test(w));
+let currentPeptide="", truepI=0, correctIonisable=0, chargeLow=0, chargeHigh=0, stepData=[];
+
+function generatePeptide(){
+ let word = words[Math.floor(Math.random()*words.length)];
+ if (!/[DEKRHYC]/.test(word)){
+  const t=['D','E','K','R','H','Y','C'];
+  let i=Math.floor(Math.random()*word.length);
+  word=word.substring(0,i)+t[Math.floor(Math.random()*t.length)]+word.substring(i+1);
+ }
+ currentPeptide=word;
+ document.getElementById("peptide").innerText="Peptide: "+word;
+ truepI=calculatepI(word);
+ computeExtra(word);
+ buildSolution(word);
+}
+
+function calculatepI(seq){
+ let p=[2.0,9.5];
+ const map={D:4,E:4.5,H:6,C:8.5,Y:10,K:10.5,R:12.5};
+ for(let a of seq){ if(map[a]) p.push(map[a]); }
+ p.sort((a,b)=>a-b);
+ let m=Math.floor(p.length/2);
+ return (p[m]+p[m-1])/2;
+}
+
+function computeExtra(seq){
+ const basic=['K','R','H'], acidic=['D','E','Y','C'];
+ correctIonisable=0; chargeLow=1; chargeHigh=-1;
+ for(let a of seq){
+  if(basic.includes(a)||acidic.includes(a)) correctIonisable++;
+  if(basic.includes(a)) chargeLow++;
+  if(acidic.includes(a)) chargeHigh--;
+ }
+}
+
+function toggleSolution(){
+ let s=document.getElementById('solution');
+ s.style.display=(s.style.display==='none')?'block':'none';
+ resizeCanvas();
+ drawAxis(stepData.map(s=>({pKa:s.pH})));
+}
+
+function buildSolution(seq){
+ let p=[2.0,9.5], map={D:4,E:4.5,H:6,C:8.5,Y:10,K:10.5,R:12.5};
+ for(let a of seq){ if(map[a]) p.push(map[a]); }
+ p.sort((a,b)=>a-b);
+ let txt="<b>pKa:</b><br>"+p.join(", ")+"<br><br>";
+ let charge=1; stepData=[];
+ for(let val of p){ stepData.push({pH:val}); charge--; }
+ document.getElementById('solText').innerHTML=txt;
+ resizeCanvas();
+ drawAxis(p.map(x=>({pKa:x})));
+}
+
+function resizeCanvas(){
+ const canvas=document.getElementById('phCanvas');
+ canvas.width=canvas.clientWidth;
+ canvas.height=140;
+}
+
+function drawAxis(data){
+ const c=document.getElementById('phCanvas');
+ const ctx=c.getContext('2d');
+ ctx.clearRect(0,0,c.width,c.height);
+ let w=c.width, left=20, width=w-40;
+ const x=(ph)=>left+(ph/14)*width;
+
+ let pts=[0,...stepData.map(s=>s.pH),14];
+ for(let i=0;i<pts.length-1;i++){
+  let mid=(pts[i]+pts[i+1])/2, ch=1;
+  for(let s of stepData){ if(mid>s.pH) ch--; }
+  ctx.fillStyle= ch>0?"rgba(0,0,255,0.1)":ch<0?"rgba(255,0,0,0.1)":"rgba(0,200,0,0.2)";
+  ctx.fillRect(x(pts[i]),20,x(pts[i+1])-x(pts[i]),80);
+ }
+
+ ctx.beginPath(); ctx.moveTo(left,80); ctx.lineTo(w-20,80); ctx.stroke();
+
+ for(let obj of data){
+  let xx=x(obj.pKa);
+  ctx.beginPath(); ctx.moveTo(xx,60); ctx.lineTo(xx,80); ctx.stroke();
+ }
+
+ let ph=parseFloat(document.getElementById('phSlider').value);
+ ctx.fillStyle="blue";
+ ctx.beginPath(); ctx.arc(x(ph),80,5,0,2*Math.PI); ctx.fill();
+}
+
+function updateCharge(){
+ let ph=parseFloat(document.getElementById('phSlider').value);
+ document.getElementById('phVal').innerText=ph.toFixed(1);
+ let ch=1; for(let s of stepData){ if(ph>s.pH) ch--; }
+ document.getElementById('chargeVal').innerText=ch;
+ drawAxis(stepData.map(s=>({pKa:s.pH})));
+}
+
+function checkAll(){
+ let a1=parseInt(q1.value), a2=parseInt(q2.value), a3=parseInt(q3.value), g=parseFloat(guess.value);
+ let msg="";
+ msg+=(a1===correctIonisable)?"Q1 ✓<br>":"Q1 ✗ ("+correctIonisable+")<br>";
+ msg+=(a2===chargeLow)?"Q2 ✓<br>":"Q2 ✗ ("+chargeLow+")<br>";
+ msg+=(a3===chargeHigh)?"Q3 ✓<br>":"Q3 ✗ ("+chargeHigh+")<br>";
+ if(!isNaN(g)){ let d=Math.abs(g-truepI); msg+=(d<0.3)?"pI ✓":"pI ✗ ("+truepI.toFixed(2)+")"; }
+ result.innerHTML=msg;
+}
+
+window.addEventListener('resize', ()=>{ resizeCanvas(); drawAxis(stepData.map(s=>({pKa:s.pH}))); });
+</script>
+
+</body>
+</html>
