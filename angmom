@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular Momentum Operator Lab</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+
+<style>
+  :root{
+    --bg:#ffffff;
+    --panel:#ffffff;
+    --panel-2:#f7f7f6;
+    --border:#e3e3e0;
+    --text:#1c1c1a;
+    --muted:#767672;
+    --accent:#0f766e;
+    --accent-2:#b45309;
+    --err:#b91c1c;
+    --ok:#15803d;
+    --mono: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace;
+    --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --body-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body-font);
+    line-height:1.5;
+    min-height:100vh;
+  }
+
+  .wrap{max-width:900px;margin:0 auto;padding:48px 24px 96px;}
+
+  header.hero{
+    display:flex;
+    align-items:baseline;
+    gap:18px;
+    border-bottom:1px solid var(--border);
+    padding-bottom:26px;
+    margin-bottom:34px;
+  }
+  header.hero .bracket{
+    font-family:var(--serif);
+    font-size:60px;
+    line-height:0.8;
+    color:var(--accent);
+    font-weight:400;
+    user-select:none;
+  }
+  header.hero .titles h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:28px;
+    margin:0 0 4px;
+    letter-spacing:0.1px;
+    color:#111;
+  }
+  header.hero .titles p{
+    margin:0;
+    color:var(--muted);
+    font-size:14px;
+    max-width:56ch;
+  }
+
+  section.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:26px 28px;
+    margin-bottom:20px;
+  }
+  section.card[data-disabled="true"]{opacity:0.4; pointer-events:none;}
+
+  .step{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+  }
+  .step .num{
+    font-family:var(--serif);
+    font-size:21px;
+    color:var(--accent);
+    min-width:24px;
+  }
+  .step h2{
+    font-size:15.5px;
+    font-weight:600;
+    margin:0;
+    letter-spacing:0.1px;
+    color:#111;
+  }
+  .step .sub{color:var(--muted); font-size:12.5px; margin-left:auto;}
+
+  label{
+    display:block;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:6px;
+    font-family:var(--mono);
+  }
+  input[type=text], input[type=number], textarea{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:6px;
+    padding:9px 11px;
+    font-family:var(--mono);
+    font-size:13.5px;
+    outline:none;
+    transition:border-color .15s;
+  }
+  input[type=text]:focus, input[type=number]:focus, textarea:focus{border-color:var(--accent);}
+  textarea{resize:vertical; min-height:70px;}
+
+  .row{display:flex; gap:16px; flex-wrap:wrap;}
+  .row .field{flex:1; min-width:140px;}
+
+  button{
+    font-family:var(--body-font);
+    font-weight:600;
+    font-size:13px;
+    background:var(--accent);
+    color:#ffffff;
+    border:none;
+    padding:9px 17px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:opacity .15s;
+  }
+  button:hover{opacity:0.86;}
+  button.secondary{
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--border);
+  }
+  button.secondary:hover{border-color:var(--accent); opacity:1; color:var(--accent);}
+  button:disabled{opacity:0.35; cursor:not-allowed;}
+
+  .btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+
+  .examples{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .examples button{
+    background:var(--panel-2);
+    color:var(--muted);
+    border:1px solid var(--border);
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:11.5px;
+    padding:5px 9px;
+  }
+  .examples button:hover{color:var(--accent); border-color:var(--accent); opacity:1;}
+
+  .msg{
+    margin-top:12px;
+    font-size:12.5px;
+    font-family:var(--mono);
+    padding:8px 12px;
+    border-radius:6px;
+    display:none;
+    white-space:pre-wrap;
+  }
+  .msg.show{display:block;}
+  .msg.error{background:#fef2f2; color:var(--err); border:1px solid #fecaca;}
+  .msg.ok{background:#f0fdf4; color:var(--ok); border:1px solid #bbf7d0;}
+
+  .basis-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:14px;
+    font-family:var(--mono);
+    font-size:12.5px;
+  }
+  .basis-grid span{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    padding:3px 8px;
+    border-radius:5px;
+    color:var(--accent);
+  }
+  .basis-grid span i{color:var(--muted); font-style:normal; margin-right:4px;}
+
+  .matrix-box{
+    margin-top:16px;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:18px;
+    overflow-x:auto;
+  }
+  .matrix-box.empty{color:var(--muted); font-family:var(--mono); font-size:12.5px;}
+
+  .hermitian-tag{
+    display:inline-block;
+    margin-left:10px;
+    font-family:var(--mono);
+    font-size:11px;
+    padding:2px 8px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    color:var(--muted);
+    vertical-align:middle;
+  }
+  .hermitian-tag.yes{color:var(--ok); border-color:#bbf7d0;}
+  .hermitian-tag.no{color:var(--err); border-color:#fecaca;}
+
+  .param-ctrl{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    background:var(--panel-2);
+  }
+  .param-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .param-head .param-name{
+    font-family:var(--mono);
+    font-weight:600;
+    color:var(--accent-2);
+    font-size:13.5px;
+  }
+  .param-head .param-val{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text);
+    margin-left:auto;
+  }
+  .sweep-radio{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-size:11.5px;
+    color:var(--muted);
+    font-family:var(--mono);
+    cursor:pointer;
+  }
+  .param-row{
+    display:grid;
+    grid-template-columns:64px 1fr 64px;
+    gap:8px;
+    align-items:center;
+  }
+  .param-row input[type=number]{ padding:6px 7px; font-size:12px; }
+  input[type=range]{
+    width:100%;
+    accent-color:var(--accent);
+    cursor:pointer;
+  }
+
+  .plot-box{
+    margin-top:16px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px;
+    background:var(--panel-2);
+  }
+  .plot-box svg{display:block; width:100%; height:auto;}
+
+  .eig-readout{
+    margin-top:12px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .eig-chip{
+    font-family:var(--mono);
+    font-size:11.5px;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    padding:3px 8px;
+    border-radius:5px;
+    color:var(--text);
+  }
+
+  details.vec-details{
+    margin-top:14px;
+    font-size:12.5px;
+  }
+  details.vec-details summary{
+    cursor:pointer;
+    color:var(--accent);
+    font-family:var(--mono);
+    font-size:12px;
+  }
+  .vec-row{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+    padding:3px 0;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+  .note{
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:10px;
+    line-height:1.5;
+  }
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:11.5px;
+    margin-top:36px;
+    font-family:var(--mono);
+  }
+
+  @media (max-width:600px){
+    header.hero{flex-direction:column; gap:6px;}
+    header.hero .bracket{display:none;}
+    .param-row{grid-template-columns:56px 1fr 56px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="bracket">[</div>
+    <div class="titles">
+      <h1>Angular Momentum Operator Lab</h1>
+      <p>Construct L, S, and J operator matrices, build arbitrary operator expressions, and explore how the eigenvalues move as you drag the parameters. Runs entirely in your browser, dimension &le; 30.</p>
+    </div>
+    <div class="bracket">]</div>
+  </header>
+
+  <!-- STEP 1: SYSTEM -->
+  <section class="card" id="cardSystem">
+    <div class="step">
+      <span class="num">1</span>
+      <h2>Define the system</h2>
+      <span class="sub">provide l, s, or both &middot; dim &le; 30</span>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="lInput">orbital quantum number, l</label>
+        <input type="text" id="lInput" placeholder="e.g. 1, 2, 5/2 (leave blank to omit)">
+      </div>
+      <div class="field">
+        <label for="sInput">spin quantum number, s</label>
+        <input type="text" id="sInput" placeholder="e.g. 1/2, 1, 3/2 (leave blank to omit)">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button id="buildBtn">Build basis &amp; operators</button>
+    </div>
+    <div class="msg" id="systemMsg"></div>
+    <div class="basis-grid" id="basisGrid"></div>
+  </section>
+
+  <!-- STEP 2: EXPRESSION -->
+  <section class="card" data-disabled="true" id="cardExpr">
+    <div class="step">
+      <span class="num">2</span>
+      <h2>Operator expression</h2>
+      <span class="sub">Lx Ly Lz Lp Lm L2 &middot; Sx Sy Sz Sp Sm S2 &middot; Jx Jy Jz J2 &middot; L&middot;S &middot; parameters</span>
+    </div>
+    <textarea id="exprInput" placeholder="e.g.  λ*dot(L,S) + D*(Sz**2 - S(S+1)/3)">Lz</textarea>
+    <div class="examples" id="examples"></div>
+    <div class="btn-row">
+      <button id="parseBtn">Build matrix</button>
+    </div>
+    <div class="msg" id="exprMsg"></div>
+    <div class="matrix-box empty" id="symbolicMatrixBox">Symbolic matrix will appear here.</div>
+  </section>
+
+  <!-- STEP 3: EXPLORE -->
+  <section class="card" data-disabled="true" id="cardExplore">
+    <div class="step">
+      <span class="num">3</span>
+      <h2>Explore eigenvalues</h2>
+      <span class="sub">drag a slider, or drag directly on the plot</span>
+    </div>
+    <div id="paramControls"></div>
+    <div class="plot-box" id="plotContainer"></div>
+    <div class="eig-readout" id="eigReadout"></div>
+    <details class="vec-details" id="vecDetails">
+      <summary>Show eigenvectors at the current parameter values</summary>
+      <div id="vecList" style="margin-top:8px;"></div>
+    </details>
+    <div class="msg" id="exploreMsg"></div>
+  </section>
+
+  <footer>Runs fully client-side in vanilla JavaScript &mdash; no data leaves your browser, nothing to download.</footer>
+</div>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   COMPLEX NUMBERS
+   ========================================================================= */
+const C = {
+  z: (re = 0, im = 0) => ({ re, im }),
+  add: (a, b) => ({ re: a.re + b.re, im: a.im + b.im }),
+  sub: (a, b) => ({ re: a.re - b.re, im: a.im - b.im }),
+  mul: (a, b) => ({ re: a.re * b.re - a.im * b.im, im: a.re * b.im + a.im * b.re }),
+  conj: (a) => ({ re: a.re, im: -a.im }),
+  isZero: (a, tol = 1e-12) => Math.abs(a.re) < tol && Math.abs(a.im) < tol,
+};
+
+/* =========================================================================
+   SymNum: symbolic scalar = const (Complex) + sum over monomials of coeff*monomial
+   ========================================================================= */
+function monomialKey(expMap) {
+  const keys = Object.keys(expMap).filter(k => expMap[k] !== 0).sort();
+  if (keys.length === 0) return "";
+  return keys.map(k => (expMap[k] === 1 ? k : `${k}^${expMap[k]}`)).join("*");
+}
+function monomialExpMap(key) {
+  if (key === "") return {};
+  const map = {};
+  for (const part of key.split("*")) {
+    const [name, exp] = part.split("^");
+    map[name] = exp ? parseInt(exp, 10) : 1;
+  }
+  return map;
+}
+function mulMonomialKeys(k1, k2) {
+  const m1 = monomialExpMap(k1), m2 = monomialExpMap(k2);
+  const out = { ...m1 };
+  for (const s in m2) out[s] = (out[s] || 0) + m2[s];
+  return monomialKey(out);
+}
+
+const Sym = {
+  zero: () => ({ const: C.z(0, 0), terms: {} }),
+  fromNumber: (re, im = 0) => ({ const: C.z(re, im), terms: {} }),
+  fromSymbol: (name) => ({ const: C.z(0, 0), terms: { [name]: C.z(1, 0) } }),
+  add(a, b) {
+    const out = { const: C.add(a.const, b.const), terms: { ...a.terms } };
+    for (const k in b.terms) out.terms[k] = out.terms[k] ? C.add(out.terms[k], b.terms[k]) : b.terms[k];
+    return Sym.clean(out);
+  },
+  sub(a, b) { return Sym.add(a, Sym.scale(b, C.z(-1, 0))); },
+  scale(a, c) {
+    const out = { const: C.mul(a.const, c), terms: {} };
+    for (const k in a.terms) out.terms[k] = C.mul(a.terms[k], c);
+    return Sym.clean(out);
+  },
+  mul(a, b) {
+    let out = Sym.zero();
+    out.const = C.mul(a.const, b.const);
+    for (const k in b.terms) out.terms[k] = out.terms[k] ? C.add(out.terms[k], C.mul(a.const, b.terms[k])) : C.mul(a.const, b.terms[k]);
+    for (const k in a.terms) out.terms[k] = out.terms[k] ? C.add(out.terms[k], C.mul(a.terms[k], b.const)) : C.mul(a.terms[k], b.const);
+    for (const k1 in a.terms) {
+      for (const k2 in b.terms) {
+        const key = mulMonomialKeys(k1, k2);
+        const val = C.mul(a.terms[k1], b.terms[k2]);
+        out.terms[key] = out.terms[key] ? C.add(out.terms[key], val) : val;
+      }
+    }
+    return Sym.clean(out);
+  },
+  clean(a, tol = 1e-12) {
+    const terms = {};
+    for (const k in a.terms) if (!C.isZero(a.terms[k], tol)) terms[k] = a.terms[k];
+    return { const: a.const, terms };
+  },
+  isZero(a, tol = 1e-9) {
+    if (!C.isZero(a.const, tol)) return false;
+    for (const k in a.terms) if (!C.isZero(a.terms[k], tol)) return false;
+    return true;
+  },
+  conj(a) {
+    const out = { const: C.conj(a.const), terms: {} };
+    for (const k in a.terms) out.terms[k] = C.conj(a.terms[k]);
+    return out;
+  },
+  freeSymbols(a) {
+    const s = new Set();
+    for (const k in a.terms) for (const sym in monomialExpMap(k)) s.add(sym);
+    return s;
+  },
+  substitute(a, values) {
+    let re = a.const.re, im = a.const.im;
+    for (const k in a.terms) {
+      const expMap = monomialExpMap(k);
+      let factor = 1, ok = true;
+      for (const sym in expMap) {
+        if (!(sym in values)) { ok = false; break; }
+        factor *= Math.pow(values[sym], expMap[sym]);
+      }
+      if (!ok) continue;
+      re += a.terms[k].re * factor;
+      im += a.terms[k].im * factor;
+    }
+    return C.z(re, im);
+  },
+};
+
+/* ---- pretty-printing a real number as a fraction / surd (best-effort) ---- */
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; }
+function prettyReal(x, tol = 1e-7) {
+  if (Math.abs(x) < tol) return "0";
+  const sign = x < 0 ? "-" : "";
+  const ax = Math.abs(x);
+  for (let d = 1; d <= 24; d++) {
+    const n = ax * d, nr = Math.round(n);
+    if (Math.abs(n - nr) < tol * Math.max(1, d) && nr > 0) {
+      const g = gcd(nr, d), nn = nr / g, dd = d / g;
+      return sign + (dd === 1 ? `${nn}` : `\\frac{${nn}}{${dd}}`);
+    }
+  }
+  for (let d = 1; d <= 12; d++) {
+    const val2 = (ax * d) * (ax * d);
+    for (let m = 2; m <= 60; m++) {
+      if (Number.isInteger(Math.sqrt(m))) continue;
+      const k2 = val2 / m, k = Math.round(Math.sqrt(k2));
+      if (k > 0 && Math.abs(k * k - k2) < 1e-6) {
+        const reconstruct = (k * Math.sqrt(m)) / d;
+        if (Math.abs(reconstruct - ax) < tol * 5) {
+          const coeff = k === 1 ? "" : `${k}`;
+          const radical = `${coeff}\\sqrt{${m}}`;
+          return sign + (d === 1 ? radical : `\\frac{${radical}}{${d}}`);
+        }
+      }
+    }
+  }
+  return sign + ax.toFixed(6).replace(/0+$/, "").replace(/\.$/, "");
+}
+function prettyComplexCoeff(c, tol = 1e-9) {
+  const hasRe = Math.abs(c.re) > tol, hasIm = Math.abs(c.im) > tol;
+  if (!hasRe && !hasIm) return null;
+  if (hasRe && !hasIm) return prettyReal(c.re);
+  if (!hasRe && hasIm) { const s = prettyReal(c.im); return (s === "1" ? "i" : s === "-1" ? "-i" : `${s}i`); }
+  const reS = prettyReal(c.re), imAbs = prettyReal(Math.abs(c.im)), sign = c.im < 0 ? "-" : "+";
+  return `(${reS} ${sign} ${imAbs}i)`;
+}
+function symToLatex(a) {
+  const parts = [];
+  const constStr = prettyComplexCoeff(a.const);
+  if (constStr) parts.push(constStr);
+  const keys = Object.keys(a.terms).sort();
+  for (const k of keys) {
+    const coeffStr = prettyComplexCoeff(a.terms[k]);
+    if (!coeffStr) continue;
+    const symLatex = k.split("*").map(p => { const [name, exp] = p.split("^"); return exp ? `${name}^{${exp}}` : name; }).join(" ");
+    if (coeffStr === "1") parts.push(symLatex);
+    else if (coeffStr === "-1") parts.push(`-${symLatex}`);
+    else parts.push(`${coeffStr}\\,${symLatex}`);
+  }
+  if (parts.length === 0) return "0";
+  let out = parts[0];
+  for (let i = 1; i < parts.length; i++) out += parts[i].startsWith("-") ? ` - ${parts[i].slice(1)}` : ` + ${parts[i]}`;
+  return out;
+}
+
+/* =========================================================================
+   MATRIX (of SymNum entries)
+   ========================================================================= */
+const Mat = {
+  zeros(r, c) { const M = new Array(r); for (let i = 0; i < r; i++) { M[i] = new Array(c); for (let j = 0; j < c; j++) M[i][j] = Sym.zero(); } return { rows: r, cols: c, data: M }; },
+  identity(n) { const M = Mat.zeros(n, n); for (let i = 0; i < n; i++) M.data[i][i] = Sym.fromNumber(1); return M; },
+  add(A, B) { const M = Mat.zeros(A.rows, A.cols); for (let i = 0; i < A.rows; i++) for (let j = 0; j < A.cols; j++) M.data[i][j] = Sym.add(A.data[i][j], B.data[i][j]); return M; },
+  sub(A, B) { const M = Mat.zeros(A.rows, A.cols); for (let i = 0; i < A.rows; i++) for (let j = 0; j < A.cols; j++) M.data[i][j] = Sym.sub(A.data[i][j], B.data[i][j]); return M; },
+  scale(A, c) { const M = Mat.zeros(A.rows, A.cols); for (let i = 0; i < A.rows; i++) for (let j = 0; j < A.cols; j++) M.data[i][j] = Sym.scale(A.data[i][j], c); return M; },
+  mul(A, B) {
+    if (A.cols !== B.rows) throw new Error(`Matrix dimension mismatch (${A.rows}x${A.cols} * ${B.rows}x${B.cols}).`);
+    const M = Mat.zeros(A.rows, B.cols);
+    for (let i = 0; i < A.rows; i++) for (let k = 0; k < A.cols; k++) {
+      const a = A.data[i][k]; if (Sym.isZero(a)) continue;
+      for (let j = 0; j < B.cols; j++) { const b = B.data[k][j]; if (Sym.isZero(b)) continue; M.data[i][j] = Sym.add(M.data[i][j], Sym.mul(a, b)); }
+    }
+    return M;
+  },
+  kron(A, B) {
+    const M = Mat.zeros(A.rows * B.rows, A.cols * B.cols);
+    for (let i = 0; i < A.rows; i++) for (let j = 0; j < A.cols; j++) {
+      const a = A.data[i][j]; if (Sym.isZero(a)) continue;
+      for (let p = 0; p < B.rows; p++) for (let q = 0; q < B.cols; q++) {
+        const idx1 = i * B.rows + p, idx2 = j * B.cols + q;
+        M.data[idx1][idx2] = Sym.add(M.data[idx1][idx2], Sym.mul(a, B.data[p][q]));
+      }
+    }
+    return M;
+  },
+  conjTranspose(A) { const M = Mat.zeros(A.cols, A.rows); for (let i = 0; i < A.rows; i++) for (let j = 0; j < A.cols; j++) M.data[j][i] = Sym.conj(A.data[i][j]); return M; },
+  isZero(A, tol = 1e-9) { for (let i = 0; i < A.rows; i++) for (let j = 0; j < A.cols; j++) if (!Sym.isZero(A.data[i][j], tol)) return false; return true; },
+  isHermitian(A, tol = 1e-9) { if (A.rows !== A.cols) return false; return Mat.isZero(Mat.sub(A, Mat.conjTranspose(A)), tol); },
+  freeSymbols(A) { const s = new Set(); for (let i = 0; i < A.rows; i++) for (let j = 0; j < A.cols; j++) for (const sym of Sym.freeSymbols(A.data[i][j])) s.add(sym); return s; },
+  toLatex(A) { const rows = []; for (let i = 0; i < A.rows; i++) rows.push(A.data[i].map(e => symToLatex(e)).join(" & ")); return "\\begin{pmatrix}" + rows.join(" \\\\ ") + "\\end{pmatrix}"; },
+};
+
+/* =========================================================================
+   Build angular-momentum operator matrices for quantum number j
+   ========================================================================= */
+function buildJOps(j) {
+  const dim = Math.round(2 * j + 1);
+  const ms = []; for (let k = 0; k < dim; k++) ms.push(j - k);
+  const Jz = Mat.zeros(dim, dim), Jp = Mat.zeros(dim, dim), Jm = Mat.zeros(dim, dim);
+  for (let idx = 0; idx < dim; idx++) {
+    const m = ms[idx];
+    Jz.data[idx][idx] = Sym.fromNumber(m);
+    if (idx - 1 >= 0) Jp.data[idx - 1][idx] = Sym.fromNumber(Math.sqrt(Math.max(0, j * (j + 1) - m * (m + 1))));
+    if (idx + 1 < dim) Jm.data[idx + 1][idx] = Sym.fromNumber(Math.sqrt(Math.max(0, j * (j + 1) - m * (m - 1))));
+  }
+  const Jx = Mat.scale(Mat.add(Jp, Jm), C.z(0.5, 0));
+  const Jy = Mat.scale(Mat.sub(Jp, Jm), C.z(0, -0.5));
+  const J2 = Mat.scale(Mat.identity(dim), C.z(j * (j + 1), 0));
+  return { dim, ms, Jx, Jy, Jz, Jp, Jm, J2 };
+}
+
+/* =========================================================================
+   EXPRESSION PARSER
+   ========================================================================= */
+function preprocessExpr(input) {
+  let s = input;
+  s = s.replace(/²/g, "**2").replace(/³/g, "**3");
+  s = s.replace(/⊗/g, "*");
+  s = s.replace(/([LSJ])\s*[⁺₊]/g, (m, g1) => g1 + "p");
+  s = s.replace(/([LSJ])\s*[⁻₋]/g, (m, g1) => g1 + "m");
+  s = s.replace(/\b([LSJ])\*\*2\b/g, (m, g1) => g1 + "2");
+  s = s.replace(/([LSJ])\s*[·•]\s*([LSJ])/g, (m, g1, g2) => `dot(${g1},${g2})`);
+  s = s.replace(/\b([LSJ])\(\s*\1\s*\+\s*1\s*\)/g, (m, g1) => g1 + "2");
+  return s;
+}
+function tokenize(s) {
+  const tokens = []; let i = 0; const n = s.length;
+  const isDigit = c => c >= "0" && c <= "9";
+  const isIdentStart = c => /[\p{L}_]/u.test(c);
+  const isIdentChar = c => /[\p{L}0-9_]/u.test(c);
+  while (i < n) {
+    const c = s[i];
+    if (c === " " || c === "\t" || c === "\n" || c === "\r") { i++; continue; }
+    if (isDigit(c) || (c === "." && isDigit(s[i + 1]))) {
+      let j = i; while (j < n && (isDigit(s[j]) || s[j] === ".")) j++;
+      tokens.push({ type: "num", value: parseFloat(s.slice(i, j)) }); i = j; continue;
+    }
+    if (isIdentStart(c)) {
+      let j = i; while (j < n && isIdentChar(s[j])) j++;
+      tokens.push({ type: "id", name: s.slice(i, j) }); i = j; continue;
+    }
+    if (c === "*" && s[i + 1] === "*") { tokens.push({ type: "op", value: "**" }); i += 2; continue; }
+    if ("+-*/(),^".includes(c)) { tokens.push({ type: "op", value: c === "^" ? "**" : c }); i++; continue; }
+    throw new Error(`Unexpected character '${c}' in expression.`);
+  }
+  return tokens;
+}
+function insertImplicitMul(tokens) {
+  const funcNames = new Set(["dot"]);
+  const out = [];
+  for (let i = 0; i < tokens.length; i++) {
+    out.push(tokens[i]);
+    const cur = tokens[i], nxt = tokens[i + 1];
+    if (!nxt) continue;
+    const curEnds = cur.type === "num" || cur.type === "id" || (cur.type === "op" && cur.value === ")");
+    const nxtStarts = nxt.type === "num" || nxt.type === "id" || (nxt.type === "op" && nxt.value === "(");
+    if (curEnds && nxtStarts) {
+      if (cur.type === "id" && funcNames.has(cur.name) && nxt.type === "op" && nxt.value === "(") continue;
+      out.push({ type: "op", value: "*" });
+    }
+  }
+  return out;
+}
+function scalarToMatrix(sym, dim) { const M = Mat.zeros(dim, dim); for (let i = 0; i < dim; i++) M.data[i][i] = sym; return M; }
+function scalarMulMatrix(mat, sym) { const M = Mat.zeros(mat.rows, mat.cols); for (let i = 0; i < mat.rows; i++) for (let j = 0; j < mat.cols; j++) M.data[i][j] = Sym.mul(mat.data[i][j], sym); return M; }
+
+function evaluateExpr(tokens, ctx) {
+  let pos = 0;
+  const peek = () => tokens[pos];
+  const nextTok = () => tokens[pos++];
+  const expectOp = v => { const t = nextTok(); if (!t || t.type !== "op" || t.value !== v) throw new Error(`Expected '${v}' in expression.`); };
+
+  function asMatrix(v) {
+    if (v.kind === "matrix") return v.mat;
+    if (v.kind === "scalar") return scalarToMatrix(v.sym, ctx.dim);
+    throw new Error("A raw vector symbol (L, S, or J) can only be used inside dot(...).");
+  }
+  function vAdd(a, b) { if (a.kind === "scalar" && b.kind === "scalar") return { kind: "scalar", sym: Sym.add(a.sym, b.sym) }; return { kind: "matrix", mat: Mat.add(asMatrix(a), asMatrix(b)) }; }
+  function vSub(a, b) { if (a.kind === "scalar" && b.kind === "scalar") return { kind: "scalar", sym: Sym.sub(a.sym, b.sym) }; return { kind: "matrix", mat: Mat.sub(asMatrix(a), asMatrix(b)) }; }
+  function vNeg(a) { if (a.kind === "scalar") return { kind: "scalar", sym: Sym.scale(a.sym, C.z(-1, 0)) }; return { kind: "matrix", mat: Mat.scale(asMatrix(a), C.z(-1, 0)) }; }
+  function vMul(a, b) {
+    if (a.kind === "vector" || b.kind === "vector") throw new Error("A raw vector symbol (L, S, or J) can only be used inside dot(...).");
+    if (a.kind === "scalar" && b.kind === "scalar") return { kind: "scalar", sym: Sym.mul(a.sym, b.sym) };
+    if (a.kind === "scalar") return { kind: "matrix", mat: scalarMulMatrix(b.mat, a.sym) };
+    if (b.kind === "scalar") return { kind: "matrix", mat: scalarMulMatrix(a.mat, b.sym) };
+    return { kind: "matrix", mat: Mat.mul(a.mat, b.mat) };
+  }
+  function vDiv(a, b) {
+    if (b.kind !== "scalar" || Sym.freeSymbols(b.sym).size > 0) throw new Error("Division is only supported by a plain number, not by a matrix or a symbolic parameter.");
+    const denom = b.sym.const;
+    if (C.isZero(denom)) throw new Error("Division by zero.");
+    const magSq = denom.re * denom.re + denom.im * denom.im;
+    const recip = C.z(denom.re / magSq, -denom.im / magSq);
+    return vMul(a, { kind: "scalar", sym: Sym.fromNumber(recip.re, recip.im) });
+  }
+  function vPow(a, expVal) {
+    if (expVal.kind !== "scalar" || Sym.freeSymbols(expVal.sym).size > 0) throw new Error("Exponents must be plain numbers (e.g. Sz**2).");
+    const c = expVal.sym.const;
+    if (Math.abs(c.im) > 1e-9 || Math.abs(c.re - Math.round(c.re)) > 1e-9 || c.re < 0) throw new Error("Exponents must be non-negative integers.");
+    const n = Math.round(c.re);
+    if (a.kind === "scalar") { let r = Sym.fromNumber(1); for (let i = 0; i < n; i++) r = Sym.mul(r, a.sym); return { kind: "scalar", sym: r }; }
+    const m = asMatrix(a);
+    let R = Mat.identity(m.rows); for (let i = 0; i < n; i++) R = Mat.mul(R, m);
+    return { kind: "matrix", mat: R };
+  }
+  function resolveIdentifier(name) {
+    if (ctx.ops[name]) return { kind: "matrix", mat: ctx.ops[name] };
+    if (name === "I") return { kind: "matrix", mat: Mat.identity(ctx.dim) };
+    if (name === "L" || name === "S" || name === "J") return { kind: "vector", name };
+    if (/^[LSJ](x|y|z|p|m|2)$/.test(name)) {
+      const which = name[0] === "L" ? "l" : name[0] === "S" ? "s" : "j";
+      throw new Error(`${name} is not available -- please provide a value for ${which} (step 1) to define that operator space.`);
+    }
+    return { kind: "scalar", sym: Sym.fromSymbol(name) };
+  }
+  function callFunction(name, args) {
+    if (name === "dot") {
+      if (args.length !== 2) throw new Error("dot(...) requires exactly 2 arguments, e.g. dot(L,S).");
+      const [a, b] = args;
+      if (a.kind !== "vector" || b.kind !== "vector") throw new Error("dot(...) expects vector symbols L, S, or J, e.g. dot(L,S).");
+      const comp = { L: ["Lx", "Ly", "Lz"], S: ["Sx", "Sy", "Sz"], J: ["Jx", "Jy", "Jz"] };
+      const [ax, ay, az] = comp[a.name], [bx, by, bz] = comp[b.name];
+      for (const k of [ax, ay, az, bx, by, bz]) if (!ctx.ops[k]) throw new Error(`${k} is not available -- did you define the corresponding quantum number?`);
+      const m = Mat.add(Mat.add(Mat.mul(ctx.ops[ax], ctx.ops[bx]), Mat.mul(ctx.ops[ay], ctx.ops[by])), Mat.mul(ctx.ops[az], ctx.ops[bz]));
+      return { kind: "matrix", mat: m };
+    }
+    throw new Error(`Unknown function '${name}'.`);
+  }
+  function parseExpr() {
+    let left = parseTerm();
+    while (peek() && peek().type === "op" && (peek().value === "+" || peek().value === "-")) {
+      const op = nextTok().value; const right = parseTerm();
+      left = op === "+" ? vAdd(left, right) : vSub(left, right);
+    }
+    return left;
+  }
+  function parseTerm() {
+    let left = parseUnary();
+    while (peek() && peek().type === "op" && (peek().value === "*" || peek().value === "/")) {
+      const op = nextTok().value; const right = parseUnary();
+      left = op === "*" ? vMul(left, right) : vDiv(left, right);
+    }
+    return left;
+  }
+  function parseUnary() {
+    if (peek() && peek().type === "op" && (peek().value === "-" || peek().value === "+")) {
+      const op = nextTok().value; const v = parseUnary();
+      return op === "-" ? vNeg(v) : v;
+    }
+    return parsePower();
+  }
+  function parsePower() {
+    let base = parseAtom();
+    if (peek() && peek().type === "op" && peek().value === "**") { nextTok(); const exp = parseUnary(); base = vPow(base, exp); }
+    return base;
+  }
+  function parseAtom() {
+    const t = peek();
+    if (!t) throw new Error("Unexpected end of expression.");
+    if (t.type === "num") { nextTok(); return { kind: "scalar", sym: Sym.fromNumber(t.value) }; }
+    if (t.type === "op" && t.value === "(") { nextTok(); const v = parseExpr(); expectOp(")"); return v; }
+    if (t.type === "id") {
+      nextTok();
+      if (peek() && peek().type === "op" && peek().value === "(") {
+        nextTok();
+        const args = [];
+        if (!(peek() && peek().type === "op" && peek().value === ")")) {
+          args.push(parseExpr());
+          while (peek() && peek().type === "op" && peek().value === ",") { nextTok(); args.push(parseExpr()); }
+        }
+        expectOp(")");
+        return callFunction(t.name, args);
+      }
+      return resolveIdentifier(t.name);
+    }
+    throw new Error(`Unexpected token near '${JSON.stringify(t)}'.`);
+  }
+  const result = parseExpr();
+  if (pos !== tokens.length) throw new Error("Unexpected trailing input in expression.");
+  return result;
+}
+function parseOperatorExpression(exprStr, ctx) {
+  const processed = preprocessExpr(exprStr);
+  const tokens = insertImplicitMul(tokenize(processed));
+  const value = evaluateExpr(tokens, ctx);
+  if (value.kind === "vector") throw new Error("A raw vector symbol (L, S, or J) can only be used inside dot(...).");
+  return value.kind === "matrix" ? value.mat : scalarToMatrix(value.sym, ctx.dim);
+}
+
+/* =========================================================================
+   EIGENSOLVER: real symmetric Jacobi + complex-Hermitian embedding
+   ========================================================================= */
+function realSymJacobi(Min, maxSweeps = 200, tol = 1e-13) {
+  const n = Min.length;
+  const A = Min.map(r => r.slice());
+  let V = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)));
+  for (let sweep = 0; sweep < maxSweeps; sweep++) {
+    let off = 0;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) off += A[p][q] * A[p][q];
+    if (off < tol) break;
+    for (let p = 0; p < n - 1; p++) {
+      for (let q = p + 1; q < n; q++) {
+        const apq = A[p][q];
+        if (Math.abs(apq) < 1e-300) continue;
+        const app = A[p][p], aqq = A[q][q];
+        let t;
+        if (Math.abs(app - aqq) < 1e-300) t = apq >= 0 ? 1 : -1;
+        else { const theta = (aqq - app) / (2 * apq); t = Math.sign(theta) / (Math.abs(theta) + Math.sqrt(1 + theta * theta)); }
+        const c = 1 / Math.sqrt(1 + t * t), s = t * c;
+        for (let k = 0; k < n; k++) { const akp = A[k][p], akq = A[k][q]; A[k][p] = c * akp - s * akq; A[k][q] = s * akp + c * akq; }
+        for (let k = 0; k < n; k++) { const apk = A[p][k], aqk = A[q][k]; A[p][k] = c * apk - s * aqk; A[q][k] = s * apk + c * aqk; }
+        for (let k = 0; k < n; k++) { const vkp = V[k][p], vkq = V[k][q]; V[k][p] = c * vkp - s * vkq; V[k][q] = s * vkp + c * vkq; }
+      }
+    }
+  }
+  const eigenvalues = A.map((row, i) => row[i]);
+  const eigenvectors = [];
+  for (let j = 0; j < n; j++) { const col = []; for (let i = 0; i < n; i++) col.push(V[i][j]); eigenvectors.push(col); }
+  return { eigenvalues, eigenvectors };
+}
+function eigHermitian(Hcomplex) {
+  const n = Hcomplex.length;
+  const M = Array.from({ length: 2 * n }, () => new Array(2 * n).fill(0));
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+    const re = Hcomplex[i][j].re, im = Hcomplex[i][j].im;
+    M[i][j] = re; M[i][n + j] = -im; M[n + i][j] = im; M[n + i][n + j] = re;
+  }
+  const { eigenvalues, eigenvectors } = realSymJacobi(M, 200, 1e-13);
+  const idx = eigenvalues.map((v, i) => i).sort((a, b) => eigenvalues[a] - eigenvalues[b]);
+  const used = new Array(2 * n).fill(false);
+  const results = [];
+  for (let ii = 0; ii < idx.length; ii++) {
+    const i = idx[ii]; if (used[i]) continue;
+    let pair = -1, best = Infinity;
+    for (let jj = 0; jj < idx.length; jj++) { const j = idx[jj]; if (j === i || used[j]) continue; const d = Math.abs(eigenvalues[j] - eigenvalues[i]); if (d < best) { best = d; pair = j; } }
+    used[i] = true; if (pair >= 0) used[pair] = true;
+    const vec = eigenvectors[i];
+    const z = []; for (let k = 0; k < n; k++) z.push({ re: vec[k], im: vec[n + k] });
+    results.push({ value: eigenvalues[i], vector: z });
+  }
+  return results;
+}
+
+/* =========================================================================
+   APP STATE + SYSTEM BUILDER
+   ========================================================================= */
+const STATE = {};
+const MAX_DIM = 30;
+const SWEEP_SAMPLES = 90;
+
+function parseQuantumNumber(str, label) {
+  const s = str.trim();
+  if (s === "") return null;
+  let val;
+  if (s.includes("/")) {
+    const parts = s.split("/");
+    if (parts.length !== 2) throw new Error(`Invalid ${label}: '${str}'.`);
+    const num = parseFloat(parts[0]), den = parseFloat(parts[1]);
+    if (!isFinite(num) || !isFinite(den) || den === 0) throw new Error(`Invalid ${label}: '${str}'.`);
+    val = num / den;
+  } else {
+    val = parseFloat(s);
+    if (!isFinite(val) || s.match(/[^0-9.\-]/)) throw new Error(`Invalid ${label}: '${str}'.`);
+  }
+  if (val < 0) throw new Error(`${label} must be non-negative.`);
+  const doubled = 2 * val;
+  if (Math.abs(doubled - Math.round(doubled)) > 1e-9) throw new Error(`${label} must be an integer or half-integer.`);
+  return Math.round(doubled) / 2;
+}
+
+function buildSystem(lStr, sStr) {
+  const l = parseQuantumNumber(lStr, "l");
+  const s = parseQuantumNumber(sStr, "s");
+  if (l === null && s === null) throw new Error("Provide at least one of l or s.");
+
+  const ops = {};
+  let dimL, dimS, msL, msS;
+  if (l !== null) {
+    const L = buildJOps(l);
+    Object.assign(ops, { Lx: L.Jx, Ly: L.Jy, Lz: L.Jz, Lp: L.Jp, Lm: L.Jm, L2: L.J2 });
+    dimL = L.dim; msL = L.ms;
+  }
+  if (s !== null) {
+    const S = buildJOps(s);
+    Object.assign(ops, { Sx: S.Jx, Sy: S.Jy, Sz: S.Jz, Sp: S.Jp, Sm: S.Jm, S2: S.J2 });
+    dimS = S.dim; msS = S.ms;
+  }
+
+  const dim = (l !== null && s !== null) ? dimL * dimS : (l !== null ? dimL : dimS);
+  if (dim > MAX_DIM) {
+    throw new Error(`This basis has dimension ${dim}, which exceeds this tool's limit of ${MAX_DIM}. Choose smaller l/s values.`);
+  }
+
+  let basis, space;
+  if (l !== null && s !== null) {
+    const Il = Mat.identity(dimL), Is = Mat.identity(dimS);
+    for (const k of ["Lx", "Ly", "Lz", "Lp", "Lm", "L2"]) ops[k] = Mat.kron(ops[k], Is);
+    for (const k of ["Sx", "Sy", "Sz", "Sp", "Sm", "S2"]) ops[k] = Mat.kron(Il, ops[k]);
+    ops.Jx = Mat.add(ops.Lx, ops.Sx); ops.Jy = Mat.add(ops.Ly, ops.Sy); ops.Jz = Mat.add(ops.Lz, ops.Sz);
+    ops.Jp = Mat.add(ops.Lp, ops.Sp); ops.Jm = Mat.add(ops.Lm, ops.Sm);
+    ops.J2 = Mat.add(Mat.add(Mat.mul(ops.Jx, ops.Jx), Mat.mul(ops.Jy, ops.Jy)), Mat.mul(ops.Jz, ops.Jz));
+    basis = []; for (const ml of msL) for (const ms of msS) basis.push([ml, ms]);
+    space = "both";
+  } else if (l !== null) {
+    for (const k of ["x", "y", "z", "p", "m"]) ops["J" + k] = ops["L" + k];
+    ops.J2 = ops.L2;
+    basis = msL.map(ml => [ml, null]);
+    space = "l";
+  } else {
+    for (const k of ["x", "y", "z", "p", "m"]) ops["J" + k] = ops["S" + k];
+    ops.J2 = ops.S2;
+    basis = msS.map(ms => [null, ms]);
+    space = "s";
+  }
+
+  STATE.dim = dim; STATE.ops = ops; STATE.space = space; STATE.basis = basis;
+  STATE.currentMatrix = null; STATE.paramSpecs = null; STATE.sweepParam = null; STATE.plotGeom = null;
+
+  const labels = basis.map(([ml, ms]) => {
+    if (space === "both") return `|${fracLabel(ml)}, ${fracLabel(ms)}\u27e9`;
+    if (space === "l") return `|${fracLabel(ml)}\u27e9`;
+    return `|${fracLabel(ms)}\u27e9`;
+  });
+  return { dim, basis: labels, space };
+}
+function fracLabel(v) {
+  if (Number.isInteger(v)) return `${v}`;
+  return `${v < 0 ? "-" : ""}${Math.round(Math.abs(v) * 2)}/2`;
+}
+
+/* =========================================================================
+   UI HELPERS
+   ========================================================================= */
+function showMsg(elId, kind, text) { const el = document.getElementById(elId); el.className = "msg show " + kind; el.textContent = text; }
+function hideMsg(elId) { const el = document.getElementById(elId); el.className = "msg"; el.textContent = ""; }
+function enableCard(id) { document.getElementById(id).removeAttribute("data-disabled"); }
+function disableCard(id) { document.getElementById(id).setAttribute("data-disabled", "true"); }
+function typeset(el) { return (window.MathJax && window.MathJax.typesetPromise) ? window.MathJax.typesetPromise([el]).catch(() => {}) : Promise.resolve(); }
+
+/* =========================================================================
+   STEP 1
+   ========================================================================= */
+document.getElementById("buildBtn").addEventListener("click", () => {
+  hideMsg("systemMsg");
+  const l = document.getElementById("lInput").value.trim();
+  const s = document.getElementById("sInput").value.trim();
+  try {
+    const res = buildSystem(l, s);
+    const grid = document.getElementById("basisGrid");
+    grid.innerHTML = "";
+    res.basis.forEach((label, i) => { const span = document.createElement("span"); span.innerHTML = `<i>${i}</i>${label}`; grid.appendChild(span); });
+    showMsg("systemMsg", "ok", `Built ${res.space === "both" ? "coupled L\u2297S" : res.space === "l" ? "L-only" : "S-only"} basis \u2014 dimension ${res.dim}.`);
+    enableCard("cardExpr");
+    disableCard("cardExplore");
+    document.getElementById("symbolicMatrixBox").innerHTML = "Symbolic matrix will appear here.";
+    document.getElementById("symbolicMatrixBox").className = "matrix-box empty";
+    document.getElementById("paramControls").innerHTML = "";
+    document.getElementById("plotContainer").innerHTML = "";
+    document.getElementById("eigReadout").innerHTML = "";
+  } catch (err) {
+    showMsg("systemMsg", "error", err.message);
+  }
+});
+
+/* Example expressions */
+const EXAMPLES = ["Lz", "Jz", "Lx**2+Ly**2+Lz**2", "λ*dot(L,S)", "D*(Sz**2 - S(S+1)/3)",
+                  "λ*(L·S) + D*(Sz² - S(S+1)/3)", "L2+S2+2*dot(L,S)-J2", "Sp", "Lm"];
+const exContainer = document.getElementById("examples");
+EXAMPLES.forEach(ex => { const b = document.createElement("button"); b.textContent = ex; b.addEventListener("click", () => { document.getElementById("exprInput").value = ex; }); exContainer.appendChild(b); });
+
+/* =========================================================================
+   STEP 2: PARSE EXPRESSION
+   ========================================================================= */
+document.getElementById("parseBtn").addEventListener("click", async () => {
+  hideMsg("exprMsg");
+  const expr = document.getElementById("exprInput").value.trim();
+  if (!expr) { showMsg("exprMsg", "error", "Enter an operator expression."); return; }
+  if (!STATE.ops) { showMsg("exprMsg", "error", "Build the system first (step 1)."); return; }
+  try {
+    const mat = parseOperatorExpression(expr, { ops: STATE.ops, dim: STATE.dim });
+    STATE.currentMatrix = mat;
+
+    const box = document.getElementById("symbolicMatrixBox");
+    box.className = "matrix-box";
+    const herm = Mat.isHermitian(mat);
+    const hermTag = herm ? '<span class="hermitian-tag yes">Hermitian</span>' : '<span class="hermitian-tag no">not Hermitian</span>';
+    box.innerHTML = `\\[ M = ${Mat.toLatex(mat)} \\]` + hermTag;
+    await typeset(box);
+
+    hideMsg("exploreMsg");
+    if (!herm) {
+      showMsg("exprMsg", "ok", "Matrix built, but it is not Hermitian, so it has no real eigenvalue spectrum to explore. Combine operators into a Hermitian expression (e.g. via dot(...), or (Lp+Lm)/2) to unlock step 3.");
+      disableCard("cardExplore");
+      document.getElementById("paramControls").innerHTML = "";
+      document.getElementById("plotContainer").innerHTML = "";
+      document.getElementById("eigReadout").innerHTML = "";
+    } else {
+      showMsg("exprMsg", "ok", "Matrix built.");
+      enableCard("cardExplore");
+      setupExplore(mat);
+    }
+  } catch (err) {
+    showMsg("exprMsg", "error", err.message);
+    disableCard("cardExplore");
+  }
+});
+
+/* =========================================================================
+   STEP 3: EXPLORE (parameters + live plot)
+   ========================================================================= */
+function computeEigsAt(values) {
+  const M = STATE.currentMatrix.data.map(row => row.map(e => Sym.substitute(e, values)));
+  return eigHermitian(M).map(r => r.value).sort((a, b) => a - b);
+}
+function computeFullEigAt(values) {
+  const M = STATE.currentMatrix.data.map(row => row.map(e => Sym.substitute(e, values)));
+  const res = eigHermitian(M);
+  res.sort((a, b) => a.value - b.value);
+  return res;
+}
+function otherValues(excludeSym) {
+  const vals = {};
+  for (const s in STATE.paramSpecs) if (s !== excludeSym) vals[s] = STATE.paramSpecs[s].value;
+  return vals;
+}
+function currentValues() {
+  const vals = {};
+  for (const s in STATE.paramSpecs) vals[s] = STATE.paramSpecs[s].value;
+  return vals;
+}
+
+function setupExplore(mat) {
+  const freeSyms = [...Mat.freeSymbols(mat)].sort();
+  const container = document.getElementById("paramControls");
+  container.innerHTML = "";
+  document.getElementById("vecList").innerHTML = "";
+  document.getElementById("vecDetails").open = false;
+
+  if (freeSyms.length === 0) {
+    STATE.paramSpecs = {}; STATE.sweepParam = null;
+    container.innerHTML = '<p class="note">No free parameters in this expression &mdash; showing the fixed eigenvalue spectrum.</p>';
+    const eigs = computeEigsAt({});
+    renderLevelsOnly(eigs);
+    renderReadout(eigs);
+    return;
+  }
+
+  STATE.paramSpecs = {};
+  freeSyms.forEach((sym, idx) => { STATE.paramSpecs[sym] = { value: idx === 0 ? 1 : 0, min: -5, max: 5 }; });
+  STATE.sweepParam = freeSyms[0];
+
+  freeSyms.forEach(sym => {
+    const spec = STATE.paramSpecs[sym];
+    const div = document.createElement("div");
+    div.className = "param-ctrl";
+    div.dataset.sym = sym;
+    div.innerHTML = `
+      <div class="param-head">
+        <span class="param-name">${sym}</span>
+        ${freeSyms.length > 1 ? `<label class="sweep-radio"><input type="radio" name="sweepParam" value="${sym}" ${sym === STATE.sweepParam ? "checked" : ""}> plot vs ${sym}</label>` : ""}
+        <span class="param-val">${spec.value.toFixed(2)}</span>
+      </div>
+      <div class="param-row">
+        <input type="number" class="param-min" value="${spec.min}">
+        <input type="range" class="param-slider" min="${spec.min}" max="${spec.max}" step="${(spec.max - spec.min) / 500}" value="${spec.value}">
+        <input type="number" class="param-max" value="${spec.max}">
+      </div>`;
+    container.appendChild(div);
+  });
+  wireParamEvents();
+  fullRecompute();
+}
+
+function wireParamEvents() {
+  document.querySelectorAll(".param-ctrl").forEach(div => {
+    const sym = div.dataset.sym;
+    const slider = div.querySelector(".param-slider");
+    const valSpan = div.querySelector(".param-val");
+    const minInp = div.querySelector(".param-min");
+    const maxInp = div.querySelector(".param-max");
+
+    slider.addEventListener("input", () => {
+      const spec = STATE.paramSpecs[sym];
+      spec.value = parseFloat(slider.value);
+      valSpan.textContent = spec.value.toFixed(3);
+      if (sym === STATE.sweepParam) scheduleCursorMove();
+      else scheduleFullRecompute();
+    });
+    minInp.addEventListener("change", () => {
+      const spec = STATE.paramSpecs[sym];
+      const v = parseFloat(minInp.value);
+      if (isFinite(v) && v < spec.max) { spec.min = v; slider.min = v; slider.step = (spec.max - spec.min) / 500; if (spec.value < v) { spec.value = v; slider.value = v; valSpan.textContent = v.toFixed(3); } scheduleFullRecompute(); }
+      else minInp.value = spec.min;
+    });
+    maxInp.addEventListener("change", () => {
+      const spec = STATE.paramSpecs[sym];
+      const v = parseFloat(maxInp.value);
+      if (isFinite(v) && v > spec.min) { spec.max = v; slider.max = v; slider.step = (spec.max - spec.min) / 500; if (spec.value > v) { spec.value = v; slider.value = v; valSpan.textContent = v.toFixed(3); } scheduleFullRecompute(); }
+      else maxInp.value = spec.max;
+    });
+  });
+  document.querySelectorAll('input[name="sweepParam"]').forEach(radio => {
+    radio.addEventListener("change", () => { if (radio.checked) { STATE.sweepParam = radio.value; scheduleFullRecompute(); } });
+  });
+}
+
+let rafScheduled = false;
+function scheduleFullRecompute() {
+  if (rafScheduled) return;
+  rafScheduled = true;
+  requestAnimationFrame(() => { rafScheduled = false; fullRecompute(); });
+}
+let rafCursorScheduled = false;
+function scheduleCursorMove() {
+  if (rafCursorScheduled) return;
+  rafCursorScheduled = true;
+  requestAnimationFrame(() => { rafCursorScheduled = false; moveCursorOnly(); });
+}
+
+function fullRecompute() {
+  if (!STATE.sweepParam) return;
+  const sweepSym = STATE.sweepParam;
+  const spec = STATE.paramSpecs[sweepSym];
+  const others = otherValues(sweepSym);
+  const samples = [];
+  for (let i = 0; i <= SWEEP_SAMPLES; i++) {
+    const x = spec.min + (spec.max - spec.min) * i / SWEEP_SAMPLES;
+    samples.push({ x, eigs: computeEigsAt({ ...others, [sweepSym]: x }) });
+  }
+  const curEigs = computeEigsAt({ ...others, [sweepSym]: spec.value });
+  renderPlot(samples, spec.value, curEigs, sweepSym, spec.min, spec.max);
+  renderReadout(curEigs);
+  if (document.getElementById("vecDetails").open) renderVectors();
+}
+function moveCursorOnly() {
+  const sweepSym = STATE.sweepParam;
+  const spec = STATE.paramSpecs[sweepSym];
+  const others = otherValues(sweepSym);
+  const curEigs = computeEigsAt({ ...others, [sweepSym]: spec.value });
+  updateCursor(spec.value, curEigs);
+  renderReadout(curEigs);
+  if (document.getElementById("vecDetails").open) renderVectors();
+}
+
+function renderReadout(eigs) {
+  const el = document.getElementById("eigReadout");
+  el.innerHTML = eigs.map((v, i) => `<span class="eig-chip">\u03bb<sub>${i}</sub> = ${v.toFixed(5)}</span>`).join(" ");
+}
+function renderVectors() {
+  const values = currentValues();
+  const res = computeFullEigAt(values);
+  const el = document.getElementById("vecList");
+  el.innerHTML = res.map((r, i) => {
+    const vecStr = r.vector.map(c => (Math.abs(c.im) < 1e-6 ? c.re.toFixed(4) : `${c.re.toFixed(4)}${c.im >= 0 ? "+" : ""}${c.im.toFixed(4)}i`)).join(",  ");
+    return `<div class="vec-row">v<sub>${i}</sub> (\u03bb=${r.value.toFixed(5)}): [${vecStr}]</div>`;
+  }).join("");
+}
+document.getElementById("vecDetails").addEventListener("toggle", function () { if (this.open && STATE.currentMatrix) renderVectors(); });
+
+/* ---- plotting (SVG) ---- */
+function renderPlot(samples, curX, curEigs, sweepSym, xMin, xMax) {
+  const dim = samples[0].eigs.length;
+  const width = 640, height = 300, padL = 52, padR = 14, padT = 12, padB = 32;
+  const plotW = width - padL - padR, plotH = height - padT - padB;
+  let yMin = Infinity, yMax = -Infinity;
+  samples.forEach(s => s.eigs.forEach(v => { if (v < yMin) yMin = v; if (v > yMax) yMax = v; }));
+  curEigs.forEach(v => { if (v < yMin) yMin = v; if (v > yMax) yMax = v; });
+  if (!isFinite(yMin)) { yMin = -1; yMax = 1; }
+  if (yMax - yMin < 1e-9) { yMin -= 1; yMax += 1; }
+  const padY = (yMax - yMin) * 0.08; yMin -= padY; yMax += padY;
+
+  const xToPx = x => padL + (x - xMin) / (xMax - xMin) * plotW;
+  const yToPx = y => padT + (1 - (y - yMin) / (yMax - yMin)) * plotH;
+  STATE.plotGeom = { xMin, xMax, yMin, yMax, padL, padT, plotW, plotH, xToPx, yToPx };
+
+  let svg = `<svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}" id="eigSvg" style="touch-action:none; cursor:ew-resize;">`;
+  svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#d1d5db"/>`;
+  svg += `<line x1="${padL}" y1="${padT + plotH}" x2="${padL + plotW}" y2="${padT + plotH}" stroke="#d1d5db"/>`;
+  if (yMin < 0 && yMax > 0) svg += `<line x1="${padL}" y1="${yToPx(0).toFixed(1)}" x2="${padL + plotW}" y2="${yToPx(0).toFixed(1)}" stroke="#ececec" stroke-dasharray="4 3"/>`;
+  for (let i = 0; i <= 4; i++) {
+    const xv = xMin + (xMax - xMin) * i / 4, px = xToPx(xv);
+    svg += `<line x1="${px.toFixed(1)}" y1="${padT + plotH}" x2="${px.toFixed(1)}" y2="${padT + plotH + 4}" stroke="#9ca3af"/>`;
+    svg += `<text x="${px.toFixed(1)}" y="${padT + plotH + 17}" font-size="10" fill="#767672" text-anchor="middle" font-family="monospace">${xv.toFixed(2)}</text>`;
+  }
+  for (let i = 0; i <= 4; i++) {
+    const yv = yMin + (yMax - yMin) * i / 4, py = yToPx(yv);
+    svg += `<line x1="${padL - 4}" y1="${py.toFixed(1)}" x2="${padL}" y2="${py.toFixed(1)}" stroke="#9ca3af"/>`;
+    svg += `<text x="${padL - 8}" y="${(py + 3).toFixed(1)}" font-size="10" fill="#767672" text-anchor="end" font-family="monospace">${yv.toFixed(2)}</text>`;
+  }
+  svg += `<text x="${padL + plotW / 2}" y="${height - 3}" font-size="11" fill="#1c1c1a" text-anchor="middle" font-family="monospace">${sweepSym}</text>`;
+
+  for (let k = 0; k < dim; k++) {
+    const color = `hsl(${Math.round(360 * k / Math.max(dim, 1))}, 60%, 42%)`;
+    const pts = samples.map(s => `${xToPx(s.x).toFixed(1)},${yToPx(s.eigs[k]).toFixed(1)}`).join(" ");
+    svg += `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6"/>`;
+  }
+
+  const cx = xToPx(curX);
+  svg += `<g id="cursorGroup"><line x1="${cx.toFixed(1)}" y1="${padT}" x2="${cx.toFixed(1)}" y2="${padT + plotH}" stroke="#1c1c1a" stroke-width="1" stroke-dasharray="3 3"/>`;
+  curEigs.forEach((v, k) => {
+    const color = `hsl(${Math.round(360 * k / Math.max(dim, 1))}, 60%, 36%)`;
+    svg += `<circle cx="${cx.toFixed(1)}" cy="${yToPx(v).toFixed(1)}" r="3.4" fill="${color}" stroke="white" stroke-width="0.8"/>`;
+  });
+  svg += `</g></svg>`;
+
+  document.getElementById("plotContainer").innerHTML = svg;
+  attachPlotDrag();
+}
+function updateCursor(curX, curEigs) {
+  const geom = STATE.plotGeom;
+  if (!geom) return;
+  const g = document.getElementById("cursorGroup");
+  if (!g) return;
+  const cx = geom.xToPx(curX);
+  let inner = `<line x1="${cx.toFixed(1)}" y1="${geom.padT}" x2="${cx.toFixed(1)}" y2="${geom.padT + geom.plotH}" stroke="#1c1c1a" stroke-width="1" stroke-dasharray="3 3"/>`;
+  curEigs.forEach((v, k) => {
+    const color = `hsl(${Math.round(360 * k / Math.max(curEigs.length, 1))}, 60%, 36%)`;
+    inner += `<circle cx="${cx.toFixed(1)}" cy="${geom.yToPx(v).toFixed(1)}" r="3.4" fill="${color}" stroke="white" stroke-width="0.8"/>`;
+  });
+  g.innerHTML = inner;
+}
+function attachPlotDrag() {
+  const svg = document.getElementById("eigSvg");
+  if (!svg) return;
+  function handlePointer(clientX) {
+    const rect = svg.getBoundingClientRect();
+    if (rect.width === 0) return;
+    const scaleX = 640 / rect.width;
+    const px = (clientX - rect.left) * scaleX;
+    const geom = STATE.plotGeom;
+    let x = geom.xMin + (px - geom.padL) / geom.plotW * (geom.xMax - geom.xMin);
+    x = Math.max(geom.xMin, Math.min(geom.xMax, x));
+    setSweepValue(x);
+  }
+  svg.addEventListener("pointerdown", e => { svg.setPointerCapture(e.pointerId); handlePointer(e.clientX); });
+  svg.addEventListener("pointermove", e => { if (e.buttons === 1) handlePointer(e.clientX); });
+}
+function setSweepValue(x) {
+  const sym = STATE.sweepParam;
+  if (!sym) return;
+  STATE.paramSpecs[sym].value = x;
+  const div = document.querySelector(`.param-ctrl[data-sym="${sym}"]`);
+  if (div) {
+    div.querySelector(".param-slider").value = x;
+    div.querySelector(".param-val").textContent = x.toFixed(3);
+  }
+  scheduleCursorMove();
+}
+
+function renderLevelsOnly(eigs) {
+  const width = 640, height = 260, padL = 52, padR = 14, padT = 14, padB = 16;
+  const plotW = width - padL - padR, plotH = height - padT - padB;
+  let yMin = Math.min(...eigs), yMax = Math.max(...eigs);
+  if (yMax - yMin < 1e-9) { yMin -= 1; yMax += 1; }
+  const padY = (yMax - yMin) * 0.14; yMin -= padY; yMax += padY;
+  const yToPx = y => padT + (1 - (y - yMin) / (yMax - yMin)) * plotH;
+  let svg = `<svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}">`;
+  svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#d1d5db"/>`;
+  eigs.forEach((v, k) => {
+    const color = `hsl(${Math.round(360 * k / Math.max(eigs.length, 1))}, 60%, 40%)`;
+    const py = yToPx(v);
+    svg += `<line x1="${padL}" y1="${py.toFixed(1)}" x2="${padL + plotW * 0.45}" y2="${py.toFixed(1)}" stroke="${color}" stroke-width="2.6"/>`;
+    svg += `<text x="${padL + plotW * 0.45 + 8}" y="${(py + 4).toFixed(1)}" font-size="11" fill="#1c1c1a" font-family="monospace">${v.toFixed(5)}</text>`;
+  });
+  svg += `</svg>`;
+  document.getElementById("plotContainer").innerHTML = svg;
+}
+</script>
+</body>
+</html>
