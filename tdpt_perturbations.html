@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title>Angular Momentum</title>
+<ul class="menu red">
+        <li><a href="index.html" title="">Home</a></li>
+     <li><a href="group.html" title="">Group</a></li>
+        <li><a href="pubs.html" title="" >Publications</a></li>
+        <li><a href="research.html" title="">Research</a></li>
+        <li><a href="teaching.html" title="">Teaching</a></li>
+        <li><a href="misc.html" title="">Miscellaneous</a></li>
+</ul>
+  <meta charset="UTF-8">
+<title>Time-Dependent Perturbation Theory — Particle in a Box</title>
+<style>
+  :root{
+    --bg:#f7f7f5; --panel:#ffffff; --ink:#1a1d23; --muted:#5b6270; --line:#d9dce1;
+    --accent:#1e3a5f; --good:#0f7a4d; --warn:#b45309;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Georgia","Iowan Old Style",serif;
+    font-size:16px;line-height:1.55;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px;}
+  h1{font-size:28px;margin:0 0 4px;font-weight:600;}
+  h2{font-size:19px;margin:0 0 10px;font-weight:600;color:var(--accent);}
+  h3{font-size:14px;margin:0 0 8px;font-weight:600;color:var(--muted);text-align:center;
+    font-family:-apple-system,Helvetica,Arial,sans-serif;}
+  .sub{color:var(--muted);font-size:15px;max-width:80ch;margin:0 0 22px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin-bottom:18px;}
+  .row{display:flex;flex-wrap:wrap;gap:18px;}
+  .col{flex:1 1 280px;min-width:250px;}
+  label{display:block;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;
+    color:var(--muted);margin:10px 0 3px;}
+  select,input[type=range]{width:100%;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;}
+  select{padding:5px;border:1px solid var(--line);border-radius:4px;background:#fff;}
+  .radiogroup{font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14.5px;}
+  .radiogroup label{display:flex;align-items:flex-start;gap:8px;margin:6px 0;color:var(--ink);cursor:pointer;}
+  .radiogroup input{margin-top:3px;}
+  .subctrl{border:1px solid var(--line);border-radius:5px;padding:10px 12px;margin-top:6px;background:#fbfbfa;}
+  .controls-bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+    font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;margin-top:12px;}
+  button{font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;background:var(--accent);
+    color:#fff;border:none;border-radius:4px;padding:8px 16px;cursor:pointer;}
+  button.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:focus-visible, select:focus-visible, input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .checkline{display:flex;align-items:center;gap:6px;font-family:-apple-system,Helvetica,Arial,sans-serif;
+    font-size:14px;color:var(--muted);}
+  .clock{font-family:-apple-system,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;
+    font-size:14px;color:var(--muted);}
+  canvas{width:100%;display:block;}
+  .plotgrid{display:flex;flex-wrap:wrap;gap:18px;}
+  .plotcol{flex:1 1 420px;min-width:340px;}
+  .note{background:#fbfbfa;border:1px solid var(--line);border-radius:5px;padding:10px 14px;
+    font-size:14.5px;color:var(--muted);}
+  .eq{font-family:"Cambria Math","Georgia",serif;font-style:italic;background:#f1f2f0;padding:2px 6px;border-radius:3px;}
+  p{margin:0 0 10px;}
+  ul{margin:6px 0 10px 22px;padding:0;}
+  li{margin-bottom:6px;}
+  .legend{font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:13px;color:var(--muted);
+    display:flex;flex-wrap:wrap;gap:12px;margin-top:6px;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .sw{width:11px;height:11px;border-radius:50%;display:inline-block;}
+  .footer{color:var(--muted);font-size:13px;margin-top:30px;font-family:-apple-system,Helvetica,Arial,sans-serif;}
+  .readouts{font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;color:var(--muted);}
+  .readouts b{color:var(--ink);font-variant-numeric:tabular-nums;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Time-dependent perturbation theory</h1>
+  <p class="sub">Same particle-in-a-box eigenbasis as before (ħ = m = L = 1, Eₙ = n²π²/2), now driven by an
+  explicit perturbation <span class="eq">H'(x,t) = A·x·f(t)</span>. The spatial part is the dipole-like coupling
+  <span class="eq">x</span> (so the usual opposite-parity selection rule applies); switch <span class="eq">f(t)</span>
+  between off, constant, a polynomial ramp, or an oscillating drive, and compare the <b>exact</b> numerical population
+  transfer against the <b>first-order</b> perturbative estimate.</p>
+
+  <div class="card">
+    <div class="row">
+      <div class="col" style="flex:1 1 220px;">
+        <h2>System</h2>
+        <label for="n0Sel">Initial state n₀</label>
+        <select id="n0Sel"></select>
+        <p class="note" style="margin-top:10px;">System starts purely in <span class="eq">φ_n₀</span> at t = 0.</p>
+      </div>
+
+      <div class="col" style="flex:2 1 520px;">
+        <h2>Perturbation f(t)  &nbsp;<span style="font-weight:400;color:var(--muted);font-size:14px;">— H'(x,t)=A·x·f(t)</span></h2>
+        <div class="radiogroup">
+          <label><input type="radio" name="pert" value="none"><b>V = 0</b> — unperturbed reference, f(t)=0</label>
+          <label><input type="radio" name="pert" value="const"><b>V = const</b> — suddenly switched on, f(t)=1</label>
+          <label><input type="radio" name="pert" value="poly"><b>V = f(t)</b>, polynomial ramp, f(t)=tᵖ</label>
+          <label><input type="radio" name="pert" value="osc" checked><b>V = f(t)</b>, oscillating drive, f(t)=sin/cos(ωt)</label>
+        </div>
+        <div class="subctrl">
+          <label for="ampA">amplitude A</label>
+          <input type="range" id="ampA" min="0" max="15" step="0.25" value="3">
+          <div id="polyCtrl" style="display:none;">
+            <label for="polyP">power p</label>
+            <select id="polyP"><option value="1">1 (linear ramp)</option><option value="2">2</option><option value="3">3</option></select>
+          </div>
+          <div id="oscCtrl">
+            <label for="omega">frequency ω</label>
+            <input type="range" id="omega" min="0" max="40" step="0.2" value="14.8">
+            <div class="radiogroup" style="margin-top:4px;">
+              <label style="display:inline-flex;margin-right:16px;"><input type="radio" name="trig" value="cos" checked>cos(ωt)</label>
+              <label style="display:inline-flex;"><input type="radio" name="trig" value="sin">sin(ωt)</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <button id="playBtn">Pause</button>
+      <button id="resetBtn" class="secondary">Reset time</button>
+      <label style="margin:0;width:120px;">speed
+        <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+      </label>
+      <span class="clock">t = <b id="tReadout">0.00</b></span>
+      <span class="clock">total norm Σ|c|² = <b id="normReadout">1.000</b></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="plotgrid">
+      <div class="plotcol" style="flex:1 1 300px;">
+        <h3>drive envelope f(t)</h3>
+        <canvas id="fCanvas" width="380" height="150"></canvas>
+      </div>
+      <div class="plotcol" style="flex:1 1 300px;">
+        <h3>energy levels &amp; current population</h3>
+        <canvas id="energyCanvas" width="380" height="150"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Population transfer P_m(t) = |c_m(t)|²</h2>
+    <canvas id="popCanvas" width="1120" height="260"></canvas>
+    <div class="legend" id="popLegend"></div>
+    <p class="note" style="margin-top:10px;">Solid = exact (numerically propagated). Dashed = first-order TDPT estimate,
+    <span class="eq">P_m⁽¹⁾(t)=|c_m⁽¹⁾(t)|²</span>, shown only for levels the selection rule actually allows
+    (opposite parity to n₀). Where solid and dashed separate, first-order theory has broken down.</p>
+  </div>
+
+  <div class="card">
+    <h2>|Ψ(x,t)|² under the drive</h2>
+    <canvas id="densityCanvas" width="1120" height="260"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Reading the four cases</h2>
+    <ul>
+      <li><b>V = 0.</b> Reference case — c_n₀ just spins in phase, every P_m(t) stays flat. No transitions,
+      by construction.</li>
+      <li><b>V = const, switched on suddenly.</b> A textbook "sudden perturbation": population leaks out of n₀ into
+      opposite-parity neighbours immediately, growing roughly as <span class="eq">t²</span> at very short times
+      (first-order theory), then — for large A — swinging into full Rabi-type oscillations that first-order
+      theory cannot capture.</li>
+      <li><b>V = f(t) = tᵖ, polynomial ramp.</b> A crude model of adiabatic switching. Larger p delays the drive
+      longer near t=0, suppressing early transitions; compare p=1 vs p=3 at the same amplitude to see the
+      sudden-vs-adiabatic contrast — slower switch-on transfers less population for the same elapsed time.</li>
+      <li><b>V = f(t) = sin/cos(ωt), oscillating drive.</b> Set ω to the level spacing <span class="eq">|E_m−E_n₀|</span>
+      of an allowed (opposite-parity) neighbour and watch resonant, large-amplitude transfer even at modest A;
+      move ω away from resonance and transitions stay small and oscillatory — exactly the resonance condition
+      <span class="eq">ω ≈ ω_mn</span> that first-order TDPT predicts.</li>
+    </ul>
+    <p>In every case the same first-order formula is being evaluated live:
+    <span class="eq">c_m⁽¹⁾(t) = −i∫₀ᵗ H'_{m n₀}(t′) e^{iω_{mn₀}t′} dt′</span>, with
+    <span class="eq">H'_{mn₀}(t)=A·x_{mn₀}·f(t)</span> and <span class="eq">x_{mn₀}</span> the closed-form PIB dipole
+    matrix element (nonzero only for m+n₀ odd). The exact curve instead numerically integrates the full
+    Schrödinger equation in this basis — no rotating-wave or weak-field approximation — so any gap between the two
+    is genuine breakdown of perturbation theory, not numerical error.</p>
+  </div>
+
+  <div class="footer">Basis truncated to n = 1…6. Exact propagation: 4th-order Runge–Kutta on the coupled
+  amplitude equations iċ_m = E_m c_m + Σₙ H'_mn(t) c_n (ħ=1), with ~25 substeps per animation frame.</div>
+</div>
+
+<script>
+(function(){
+  const NMAX=6;
+  const colors=['#2563eb','#dc2626','#16a34a','#9333ea','#d97706','#0891b2'];
+  const NX=201, dx=1/(NX-1);
+  const xs=new Float64Array(NX);
+  for(let i=0;i<NX;i++) xs[i]=i*dx;
+  const phi=[], E=[];
+  for(let n=1;n<=NMAX;n++){
+    const arr=new Float64Array(NX);
+    for(let i=0;i<NX;i++) arr[i]=Math.sqrt(2)*Math.sin(n*Math.PI*xs[i]);
+    phi[n]=arr; E[n]=n*n*Math.PI*Math.PI/2;
+  }
+  // closed-form dipole matrix elements x_mn on PIB [0,1]
+  const xmn=[];
+  for(let m=0;m<=NMAX;m++){ xmn[m]=[]; for(let n=0;n<=NMAX;n++) xmn[m][n]=0; }
+  for(let m=1;m<=NMAX;m++)for(let n=1;n<=NMAX;n++){
+    if(m===n){ xmn[m][n]=0.5; continue; }
+    if((m+n)%2===0){ xmn[m][n]=0; continue; }
+    const diff=m*m-n*n;
+    xmn[m][n] = -8*m*n/(Math.PI*Math.PI*diff*diff);
+  }
+
+  // ---------------- DOM ----------------
+  const n0Sel=document.getElementById('n0Sel');
+  for(let n=1;n<=NMAX;n++){
+    const o=document.createElement('option'); o.value=n; o.textContent='n = '+n+' (E='+E[n].toFixed(2)+')';
+    if(n===1) o.selected=true;
+    n0Sel.appendChild(o);
+  }
+  const ampA=document.getElementById('ampA');
+  const polyCtrl=document.getElementById('polyCtrl');
+  const oscCtrl=document.getElementById('oscCtrl');
+  const polyP=document.getElementById('polyP');
+  const omega=document.getElementById('omega');
+  const speedInput=document.getElementById('speed');
+  const playBtn=document.getElementById('playBtn');
+  const resetBtn=document.getElementById('resetBtn');
+
+  function pertType(){ return document.querySelector('input[name=pert]:checked').value; }
+  function trigType(){ return document.querySelector('input[name=trig]:checked').value; }
+
+  function updateSubCtrlVisibility(){
+    const p=pertType();
+    polyCtrl.style.display = (p==='poly')?'block':'none';
+    oscCtrl.style.display = (p==='osc')?'block':'none';
+  }
+  document.querySelectorAll('input[name=pert]').forEach(r=>r.addEventListener('change',()=>{updateSubCtrlVisibility();resetAll();}));
+  document.querySelectorAll('input[name=trig]').forEach(r=>r.addEventListener('change',resetAll));
+  [ampA,polyP,omega,n0Sel].forEach(el=>el.addEventListener('input',resetAll));
+  updateSubCtrlVisibility();
+
+  playBtn.addEventListener('click',()=>{ playing=!playing; playBtn.textContent=playing?'Pause':'Play'; });
+  resetBtn.addEventListener('click', resetAll);
+
+  function envelope(t){
+    const type=pertType();
+    if(type==='none') return 0;
+    if(type==='const') return 1;
+    if(type==='poly') return Math.pow(t, parseInt(polyP.value,10));
+    const om=parseFloat(omega.value);
+    return trigType()==='sin'? Math.sin(om*t): Math.cos(om*t);
+  }
+
+  // ---------------- state ----------------
+  let t=0, playing=true;
+  let aRe=new Float64Array(NMAX+1), aIm=new Float64Array(NMAX+1);
+  let c1Re=new Float64Array(NMAX+1), c1Im=new Float64Array(NMAX+1); // first-order accumulators
+  let tHist=[], popHist=[], pop1Hist=[];
+  for(let m=0;m<=NMAX;m++){ popHist[m]=[]; pop1Hist[m]=[]; }
+
+  function resetAll(){
+    t=0;
+    const n0=parseInt(n0Sel.value,10);
+    aRe.fill(0); aIm.fill(0); aRe[n0]=1;
+    c1Re.fill(0); c1Im.fill(0);
+    tHist=[]; popHist=[]; pop1Hist=[];
+    for(let m=0;m<=NMAX;m++){ popHist[m]=[]; pop1Hist[m]=[]; }
+  }
+  resetAll();
+
+  function derivative(re,im,tt,A){
+    const dRe=new Float64Array(NMAX+1), dIm=new Float64Array(NMAX+1);
+    const env=envelope(tt);
+    for(let m=1;m<=NMAX;m++){
+      let zRe=E[m]*re[m], zIm=E[m]*im[m];
+      for(let n=1;n<=NMAX;n++){
+        const Hmn=A*xmn[m][n]*env;
+        if(Hmn!==0){ zRe+=Hmn*re[n]; zIm+=Hmn*im[n]; }
+      }
+      dRe[m]=zIm; dIm[m]=-zRe;
+    }
+    return {dRe,dIm};
+  }
+
+  function rk4Step(dt,A){
+    const k1=derivative(aRe,aIm,t,A);
+    const re2=new Float64Array(NMAX+1), im2=new Float64Array(NMAX+1);
+    for(let m=1;m<=NMAX;m++){ re2[m]=aRe[m]+0.5*dt*k1.dRe[m]; im2[m]=aIm[m]+0.5*dt*k1.dIm[m]; }
+    const k2=derivative(re2,im2,t+0.5*dt,A);
+    const re3=new Float64Array(NMAX+1), im3=new Float64Array(NMAX+1);
+    for(let m=1;m<=NMAX;m++){ re3[m]=aRe[m]+0.5*dt*k2.dRe[m]; im3[m]=aIm[m]+0.5*dt*k2.dIm[m]; }
+    const k3=derivative(re3,im3,t+0.5*dt,A);
+    const re4=new Float64Array(NMAX+1), im4=new Float64Array(NMAX+1);
+    for(let m=1;m<=NMAX;m++){ re4[m]=aRe[m]+dt*k3.dRe[m]; im4[m]=aIm[m]+dt*k3.dIm[m]; }
+    const k4=derivative(re4,im4,t+dt,A);
+    for(let m=1;m<=NMAX;m++){
+      aRe[m]+= dt/6*(k1.dRe[m]+2*k2.dRe[m]+2*k3.dRe[m]+k4.dRe[m]);
+      aIm[m]+= dt/6*(k1.dIm[m]+2*k2.dIm[m]+2*k3.dIm[m]+k4.dIm[m]);
+    }
+    // first order accumulation (trapezoid-ish via fine substeps -> simple rectangle is fine at this dt)
+    const n0=parseInt(n0Sel.value,10);
+    const env=envelope(t);
+    const A_=A;
+    for(let m=1;m<=NMAX;m++){
+      if(m===n0) continue;
+      const Hm=A_*xmn[m][n0]*env;
+      if(Hm===0) continue;
+      const wmn=E[m]-E[n0];
+      const ph=wmn*t;
+      const cosp=Math.cos(ph), sinp=Math.sin(ph);
+      // increment of -i*Hm*e^{i wmn t} dt = -i*(Hm*cosp + i*Hm*sinp)*dt = (Hm*sinp - i*Hm*cosp)*dt
+      c1Re[m]+= Hm*sinp*dt;
+      c1Im[m]+= -Hm*cosp*dt;
+    }
+    t+=dt;
+  }
+
+  // ---------------- canvases ----------------
+  const fCv=document.getElementById('fCanvas');
+  const energyCv=document.getElementById('energyCanvas');
+  const popCv=document.getElementById('popCanvas');
+  const densityCv=document.getElementById('densityCanvas');
+  function clear(cv){ const ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height); return ctx; }
+
+  // build legend once
+  const legend=document.getElementById('popLegend');
+  function buildLegend(){
+    legend.innerHTML='';
+    const n0=parseInt(n0Sel.value,10);
+    for(let n=1;n<=NMAX;n++){
+      const sp=document.createElement('span');
+      sp.innerHTML='<span class="sw" style="background:'+colors[n-1]+'"></span>n='+n+(n===n0?' (start)':'');
+      legend.appendChild(sp);
+    }
+  }
+
+  function drawF(tMin,tMax){
+    const ctx=clear(fCv); const W=fCv.width,H=fCv.height;
+    const left=36,right=W-10,top=10,bottom=H-20;
+    const NPT=150; const vals=new Float64Array(NPT);
+    let vmax=1e-6, vmin=-1e-6;
+    for(let i=0;i<NPT;i++){ const tt=tMin+(tMax-tMin)*i/(NPT-1); vals[i]=envelope(tt); if(vals[i]>vmax)vmax=vals[i]; if(vals[i]<vmin)vmin=vals[i]; }
+    if(vmax-vmin<1e-6){vmax+=0.5;vmin-=0.5;}
+    function px(tt){return left+(tt-tMin)/(tMax-tMin)*(right-left);}
+    function py(v){return bottom-(v-vmin)/(vmax-vmin)*(bottom-top);}
+    ctx.strokeStyle='#c6cbd3';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(left,bottom);ctx.lineTo(right,bottom);ctx.stroke();
+    if(vmin<0 && vmax>0){ ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(left,py(0)); ctx.lineTo(right,py(0)); ctx.stroke(); ctx.setLineDash([]); }
+    ctx.strokeStyle=var_accent(); ctx.lineWidth=2;
+    ctx.beginPath();
+    for(let i=0;i<NPT;i++){ const tt=tMin+(tMax-tMin)*i/(NPT-1); const X=px(tt),Y=py(vals[i]); if(i===0)ctx.moveTo(X,Y); else ctx.lineTo(X,Y); }
+    ctx.stroke();
+    // marker at current t
+    if(t>=tMin && t<=tMax){
+      ctx.strokeStyle='#111318'; ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(px(t),top); ctx.lineTo(px(t),bottom); ctx.stroke();
+    }
+    ctx.fillStyle='#8a90a0'; ctx.font='11px -apple-system,Helvetica,Arial,sans-serif';
+    ctx.fillText('f(t)', left-2, top+2);
+  }
+  function var_accent(){return '#1e3a5f';}
+
+  function drawEnergy(n0, pops){
+    const ctx=clear(energyCv); const W=energyCv.width,H=energyCv.height;
+    const left=70,right=W-14,top=10,bottom=H-10;
+    for(let n=1;n<=NMAX;n++){
+      const y=bottom-(n-1)*(bottom-top)/(NMAX-1);
+      ctx.strokeStyle='#c6cbd3'; ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke();
+      ctx.fillStyle='#5b6270'; ctx.font='10.5px -apple-system,Helvetica,Arial,sans-serif'; ctx.textAlign='right';
+      ctx.fillText('n='+n, left-6, y+3.5);
+      if(n===n0){ ctx.fillStyle='#111318'; ctx.beginPath(); ctx.moveTo(left+18,y-6); ctx.lineTo(left+30,y); ctx.lineTo(left+18,y+6); ctx.closePath(); ctx.fill(); }
+      const r=3+14*Math.sqrt(Math.max(0,pops[n]||0));
+      ctx.fillStyle=colors[n-1]; ctx.globalAlpha=0.85;
+      ctx.beginPath(); ctx.arc(left+55,y,r,0,7); ctx.fill(); ctx.globalAlpha=1;
+    }
+    ctx.textAlign='left';
+  }
+
+  function drawPop(tMin,tMax){
+    const ctx=clear(popCv); const W=popCv.width,H=popCv.height;
+    const left=44,right=W-16,top=14,bottom=H-24;
+    function px(tt){return left+(tt-tMin)/(tMax-tMin)*(right-left);}
+    function py(v){return bottom-v*(bottom-top);}
+    ctx.strokeStyle='#c6cbd3'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
+    ctx.fillStyle='#8a90a0'; ctx.font='12px -apple-system,Helvetica,Arial,sans-serif';
+    ctx.fillText('P=1', left-4, top+4); ctx.fillText('P=0', left-4, bottom+4);
+    for(let n=1;n<=NMAX;n++){
+      ctx.strokeStyle=colors[n-1]; ctx.lineWidth=2.2; ctx.beginPath();
+      let started=false;
+      for(let i=0;i<tHist.length;i++){
+        if(tHist[i]<tMin) continue;
+        const X=px(tHist[i]), Y=py(popHist[n][i]);
+        if(!started){ctx.moveTo(X,Y);started=true;} else ctx.lineTo(X,Y);
+      }
+      ctx.stroke();
+      // first-order dashed
+      ctx.setLineDash([5,4]); ctx.beginPath(); started=false;
+      for(let i=0;i<tHist.length;i++){
+        if(tHist[i]<tMin) continue;
+        const v=pop1Hist[n][i];
+        if(v===undefined) continue;
+        const X=px(tHist[i]), Y=py(Math.min(1,v));
+        if(!started){ctx.moveTo(X,Y);started=true;} else ctx.lineTo(X,Y);
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+
+  function drawDensity(){
+    const ctx=clear(densityCv); const W=densityCv.width,H=densityCv.height;
+    const left=40,right=W-14,top=14,bottom=H-26;
+    const ymax=2.6;
+    function px(x){return left+x*(right-left);}
+    function py(y){return bottom-(y/ymax)*(bottom-top);}
+    ctx.strokeStyle='#c6cbd3'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
+    ctx.fillStyle='#8a90a0'; ctx.font='12px -apple-system,Helvetica,Arial,sans-serif';
+    ctx.fillText('x=0', left-2, bottom+16); ctx.textAlign='right'; ctx.fillText('x=L', right, bottom+16); ctx.textAlign='left';
+    ctx.fillText('|Ψ|²', left-2, top+2);
+    const dens=new Float64Array(NX);
+    for(let i=0;i<NX;i++){
+      let re=0, im=0;
+      for(let n=1;n<=NMAX;n++){ re+=aRe[n]*phi[n][i]; im+=aIm[n]*phi[n][i]; }
+      dens[i]=re*re+im*im;
+    }
+    ctx.strokeStyle='#111318'; ctx.lineWidth=2.4; ctx.beginPath();
+    for(let i=0;i<NX;i++){ const X=px(xs[i]),Y=py(dens[i]); if(i===0)ctx.moveTo(X,Y); else ctx.lineTo(X,Y); }
+    ctx.stroke();
+  }
+
+  // ---------------- main loop ----------------
+  let lastTS=null, prevN0=null;
+  function frame(ts){
+    if(lastTS===null) lastTS=ts;
+    let frameDt=(ts-lastTS)/1000; lastTS=ts;
+    if(frameDt>0.1) frameDt=0.1;
+    const n0=parseInt(n0Sel.value,10);
+    if(prevN0===null) prevN0=n0;
+    if(prevN0!==n0){ prevN0=n0; }
+
+    if(playing){
+      const A=parseFloat(ampA.value);
+      const substeps=25;
+      const dt=(frameDt*parseFloat(speedInput.value)*1.2)/substeps;
+      for(let s=0;s<substeps;s++) rk4Step(dt,A);
+    }
+
+    // record populations
+    const pops={};
+    let norm=0;
+    for(let m=1;m<=NMAX;m++){ pops[m]=aRe[m]*aRe[m]+aIm[m]*aIm[m]; norm+=pops[m]; }
+    tHist.push(t);
+    for(let m=1;m<=NMAX;m++){
+      popHist[m].push(pops[m]);
+      if(m===n0){ pop1Hist[m].push(undefined); }
+      else pop1Hist[m].push(c1Re[m]*c1Re[m]+c1Im[m]*c1Im[m]);
+    }
+    if(tHist.length>2000){
+      tHist.shift();
+      for(let m=1;m<=NMAX;m++){ popHist[m].shift(); pop1Hist[m].shift(); }
+    }
+
+    document.getElementById('tReadout').textContent=t.toFixed(2);
+    document.getElementById('normReadout').textContent=norm.toFixed(3);
+
+    const windowT=6;
+    const tMax=Math.max(windowT,t), tMin=tMax-windowT;
+
+    drawF(tMin,tMax);
+    drawEnergy(n0,pops);
+    drawPop(tMin,tMax);
+    drawDensity();
+
+    requestAnimationFrame(frame);
+  }
+  buildLegend();
+  n0Sel.addEventListener('change', buildLegend);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
