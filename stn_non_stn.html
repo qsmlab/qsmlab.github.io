@@ -87,9 +87,9 @@
 <div class="wrap">
 
   <h1>Stationary vs. non-stationary states</h1>
-  <p class="sub">A particle in a 1-D infinite box (PIB) as the working example. Compare a single energy
-  eigenstate — whose probability density is frozen in time — against a superposition of two or three
-  eigenstates, whose probability density visibly breathes and shifts. Units are chosen so that
+  <p class="sub">Here, a particle in a 1-D infinite box (PIB) is taken as the working example. You can compare a single energy
+  eigenstate (whose probability density is frozen in time) against a superposition of two or three
+  eigenstates (whose probability density keeps changing). Units are chosen so that
   <span class="eq">ħ = m = L = 1</span>, so energies are <span class="eq">Eₙ = n²π²/2</span>.</p>
 
   <!-- ===================== CONTROLS ===================== -->
@@ -171,35 +171,28 @@
 
   <!-- ===================== EXPLANATION ===================== -->
   <div class="card">
-    <h2>What's actually different</h2>
+    <h2>What you should notice:</h2>
     <p>An energy eigenstate <span class="eq">ψₙ</span> evolves only by an overall phase,
     <span class="eq">Ψ(x,t) = ψₙ(x)e^(−iEₙt/ħ)</span>. Because probability density is
-    <span class="eq">|Ψ|²</span>, that phase cancels exactly — nothing observable moves, no matter how long you wait.
-    That's what "stationary" means: stationary in probability, not in phase.</p>
-    <p>A superposition <span class="eq">Ψ = Σ cₙψₙ e^(−iEₙt/ħ)</span> mixes phases that rotate at
-    <em>different</em> rates. Cross terms between pairs of states now survive in <span class="eq">|Ψ|²</span>,
-    oscillating at the Bohr beat frequencies <span class="eq">ω_mn = (E_m − Eₙ)/ħ</span>. The density sloshes
-    back and forth inside the box, and quantities like &lt;x&gt;(t) genuinely move — this is the closest quantum
-    mechanics gets to "classical-looking" motion.</p>
+    <span class="eq">|Ψ|²</span>, and phase cancels exactly. No observable moves, no matter how long you wait!
+    Here "stationary" means: stationary in probability (or property), not in phase.</p>
+    <p>A superposition <span class="eq">Ψ = Σ cₙψₙ e^(−iEₙt/ħ)</span> mixes the underlying phases that rotate at
+    <em>different</em> rates. Their cross terms survive in <span class="eq">|Ψ|²</span>,
+    oscillate at the beat frequencies <span class="eq">ω_mn = (E_m − Eₙ)/ħ</span>. The 
+    quantities like &lt;x&gt;(t) change. This is quite similar to "classical-looking" motion.</p>
   </div>
 
   <div class="card">
-    <h2>Ehrenfest's theorem, and why it's checked live above</h2>
+    <h2>Ehrenfest's theorem:</h2>
     <p>Ehrenfest's theorem says expectation values obey classical-looking equations of motion:</p>
     <p style="text-align:center;"><span class="eq">d&lt;x&gt;/dt = &lt;p&gt;/m</span> &nbsp;&nbsp;&nbsp;
     <span class="eq">d&lt;p&gt;/dt = −&lt;∂V/∂x&gt;</span></p>
-    <p>Inside the box <span class="eq">V(x)=0</span>, so naively you'd expect &lt;p&gt; to be conserved. It isn't,
-    once you mix states — it oscillates too, in exact lock-step with d&lt;x&gt;/dt. That's the point of the panel
-    above: the box's infinite walls are already built into the boundary conditions
-    <span class="eq">ψₙ(0)=ψₙ(L)=0</span>, and Ehrenfest's theorem holds throughout only because both &lt;x&gt;
-    and &lt;p&gt; are computed from the same wavefunction that respects those walls. A single stationary state
-    trivially satisfies both equations with everything constant at zero net motion; a superposition is the
-    first place you actually see the classical-mechanics analogy come alive.</p>
-    <p>Try it: mix n=1 with n=2 (the largest &lt;x&gt; oscillation, since their coupling matrix element is
-    largest), then add a third, more distant state and watch the motion turn less sinusoidal and more
-    "wavepacket-like." Building a superposition of many eigenstates (n = 1…15, weighted like a Gaussian) is the
-    standard route to a localized wavepacket whose &lt;x&gt;(t) genuinely bounces off the walls like a classical
-    ball — a natural next extension of this page.</p>
+    <p>Inside the box <span class="eq">V(x)=0</span>, you may think &lt;p&gt; to be conserved. But, it is not, 
+    once you mix states. It oscillates too! A single stationary state
+    trivially satisfies both equations with everything constant at zero net motion; but a superposition is the
+    first place you actually see the classical-mechanics analogy.</p>
+    <p>Try it: mix n=1 with n=2 and then add a third, a more distant state. Watch the motion turn less sinusoidal and more
+    "wavepacket-like." It starts building a superposition of many eigenstates.</p>
   </div>
 
 
