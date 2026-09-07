@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title>Angular Momentum</title>
+<ul class="menu red">
+        <li><a href="index.html" title="">Home</a></li>
+     <li><a href="group.html" title="">Group</a></li>
+        <li><a href="pubs.html" title="" >Publications</a></li>
+        <li><a href="research.html" title="">Research</a></li>
+        <li><a href="teaching.html" title="">Teaching</a></li>
+        <li><a href="misc.html" title="">Miscellaneous</a></li>
+</ul>
+  
+<title>Stationary vs Non-Stationary States — Particle in a Box</title>
+<style>
+  :root{
+    --bg:#f7f7f5;
+    --panel:#ffffff;
+    --ink:#1a1d23;
+    --muted:#5b6270;
+    --line:#d9dce1;
+    --accent:#1e3a5f;
+    --c1:#2563eb;
+    --c2:#dc2626;
+    --c3:#16a34a;
+    --good:#0f7a4d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Georgia","Iowan Old Style",serif;
+    font-size:16px; line-height:1.55;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px;}
+  h1{font-size:28px;margin:0 0 4px;font-weight:600;}
+  h2{font-size:19px;margin:0 0 10px;font-weight:600;color:var(--accent);}
+  h3{font-size:15px;margin:18px 0 6px;font-weight:600;}
+  .sub{color:var(--muted);font-size:15px;max-width:78ch;margin:0 0 22px;}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:6px;
+    padding:16px 18px;margin-bottom:18px;
+  }
+  .row{display:flex;flex-wrap:wrap;gap:18px;}
+  .col{flex:1 1 380px;min-width:320px;}
+  label{display:block;font-family:-apple-system,Helvetica,Arial,sans-serif;
+    font-size:14px;color:var(--muted);margin:10px 0 3px;}
+  select, input[type=range]{width:100%;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;}
+  select{padding:5px;border:1px solid var(--line);border-radius:4px;background:#fff;}
+  .slot{border:1px solid var(--line);border-radius:5px;padding:10px 12px;margin-bottom:10px;background:#fbfbfa;}
+  .slot-head{display:flex;justify-content:space-between;align-items:center;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+  .pop{font-variant-numeric:tabular-nums;color:var(--muted);}
+  .controls-bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+    font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;margin-top:8px;}
+  button{
+    font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;
+    background:var(--accent);color:#fff;border:none;border-radius:4px;
+    padding:8px 16px;cursor:pointer;
+  }
+  button.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:focus-visible, select:focus-visible, input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .checkline{display:flex;align-items:center;gap:6px;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;color:var(--muted);}
+  .clock{font-family:-apple-system,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;font-size:14px;color:var(--muted);}
+  canvas{width:100%;display:block;}
+  .plotgrid{display:flex;flex-wrap:wrap;gap:18px;}
+  .plotcol{flex:1 1 420px;min-width:340px;}
+  .plotcol h3{text-align:center;font-family:-apple-system,Helvetica,Arial,sans-serif;
+    font-size:14px;color:var(--muted);letter-spacing:.2px;margin-top:0;}
+  .phasor-row{display:flex;gap:14px;align-items:flex-start;margin-top:8px;}
+  .phasor-row canvas{width:140px;flex:0 0 140px;}
+  .readouts{font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;color:var(--muted);flex:1;}
+  .readouts b{color:var(--ink);font-variant-numeric:tabular-nums;}
+  .note{background:#fbfbfa;border:1px solid var(--line);border-radius:5px;padding:10px 14px;font-size:14.5px;color:var(--muted);}
+  .eq{font-family:"Cambria Math","Georgia",serif;font-style:italic;background:#f1f2f0;
+    padding:2px 6px;border-radius:3px;}
+  p{margin:0 0 10px;}
+  ul{margin:6px 0 10px 22px;padding:0;}
+  li{margin-bottom:6px;}
+  .footer{color:var(--muted);font-size:13px;margin-top:30px;font-family:-apple-system,Helvetica,Arial,sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Stationary vs. non-stationary states</h1>
+  <p class="sub">A particle in a 1-D infinite box (PIB) as the working example. Compare a single energy
+  eigenstate — whose probability density is frozen in time — against a superposition of two or three
+  eigenstates, whose probability density visibly breathes and shifts. Units are chosen so that
+  <span class="eq">ħ = m = L = 1</span>, so energies are <span class="eq">Eₙ = n²π²/2</span>.</p>
+
+  <!-- ===================== CONTROLS ===================== -->
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <h2>Stationary reference</h2>
+        <label for="statN">Choose eigenstate n</label>
+        <select id="statN"></select>
+        <p class="note" style="margin-top:10px;">A single eigenstate <span class="eq">ψₙ(x)e^(−iEₙt/ħ)</span>.
+        The phase factor spins, but <span class="eq">|ψₙe^(−iEₙt/ħ)|² = |ψₙ|²</span> never changes.</p>
+      </div>
+      <div class="col" style="flex:1 1 520px;">
+        <h2>Non-stationary superposition</h2>
+        <label for="numStates">Number of states to mix</label>
+        <select id="numStates">
+          <option value="2">2 states</option>
+          <option value="3">3 states</option>
+        </select>
+        <div id="slots"></div>
+        <div class="checkline"><input type="checkbox" id="showComponents" checked>
+          <label style="margin:0;display:inline;" for="showComponents">show each stationary component (dashed)</label></div>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <button id="playBtn">Pause</button>
+      <button id="resetBtn" class="secondary">Reset time</button>
+      <label style="margin:0;width:120px;">speed
+        <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+      </label>
+      <span class="clock">t = <b id="tReadout">0.00</b> (ħ/E₀ units)</span>
+    </div>
+  </div>
+
+  <!-- ===================== ENERGY DIAGRAM ===================== -->
+  <div class="card">
+    <h2>Energy levels involved</h2>
+    <canvas id="energyCanvas" width="1120" height="120"></canvas>
+  </div>
+
+  <!-- ===================== DENSITY PLOTS ===================== -->
+  <div class="card">
+    <div class="plotgrid">
+      <div class="plotcol">
+        <h3>|ψₙ(x)|² — stationary state (constant in time)</h3>
+        <canvas id="statCanvas" width="540" height="300"></canvas>
+        <div class="phasor-row">
+          <canvas id="statPhasor" width="140" height="140"></canvas>
+          <div class="readouts">phase factor <span class="eq">e^(−iEₙt)</span> rotates,<br>
+          but a single arrow's length never changes the density.<br><br>
+          &lt;x&gt; = <b id="statX">0.500</b> (fixed)</div>
+        </div>
+      </div>
+      <div class="plotcol">
+        <h3>|Ψ(x,t)|² — superposition (non-stationary)</h3>
+        <canvas id="mixCanvas" width="540" height="300"></canvas>
+        <div class="phasor-row">
+          <canvas id="mixPhasor" width="140" height="140"></canvas>
+          <div class="readouts">each component phasor spins at its own <span class="eq">Eₙ</span>.
+          Interference between them is why the total density on the left panel moves.<br><br>
+          &lt;x&gt;(t) = <b id="mixX">–</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== EHRENFEST PANEL ===================== -->
+  <div class="card">
+    <h2>Ehrenfest check: d&lt;x&gt;/dt vs &lt;p&gt;</h2>
+    <canvas id="expCanvas" width="1120" height="220"></canvas>
+    <div class="controls-bar" style="margin-top:4px;">
+      <span>&lt;x&gt;(t) = <b id="xVal">–</b></span>
+      <span>&lt;p&gt;(t) = <b id="pVal">–</b></span>
+      <span>numerical d&lt;x&gt;/dt = <b id="dxdtVal">–</b></span>
+      <span style="color:var(--good)">m = 1, so d&lt;x&gt;/dt should track &lt;p&gt;/m — watch the two curves lock in phase.</span>
+    </div>
+  </div>
+
+  <!-- ===================== EXPLANATION ===================== -->
+  <div class="card">
+    <h2>What's actually different</h2>
+    <p>An energy eigenstate <span class="eq">ψₙ</span> evolves only by an overall phase,
+    <span class="eq">Ψ(x,t) = ψₙ(x)e^(−iEₙt/ħ)</span>. Because probability density is
+    <span class="eq">|Ψ|²</span>, that phase cancels exactly — nothing observable moves, no matter how long you wait.
+    That's what "stationary" means: stationary in probability, not in phase.</p>
+    <p>A superposition <span class="eq">Ψ = Σ cₙψₙ e^(−iEₙt/ħ)</span> mixes phases that rotate at
+    <em>different</em> rates. Cross terms between pairs of states now survive in <span class="eq">|Ψ|²</span>,
+    oscillating at the Bohr beat frequencies <span class="eq">ω_mn = (E_m − Eₙ)/ħ</span>. The density sloshes
+    back and forth inside the box, and quantities like &lt;x&gt;(t) genuinely move — this is the closest quantum
+    mechanics gets to "classical-looking" motion.</p>
+  </div>
+
+  <div class="card">
+    <h2>Ehrenfest's theorem, and why it's checked live above</h2>
+    <p>Ehrenfest's theorem says expectation values obey classical-looking equations of motion:</p>
+    <p style="text-align:center;"><span class="eq">d&lt;x&gt;/dt = &lt;p&gt;/m</span> &nbsp;&nbsp;&nbsp;
+    <span class="eq">d&lt;p&gt;/dt = −&lt;∂V/∂x&gt;</span></p>
+    <p>Inside the box <span class="eq">V(x)=0</span>, so naively you'd expect &lt;p&gt; to be conserved. It isn't,
+    once you mix states — it oscillates too, in exact lock-step with d&lt;x&gt;/dt. That's the point of the panel
+    above: the box's infinite walls are already built into the boundary conditions
+    <span class="eq">ψₙ(0)=ψₙ(L)=0</span>, and Ehrenfest's theorem holds throughout only because both &lt;x&gt;
+    and &lt;p&gt; are computed from the same wavefunction that respects those walls. A single stationary state
+    trivially satisfies both equations with everything constant at zero net motion; a superposition is the
+    first place you actually see the classical-mechanics analogy come alive.</p>
+    <p>Try it: mix n=1 with n=2 (the largest &lt;x&gt; oscillation, since their coupling matrix element is
+    largest), then add a third, more distant state and watch the motion turn less sinusoidal and more
+    "wavepacket-like." Building a superposition of many eigenstates (n = 1…15, weighted like a Gaussian) is the
+    standard route to a localized wavepacket whose &lt;x&gt;(t) genuinely bounces off the walls like a classical
+    ball — a natural next extension of this page.</p>
+  </div>
+
+  <div class="card">
+    <h2>Where to go next: time-dependent perturbation theory (TDPT)</h2>
+    <p>This page mixes stationary states with <em>fixed, hand-chosen</em> coefficients. The natural next step is
+    to let an external field actually drive population between them. A standard, PIB-friendly choice is a
+    spatially uniform oscillating field coupling to position, <span class="eq">H'(t) = qE₀ x cos(ωt)</span> —
+    the same coupling that gives optical/Stark-type transitions.</p>
+    <ul>
+      <li><b>First-order amplitude.</b> Starting purely in state n, the amplitude to be found in state m after
+      time t is <span class="eq">c_m⁽¹⁾(t) = −(i/ħ)∫₀ᵗ H'_mn(t′) e^(iω_mn t′) dt′</span>, with
+      <span class="eq">ω_mn=(E_m−Eₙ)/ħ</span> and <span class="eq">H'_mn = qE₀⟨φ_m|x|φₙ⟩cos(ωt′)</span>.</li>
+      <li><b>Selection rule.</b> For the PIB, <span class="eq">⟨φ_m|x|φₙ⟩</span> is nonzero only when m and n
+      have <em>opposite</em> parity — so a dipole-type drive only ever connects n=1↔2, 2↔3, 1↔4, etc., never
+      1↔3. That rule is already visible in the coupling used for &lt;p&gt; above.</li>
+      <li><b>Resonance.</b> Transition probability <span class="eq">P_{n→m}(t)=|c_m⁽¹⁾(t)|²</span> grows
+      appreciably only near <span class="eq">ω ≈ |ω_mn|</span>; away from resonance it stays small and
+      oscillatory (first-order theory is only valid while it stays small).</li>
+      <li><b>Implementation route.</b> Reuse this page's eigenbasis: instead of freezing the coefficients
+      cₙ, integrate the coupled ODEs <span class="eq">iħ ċ_m = Σₙ H'_mn(t) e^(iω_mn t) cₙ</span> for a
+      truncated basis (say n=1…15) with a simple RK4 stepper. Compare the exact numerical
+      P_{n→m}(t) against the first-order TDPT formula to see where the weak-field/short-time approximation
+      holds, and where it breaks down into Rabi-type flopping at/near resonance.</li>
+      <li><b>Limiting case.</b> If the drive is switched on suddenly next to a dense set of levels, the
+      long-time growth rate of first-order theory reduces to Fermi's golden rule
+      <span class="eq">Γ_{n→m}=(2π/ħ)|H'_mn|²ρ(E_m)</span> — worth a mention if the box is later coupled to a
+      continuum instead of a few discrete levels.</li>
+    </ul>
+  </div>
+
+  <div class="footer">Particle-in-a-box eigenstates ψₙ(x)=√2·sin(nπx), Eₙ=n²π²/2, on x∈[0,1], with ħ=m=1.</div>
+</div>
+
+<script>
+(function(){
+  const N_STATES_MAX = 6;
+  const NX = 241; // grid points 0..1
+  const dx = 1/(NX-1);
+  const colors = ['#2563eb','#dc2626','#16a34a','#9333ea','#d97706','#0891b2'];
+  const statColor = '#334155';
+
+  // --- precompute eigenbasis on grid ---
+  const xs = new Float64Array(NX);
+  for(let i=0;i<NX;i++) xs[i]=i*dx;
+  const phi = [], phiP = [], E = [];
+  for(let n=1;n<=N_STATES_MAX;n++){
+    const arr=new Float64Array(NX), arrP=new Float64Array(NX);
+    for(let i=0;i<NX;i++){
+      arr[i]=Math.sqrt(2)*Math.sin(n*Math.PI*xs[i]);
+      arrP[i]=Math.sqrt(2)*n*Math.PI*Math.cos(n*Math.PI*xs[i]);
+    }
+    phi[n]=arr; phiP[n]=arrP; E[n]=n*n*Math.PI*Math.PI/2;
+  }
+
+  function trapz(arr){
+    let s=0;
+    for(let i=0;i<NX-1;i++) s += 0.5*(arr[i]+arr[i+1])*dx;
+    return s;
+  }
+
+  // ---------------- DOM ----------------
+  const statNSel = document.getElementById('statN');
+  for(let n=1;n<=N_STATES_MAX;n++){
+    const o=document.createElement('option'); o.value=n; o.textContent='n = '+n+'  (E='+E[n].toFixed(2)+')';
+    if(n===2) o.selected=true;
+    statNSel.appendChild(o);
+  }
+
+  const numStatesSel = document.getElementById('numStates');
+  const slotsDiv = document.getElementById('slots');
+  const slotDefs = [
+    {n:1, amp:1, phase:0},
+    {n:2, amp:1, phase:0},
+    {n:4, amp:0.6, phase:0}
+  ];
+
+  function buildSlots(){
+    slotsDiv.innerHTML='';
+    const numActive = parseInt(numStatesSel.value,10);
+    for(let s=0;s<numActive;s++){
+      const def = slotDefs[s];
+      const box = document.createElement('div');
+      box.className='slot';
+      box.innerHTML = `
+        <div class="slot-head">
+          <span><span class="swatch" style="background:${colors[s]}"></span>component ${s+1}</span>
+          <span class="pop" id="pop${s}">–</span>
+        </div>
+        <label>n</label>
+        <select id="n${s}"></select>
+        <label>relative amplitude</label>
+        <input type="range" id="amp${s}" min="0" max="1" step="0.01" value="${def.amp}">
+        <label>relative phase (rad)</label>
+        <input type="range" id="phase${s}" min="0" max="6.283" step="0.01" value="${def.phase}">
+      `;
+      slotsDiv.appendChild(box);
+    }
+    // populate n dropdowns for each slot, excluding duplicates
+    refreshSlotOptions();
+    for(let s=0;s<numActive;s++){
+      document.getElementById('n'+s).value = slotDefs[s].n;
+      document.getElementById('amp'+s).addEventListener('input', onSlotChange);
+      document.getElementById('phase'+s).addEventListener('input', onSlotChange);
+      document.getElementById('n'+s).addEventListener('change', onSlotChange);
+    }
+  }
+
+  function refreshSlotOptions(){
+    const numActive = parseInt(numStatesSel.value,10);
+    const chosen = [];
+    for(let s=0;s<numActive;s++){
+      const sel=document.getElementById('n'+s);
+      chosen.push(sel? parseInt(sel.value,10): slotDefs[s].n);
+    }
+    for(let s=0;s<numActive;s++){
+      const sel=document.getElementById('n'+s);
+      const current = sel.value ? parseInt(sel.value,10) : slotDefs[s].n;
+      sel.innerHTML='';
+      for(let n=1;n<=N_STATES_MAX;n++){
+        if(chosen.indexOf(n)!==-1 && n!==current) continue;
+        const o=document.createElement('option'); o.value=n; o.textContent='n='+n;
+        if(n===current) o.selected=true;
+        sel.appendChild(o);
+      }
+    }
+  }
+
+  function onSlotChange(){
+    refreshSlotOptions();
+    // sync slotDefs
+    const numActive = parseInt(numStatesSel.value,10);
+    for(let s=0;s<numActive;s++){
+      slotDefs[s].n = parseInt(document.getElementById('n'+s).value,10);
+      slotDefs[s].amp = parseFloat(document.getElementById('amp'+s).value);
+      slotDefs[s].phase = parseFloat(document.getElementById('phase'+s).value);
+    }
+    resetHistory();
+  }
+
+  numStatesSel.addEventListener('change', ()=>{ buildSlots(); resetHistory(); });
+  statNSel.addEventListener('change', resetHistory);
+  document.getElementById('showComponents').addEventListener('change', ()=>{});
+
+  buildSlots();
+
+  // ---------------- animation state ----------------
+  let t=0, playing=true;
+  const speedInput = document.getElementById('speed');
+  const playBtn = document.getElementById('playBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  playBtn.addEventListener('click', ()=>{
+    playing=!playing; playBtn.textContent = playing?'Pause':'Play';
+  });
+  resetBtn.addEventListener('click', resetHistory);
+
+  let xHist=[], pHist=[], tHist=[];
+  function resetHistory(){ t=0; xHist=[]; pHist=[]; tHist=[]; }
+
+  // ---------------- canvases ----------------
+  const energyCv = document.getElementById('energyCanvas');
+  const statCv = document.getElementById('statCanvas');
+  const mixCv = document.getElementById('mixCanvas');
+  const statPhCv = document.getElementById('statPhasor');
+  const mixPhCv = document.getElementById('mixPhasor');
+  const expCv = document.getElementById('expCanvas');
+
+  function clear(cv){
+    const ctx=cv.getContext('2d');
+    ctx.clearRect(0,0,cv.width,cv.height);
+    return ctx;
+  }
+
+  function drawEnergyDiagram(activeSlotNs){
+    const ctx=clear(energyCv);
+    const W=energyCv.width,H=energyCv.height;
+    const left=90,right=W-30,top=14,bottom=H-14;
+    const n0=parseInt(statNSel.value,10);
+    for(let n=1;n<=N_STATES_MAX;n++){
+      const y = bottom - (n-1)*(bottom-top)/(N_STATES_MAX-1);
+      ctx.strokeStyle='#c6cbd3'; ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke();
+      ctx.fillStyle='#5b6270'; ctx.font='12px -apple-system,Helvetica,Arial,sans-serif';
+      ctx.textAlign='right';
+      ctx.fillText('n='+n+'  E='+E[n].toFixed(2), left-8, y+4);
+      if(n===n0){
+        ctx.fillStyle=statColor;
+        ctx.beginPath(); ctx.moveTo(left+30,y-8); ctx.lineTo(left+44,y); ctx.lineTo(left+30,y+8); ctx.closePath(); ctx.fill();
+      }
+      const idx = activeSlotNs.indexOf(n);
+      if(idx!==-1){
+        ctx.fillStyle=colors[idx];
+        ctx.beginPath(); ctx.arc(left+70,y,6,0,7); ctx.fill();
+      }
+    }
+    ctx.textAlign='left'; ctx.fillStyle='#8a90a0'; ctx.font='11px -apple-system,Helvetica,Arial,sans-serif';
+    ctx.fillText('▲ stationary reference   ●  superposition components', left+90, top+2);
+  }
+
+  function drawDensity(cv, xs, density, refDensity, componentsList, label, color){
+    const ctx=clear(cv);
+    const W=cv.width,H=cv.height;
+    const left=40,right=W-14,top=14,bottom=H-30;
+    const ymax = 2.6;
+    function px(x){return left+x*(right-left);}
+    function py(y){return bottom-(y/ymax)*(bottom-top);}
+    // axes
+    ctx.strokeStyle='#c6cbd3'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
+    ctx.fillStyle='#8a90a0'; ctx.font='12px -apple-system,Helvetica,Arial,sans-serif';
+    ctx.fillText('x = 0', left-2, bottom+16);
+    ctx.textAlign='right'; ctx.fillText('x = L', right, bottom+16); ctx.textAlign='left';
+    ctx.fillText('|Ψ|²', left-2, top+2);
+
+    // optional dashed components
+    if(componentsList){
+      componentsList.forEach(c=>{
+        ctx.strokeStyle=c.color; ctx.setLineDash([5,4]); ctx.lineWidth=1.6;
+        ctx.beginPath();
+        for(let i=0;i<NX;i++){
+          const yv = c.pop*phi[c.n][i]*phi[c.n][i];
+          const X=px(xs[i]), Y=py(yv);
+          if(i===0) ctx.moveTo(X,Y); else ctx.lineTo(X,Y);
+        }
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+    }
+    // main curve
+    ctx.strokeStyle=color; ctx.lineWidth=2.4;
+    ctx.beginPath();
+    for(let i=0;i<NX;i++){
+      const X=px(xs[i]), Y=py(density[i]);
+      if(i===0) ctx.moveTo(X,Y); else ctx.lineTo(X,Y);
+    }
+    ctx.stroke();
+  }
+
+  function drawPhasor(cv, comps){
+    // comps: [{angle, weight, color}]
+    const ctx=clear(cv);
+    const W=cv.width,H=cv.height;
+    const cx=W/2, cy=H/2, R=Math.min(W,H)/2-14;
+    ctx.strokeStyle='#d9dce1'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
+    comps.forEach(c=>{
+      const len = R*Math.max(0.15,c.weight);
+      const ex = cx+len*Math.cos(c.angle), ey = cy-len*Math.sin(c.angle);
+      ctx.strokeStyle=c.color; ctx.lineWidth=2.2;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(ex,ey); ctx.stroke();
+      ctx.fillStyle=c.color;
+      ctx.beginPath(); ctx.arc(ex,ey,3,0,7); ctx.fill();
+    });
+  }
+
+  function drawExpChart(){
+    const ctx=clear(expCv);
+    const W=expCv.width,H=expCv.height;
+    const left=54,right=W-20,top=16,bottom=H-26;
+    const windowT = 8;
+    const tMax = Math.max(windowT, t);
+    const tMin = tMax - windowT;
+    function px(tt){ return left + (tt-tMin)/(tMax-tMin) * (right-left); }
+    ctx.strokeStyle='#c6cbd3'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(left,top); ctx.lineTo(left,bottom); ctx.lineTo(right,bottom); ctx.stroke();
+    ctx.fillStyle='#8a90a0'; ctx.font='12px -apple-system,Helvetica,Arial,sans-serif';
+    ctx.fillText('t →', right-16, bottom+18);
+
+    // <x> axis: 0..1 mapped to bottom..top ; <p> auto-scaled separately, shown as fraction of pMax
+    function pyX(v){ return bottom-(v)*(bottom-top); } // v in [0,1]
+
+    let pMax=0.05;
+    pHist.forEach(v=>{ if(Math.abs(v)>pMax) pMax=Math.abs(v); });
+    function pyP(v){ const norm = 0.5+0.5*(v/pMax); return bottom-norm*(bottom-top); }
+
+    // reference line for stationary <x>=0.5
+    ctx.strokeStyle='#c6cbd3'; ctx.setLineDash([3,3]); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(left,pyX(0.5)); ctx.lineTo(right,pyX(0.5)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.strokeStyle='#0f7a4d'; ctx.lineWidth=2;
+    ctx.beginPath();
+    let started=false;
+    for(let i=0;i<tHist.length;i++){
+      if(tHist[i]<tMin) continue;
+      const X=px(tHist[i]), Y=pyX(xHist[i]);
+      if(!started){ctx.moveTo(X,Y);started=true;} else ctx.lineTo(X,Y);
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle='#b45309'; ctx.lineWidth=2; ctx.setLineDash([6,3]);
+    ctx.beginPath(); started=false;
+    for(let i=0;i<tHist.length;i++){
+      if(tHist[i]<tMin) continue;
+      const X=px(tHist[i]), Y=pyP(pHist[i]);
+      if(!started){ctx.moveTo(X,Y);started=true;} else ctx.lineTo(X,Y);
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+
+    ctx.font='13px -apple-system,Helvetica,Arial,sans-serif';
+    ctx.fillStyle='#0f7a4d'; ctx.fillText('— <x>(t)  (scale 0..1)', left+4, top+12);
+    ctx.fillStyle='#b45309'; ctx.fillText('- - <p>(t)  (auto-scaled, dashed)', left+4, top+28);
+  }
+
+  // ---------------- main frame ----------------
+  let lastTS=null;
+  function frame(ts){
+    if(lastTS===null) lastTS=ts;
+    const dt = (ts-lastTS)/1000;
+    lastTS=ts;
+    if(playing) t += dt*parseFloat(speedInput.value)*1.2;
+
+    // ---- stationary panel ----
+    const n0 = parseInt(statNSel.value,10);
+    const statDensity = phi[n0]; // reuse squared below
+    const statDens2 = new Float64Array(NX);
+    for(let i=0;i<NX;i++) statDens2[i]=phi[n0][i]*phi[n0][i];
+    drawDensity(statCv, xs, statDens2, null, null, 'stat', statColor);
+    drawPhasor(statPhCv, [{angle: -E[n0]*t, weight:1, color:statColor}]);
+    document.getElementById('statX').textContent = '0.500';
+
+    // ---- superposition panel ----
+    const numActive = parseInt(numStatesSel.value,10);
+    const active = [];
+    let sumSq=0;
+    for(let s=0;s<numActive;s++) sumSq += slotDefs[s].amp*slotDefs[s].amp;
+    if(sumSq<1e-9) sumSq=1e-9;
+    for(let s=0;s<numActive;s++){
+      const a = slotDefs[s].amp/Math.sqrt(sumSq);
+      active.push({n:slotDefs[s].n, a:a, phase:slotDefs[s].phase, color:colors[s], pop:a*a});
+      const popEl=document.getElementById('pop'+s);
+      if(popEl) popEl.textContent=(a*a*100).toFixed(1)+'%';
+    }
+
+    const Re=new Float64Array(NX), Im=new Float64Array(NX);
+    const dRe=new Float64Array(NX), dIm=new Float64Array(NX);
+    for(let i=0;i<NX;i++){
+      let re=0, im=0, dre=0, dim=0;
+      for(const c of active){
+        const ang = c.phase - E[c.n]*t;
+        const cosA=Math.cos(ang), sinA=Math.sin(ang);
+        re += c.a*phi[c.n][i]*cosA;
+        im += c.a*phi[c.n][i]*sinA;
+        dre += c.a*phiP[c.n][i]*cosA;
+        dim += c.a*phiP[c.n][i]*sinA;
+      }
+      Re[i]=re; Im[i]=im; dRe[i]=dre; dIm[i]=dim;
+    }
+    const density = new Float64Array(NX);
+    for(let i=0;i<NX;i++) density[i]=Re[i]*Re[i]+Im[i]*Im[i];
+
+    const showComp = document.getElementById('showComponents').checked;
+    drawDensity(mixCv, xs, density, null, showComp?active.map(c=>({n:c.n,pop:c.pop,color:c.color})):null, 'mix', '#111318');
+
+    drawPhasor(mixPhCv, active.map(c=>({angle:c.phase-E[c.n]*t, weight:c.a, color:c.color})));
+
+    // expectation values
+    const xArr = new Float64Array(NX);
+    for(let i=0;i<NX;i++) xArr[i]=xs[i]*density[i];
+    const xExp = trapz(xArr);
+
+    const pArr = new Float64Array(NX);
+    for(let i=0;i<NX;i++) pArr[i]= Re[i]*dIm[i]-Im[i]*dRe[i];
+    const pExp = trapz(pArr);
+
+    document.getElementById('mixX').textContent = xExp.toFixed(3);
+    document.getElementById('xVal').textContent = xExp.toFixed(3);
+    document.getElementById('pVal').textContent = pExp.toFixed(3);
+
+    tHist.push(t); xHist.push(xExp); pHist.push(pExp);
+    if(tHist.length>1200){ tHist.shift(); xHist.shift(); pHist.shift(); }
+    let dxdt = '–';
+    if(tHist.length>=2){
+      const dtv = tHist[tHist.length-1]-tHist[tHist.length-2];
+      if(dtv>1e-6) dxdt = ((xHist[xHist.length-1]-xHist[xHist.length-2])/dtv).toFixed(3);
+    }
+    document.getElementById('dxdtVal').textContent = dxdt;
+    document.getElementById('tReadout').textContent = t.toFixed(2);
+
+    drawEnergyDiagram(active.map(c=>c.n));
+    drawExpChart();
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
