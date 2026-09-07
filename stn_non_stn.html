@@ -202,33 +202,7 @@
     ball — a natural next extension of this page.</p>
   </div>
 
-  <div class="card">
-    <h2>Where to go next: time-dependent perturbation theory (TDPT)</h2>
-    <p>This page mixes stationary states with <em>fixed, hand-chosen</em> coefficients. The natural next step is
-    to let an external field actually drive population between them. A standard, PIB-friendly choice is a
-    spatially uniform oscillating field coupling to position, <span class="eq">H'(t) = qE₀ x cos(ωt)</span> —
-    the same coupling that gives optical/Stark-type transitions.</p>
-    <ul>
-      <li><b>First-order amplitude.</b> Starting purely in state n, the amplitude to be found in state m after
-      time t is <span class="eq">c_m⁽¹⁾(t) = −(i/ħ)∫₀ᵗ H'_mn(t′) e^(iω_mn t′) dt′</span>, with
-      <span class="eq">ω_mn=(E_m−Eₙ)/ħ</span> and <span class="eq">H'_mn = qE₀⟨φ_m|x|φₙ⟩cos(ωt′)</span>.</li>
-      <li><b>Selection rule.</b> For the PIB, <span class="eq">⟨φ_m|x|φₙ⟩</span> is nonzero only when m and n
-      have <em>opposite</em> parity — so a dipole-type drive only ever connects n=1↔2, 2↔3, 1↔4, etc., never
-      1↔3. That rule is already visible in the coupling used for &lt;p&gt; above.</li>
-      <li><b>Resonance.</b> Transition probability <span class="eq">P_{n→m}(t)=|c_m⁽¹⁾(t)|²</span> grows
-      appreciably only near <span class="eq">ω ≈ |ω_mn|</span>; away from resonance it stays small and
-      oscillatory (first-order theory is only valid while it stays small).</li>
-      <li><b>Implementation route.</b> Reuse this page's eigenbasis: instead of freezing the coefficients
-      cₙ, integrate the coupled ODEs <span class="eq">iħ ċ_m = Σₙ H'_mn(t) e^(iω_mn t) cₙ</span> for a
-      truncated basis (say n=1…15) with a simple RK4 stepper. Compare the exact numerical
-      P_{n→m}(t) against the first-order TDPT formula to see where the weak-field/short-time approximation
-      holds, and where it breaks down into Rabi-type flopping at/near resonance.</li>
-      <li><b>Limiting case.</b> If the drive is switched on suddenly next to a dense set of levels, the
-      long-time growth rate of first-order theory reduces to Fermi's golden rule
-      <span class="eq">Γ_{n→m}=(2π/ħ)|H'_mn|²ρ(E_m)</span> — worth a mention if the box is later coupled to a
-      continuum instead of a few discrete levels.</li>
-    </ul>
-  </div>
+
 
   <div class="footer">Particle-in-a-box eigenstates ψₙ(x)=√2·sin(nπx), Eₙ=n²π²/2, on x∈[0,1], with ħ=m=1.</div>
 </div>
