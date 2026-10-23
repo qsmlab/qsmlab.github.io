@@ -1,206 +1,421 @@
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
-<link rel='stylesheet' type='text/css' href='menu_style.css' />
-<title>Teaching and NPTEL Videos of Sabyashachi Mishra at IIT Kharagpur</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teaching | QSM Lab | Sabyashachi Mishra | IIT Kharagpur</title>
+<meta name="description" content="Teaching of Sabyashachi Mishra at IIT Kharagpur: courses in quantum chemistry, computational chemistry and quantum computing, NPTEL and Swayam lecture videos, and interactive web tools for students." />
+<link rel="stylesheet" type="text/css" href="menu_style.css" />
 <style>
-  body { margin: 0; font-family: Arial, sans-serif; }
-  ul.menu { margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #111;
+    background: #fff;
+    margin: 20px;
+  }
+  .page { max-width: 960px; margin: 40px auto 60px; }
+  h1 { font-size: 28px; margin: 0 0 6px; }
+  .tagline { font-size: 18px; color: #333; margin: 0 0 14px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 28px; margin: 18px 0 6px; }
+  .stat .n { display: block; font-size: 28px; font-weight: bold; color: #0b3d91; line-height: 1.1; }
+  .stat .l { font-size: 14px; color: #333; }
+
+  .jump { margin: 18px 0 0; font-size: 15px; }
+  .jump a { color: #0b3d91; text-decoration: none; font-weight: bold; margin-right: 18px; }
+  .jump a:hover { text-decoration: underline; }
+
+  section { padding-top: 30px; }
+  h2 { font-size: 22px; margin: 0 0 6px; padding-bottom: 4px; border-bottom: 2px solid #0b3d91; }
+  .lead { margin: 8px 0 14px; color: #222; }
+  h3 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.05em; color: #333; margin: 18px 0 8px; }
+
+  /* this semester */
+  .now-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .now-card { border: 1px solid #c9d3e3; border-left: 5px solid #0b3d91; border-radius: 4px; padding: 12px 14px; background: #f7f9fc; }
+  .now-card .code { display: block; font-size: 13px; font-weight: bold; color: #0b3d91; letter-spacing: 0.04em; }
+  .now-card .nt { font-size: 16px; font-weight: bold; }
+
+  /* card grids */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .card {
+    display: flex; flex-direction: column;
+    padding: 14px 16px;
+    border: 1px solid #c9d3e3; border-top: 4px solid #0b3d91; border-radius: 4px;
+    background: #f7f9fc; color: #111; text-decoration: none;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+  .card:hover, .card:focus { background: #fff; box-shadow: 0 4px 12px rgba(11,61,145,0.15); transform: translateY(-2px); }
+  .tag { align-self: flex-start; font-size: 12px; font-weight: bold; letter-spacing: 0.05em; text-transform: uppercase;
+         color: #0b3d91; border: 1px solid #0b3d91; border-radius: 3px; padding: 1px 6px; margin-bottom: 8px; }
+  .card .ct { font-size: 16.5px; font-weight: bold; line-height: 1.3; margin-bottom: 5px; }
+  .card .cd { font-size: 14.5px; color: #333; line-height: 1.45; flex-grow: 1; }
+  .card .go { font-size: 14px; font-weight: bold; color: #0b3d91; margin-top: 10px; }
+
+  /* course table */
+  table.courses { border-collapse: collapse; width: 100%; font-size: 15px; }
+  table.courses th { text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #333;
+                     border-bottom: 2px solid #333; padding: 6px 8px; }
+  table.courses td { border-bottom: 1px solid #ddd; padding: 9px 8px; vertical-align: top; }
+  table.courses tr:hover td { background: #f7f9fc; }
+  .cname { font-weight: bold; }
+  .codes { font-size: 13.5px; color: #444; }
+  .syl { font-size: 13px; color: #0b3d91; margin-left: 6px; }
+  td.cnt { text-align: center; font-weight: bold; color: #0b3d91; width: 60px; }
+  th.cnt { text-align: center; }
+  .chip { display: inline-block; font-size: 12.5px; padding: 1px 6px; margin: 2px 3px 2px 0; border: 1px solid #b5c1d6;
+          border-radius: 3px; background: #fff; white-space: nowrap; }
+  .chip.now { background: #0b3d91; border-color: #0b3d91; color: #fff; font-weight: bold; }
+
+  details { margin-top: 18px; border: 1px solid #ddd; border-radius: 4px; padding: 10px 14px; }
+  summary { cursor: pointer; font-weight: bold; color: #0b3d91; }
+  .semgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 24px; margin-top: 10px; }
+  .sem h4 { font-size: 15px; margin: 10px 0 2px; }
+  .sem ul { margin: 0; padding-left: 18px; font-size: 14.5px; }
+
+  .top { font-size: 13px; text-align: right; margin-top: 10px; }
+  .top a { color: #555; }
+
+  @media (max-width: 860px) {
+    .grid, .now-grid, .semgrid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    body { margin: 10px; font-size: 15px; }
+    .grid, .now-grid, .semgrid { grid-template-columns: 1fr; }
+    table.courses th.cnt, table.courses td.cnt { display: none; }
+  }
 </style>
 </head>
 <body>
 <ul class="menu red">
-        <li><a href="index.html" title="">Home</a></li>
-     <li><a href="group.html" title="">Group</a></li>
-        <li><a href="pubs.html" title="" >Publications</a></li>
-        <li><a href="research.html" title="">Research</a></li>
-        <li><a href="teaching.html" title="">Teaching</a></li>
-        <li><a href="misc.html" title="">Miscellaneous</a></li>
+  <li><a href="index.html" title="">Home</a></li>
+  <li><a href="group.html" title="">Group</a></li>
+  <li><a href="pubs.html" title="">Publications</a></li>
+  <li><a href="research.html" title="">Research</a></li>
+  <li><a href="teaching.html" title="">Teaching</a></li>
+  <li><a href="misc.html" title="">Miscellaneous</a></li>
 </ul>
-    <style>
-        h1 {
-            text-align: center;
-        }
-        .member-container {
-            width: calc(49% - 20px); /* Adjust the width as needed */
-            height: 250px; /* Adjust the width as needed */
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 20px;
-            overflow: scroll;
-            box-sizing: border-box;
-            float: left;
-        }
-        .member-container:nth-child(odd) {
-            margin-right: 20px; /* Add margin to create space between columns */
-        }
-        .member-info {
-            overflow: hidden;
-        }
-        .member-info p {
-            margin: 5px 0;
-        }
-    </style>
 
-<CENTER>
+<div class="page">
 
-<body>
-<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
-<COL WIDTH=256*>
-<TR>
-<TD WIDTH=100% VALIGN=TOP>
-<UL>
-Online Lecture Videos:
-<BR>
-<LI> <a href="https://youtu.be/anaTgSkhnSs?t=4851" title="" target="_blank" > Moodle Training</a> for IIT Kharagpur Faculty During Covid Lockdown.
-<LI> IIT PAL Lecture Videos on <a href="https://www.youtube.com/watch?v=sjiU0-fHWNE&t=256s" title="" target="_blank" >Atomic Structure</a>.
-<LI> DST Swayam Lecture Videos on <a href="http://www.chemistry.iitkgp.ac.in/fac/SM/IQC_YT_LINKS.htm" title="" target="_blank" >Quantum Chemistry and Spectroscopy</a>.
-<LI> NPTEL Lecture Videos on <a href="https://www.youtube.com/playlist?list=PLbRMhDVUMngcGHvAEaDw7VQTR7U5PQLyr" title="" target="_blank" >Approximate Methods in Quantum Chemistry</a>.
-<LI> QM/MM Workshop Lecture  <a href="https://youtu.be/aqxjKpEH4ec" title="" target="_blank" >QM/MM Methods</a>.
-<LI> Quantum Computing for Chemistry (Hands-on) Workshop Lecture  <a href="https://youtu.be/XXCXG1OwDwI?t=7212" title="" target="_blank" >Quantum Computing</a>.
-</UL>
-</TABLE>
+<h1>Teaching</h1>
+<p class="tagline">Quantum chemistry, computational chemistry and quantum computing, from first-year chemistry to postgraduate courses.</p>
 
-<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
-<COL WIDTH=256*>
-<TR>
-<TD WIDTH=100% VALIGN=TOP>
-<UL>
-Web Tools
-<BR>
-<LI> <a href=ug_icexp1.html target="_blank" >Spectrophotometric pKa Determination</a>.
-<LI> <a href=enz_kin.html target="_blank" >Michaelis-Menten Kinetics Plotter</a>.
-<LI> <a href=angmom.html target="_blank" >Angular Momentum Operators</a>.
-<LI> <a href=quantstat.html target="_blank" >Quantum Statistics with Particle in a 1D Box Example</a>.
-<LI> <a href=stn_non_stn.html target="_blank" >Stationary vs. Non-Stationary State</a>.
-<LI> <a href=tdpt_perturbations.html target="_blank" >Time Dependent Perturbation Theory Examples</a>.
-<LI> <a href=CSFgenerator.html target="_blank" >CSF Generator</a>.
-<LI> <a href=MQSP_QGenerator.html target="_blank" >Practice Questions for Quantum Chemical Calculations</a>.
-<LI> <a href=pI_test.html target="_blank" >pI of peptides</a>.
-<LI> <a href=QFT_concepts.html target="_blank" >QFT and Applications</a>.
-</UL>
-</TABLE>
+<div class="stats">
+  <div class="stat"><span class="n" id="statSince"></span><span class="l">teaching at IIT Kharagpur</span></div>
+  <div class="stat"><span class="n" id="statCourses"></span><span class="l">different courses</span></div>
+  <div class="stat"><span class="n" id="statOfferings"></span><span class="l">course offerings</span></div>
+  <div class="stat"><span class="n" id="statVideos"></span><span class="l">online lecture series and talks</span></div>
+  <div class="stat"><span class="n" id="statTools"></span><span class="l">interactive web tools</span></div>
+</div>
 
-<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
-<COL WIDTH=256*>
-<TD WIDTH=100% VALIGN=TOP>
-<FONT SIZE=4>
-<BR> <BR>
-Courses Taught in IIT Kharagpur (Since 2012) 
+<p class="jump">
+  <a href="#current">This semester</a>
+  <a href="#videos">Lecture videos</a>
+  <a href="#tools">Web tools</a>
+  <a href="#courses">Courses taught</a>
+</p>
 
-<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3>
-<COL WIDTH=256*>
-<TD WIDTH=100% VALIGN=TOP>
-<FONT SIZE=4>
-<BR> <BR>
-<LI> Advanced Quantum Chemistry (CY61217), Autumn 2026.
-<LI> Environmental Chemistry (CY10001), Autumn 2026. 
-<LI> Essential Tools in Computational Sciences (CD61203), Autumn 2026.
-<BR> <BR>
-<LI> Modelling of Quantum Systems and Processes (CY62206), Spring 2026.
-<LI> Quantum Mechanics and Quantum Computing (CD61001), Spring 2026.
-<BR> <BR>
-<LI> Advanced Quantum Chemistry (CY61217), Autumn 2025.
-<LI> Chemistry Lab (CY19003), Autumn 2025. 
-<LI> Essential Tools in Computational Sciences (CD61203), Autumn 2025.
-<BR> <BR>
-<LI> Modelling of Quantum Systems and Processes (CY62206), Spring 2025.
-<LI> Biochemical Techniques Lab (CY49006), Spring 2025.
-<BR> <BR>
-<LI> Advanced Quantum Chemistry (CY61217), Autumn 2024.
-<LI> Chemistry Lab (CY19003), Autumn 2024. 
-<LI> Essential Tools in Computational Sciences (CD61203), Autumn 2024.
-<BR> <BR>
-<LI> Chemistry (CY11003), Spring 2024.
-<LI> Biochemical Techniques Lab (CY49006), Spring 2024.
-<LI> Quantum Methods in Molecular Simulations (CD61006), Spring 2024.
-<BR> <BR>
-<LI> Advanced Quantum Chemistry (CY61217), Autumn 2023.
-<LI> Essential Tools in Computational Sciences (CD61203), Autumn 2023.
-<LI> Chemistry Lab (CY19003), Autumn 2023. 
-<BR> 
-<BR> 
-<LI> Chemistry (CY11003), Spring 2023.
-<LI> Chemistry Lab (CY19003), Spring 2023. 
-<LI> Quantum Methods in Molecular Simulations (CD61006), Spring 2023.
-<BR> <BR>
-<LI> Chemistry (CY11003), Autumn 2022.
-<LI> Chemistry Lab (CY19003), Autumn 2022. 
-<BR> <BR>
-<LI> Molecular Thermodynamics and Kinetics (CY41012), Spring 2022.
-<LI> Chemistry Lab (CY19001), Spring 2022. 
-<BR> <BR>
-<LI> Introduction to Computational Chemistry (CY40014), Autumn 2021.
-<LI> Chemistry Lab (CY19001), Autumn 2021. 
-<BR> <BR>
-<LI> Quantum Methods in Molecular Simulations (TS62002), Spring 2021.
-<LI> Chemistry Lab (CY19001), Spring 2021. 
-<BR> <BR>
-<LI> Introduction to Computational Chemistry (CY40014), Autumn 2020.
-<LI> Chemistry Lab (CY19001), Autumn 2020. 
-<BR> <BR>
-<LI> Preparatory Chemistry (CY0001), Spring 2020.
-<LI> Quantum Methods in Molecular Simulations (TS62002), Spring 2020.
-<LI> Chemistry Lab (CY19001), Spring 2020. 
-<BR> <BR>
-<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2019.
-<LI> Physical Chemistry Lab II (CY39001), Autumn 2019.
-<BR> <BR>
-<LI> Quantum Methods in Molecular Simulations (TS62002), Spring 2019.
-<LI> Chemistry Lab (CY19001), Spring 2019. 
-<BR> <BR>
-<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2018.
-<LI> Chemistry Lab (CY19001), Autumn 2018. 
-<BR> <BR>
-<LI> Quantum Methods in Molecular Simulations (TS62002), Spring 2018.
-<LI> Chemistry (CY11001), Spring 2018.
-<LI> Chemistry Lab (CY19001), Spring 2018.
-<BR> <BR>
-<LI> Chemistry (CY11001), Autumn 2017.
-<LI> Chemistry Lab (CY19001), Autumn 2017. 
-<BR> <BR>
-<LI> Chemical Bonding and Reactivity (CY61010), Spring 2017. 
-<LI>Biochemical Techniques Laboratory (CY49006), Spring 2017
-<LI> Chemistry Lab (CY19001), Spring 2017. 
-<BR> <BR>
-<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2016. 
-<LI> Chemistry Lab (CY19001), Autumn 2016. 
-<BR> <BR>
-<LI> Chemistry (CY11001), Spring 2016.</a>
-<LI> Chemistry Lab (CY19001), Spring 2016. 
-<BR> <BR>
-<LI> Chemistry (CY11001), Autumn 2015.
-<LI> Chemistry Lab (CY19001), Autumn 2015. 
-<BR> <BR>
-<LI> Chemistry (CY11001), Spring 2015.  
-<LI> Biochemical Techniques Laboratory (CY49006), Spring 2015.  <a href="CY49006_SM.pdf" title="">(syllabus)</a> 
-<BR> <BR>
-<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2014.  
- <a href="iqc_cos.pdf" title="">(syllabus)</a>
-<LI> Chemistry (CY11001), Autumn 2014.
-<BR> <BR>
-<LI> Molecular Spectroscopy and Molecular Structure (CY61044), Spring 2014.  <a href="mss_cos.pdf" title="">(syllabus)</a>  
-<LI> Biochemical Techniques Laboratory (CY49006), Spring 2014.  <a href="CY49006_SM.pdf" title="">(syllabus)</a> 
-<BR> <BR>
-<LI> Advanced Quantum Chemistry (CY60105), Autumn 2013. <a href="aqc_cos.pdf" title="">(syllabus)</a>
-<LI> Chemistry Lab (CY19001), Autumn 2013. 
-<BR> <BR>
-<LI> Chemical Bonding and Reactivity (CY61010/CY60032), Spring 2013. <a href="cbr_cos.pdf" title="">(syllabus)</a>
-<LI> Chemistry Lab (CY19001), Spring 2013. 
-<BR> <BR>
-<LI> Introduction to Quantum Chemistry and Spectroscopy (CY40019), Autumn 2012. <a href="iqc_cos.pdf" title="">(syllabus)</a>
-</UL>
-</TD>
-</TR>
-</TABLE>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
+<!-- current -->
+<section id="current">
+  <h2 id="currentTitle">This semester</h2>
+  <div class="now-grid" id="currentGrid"></div>
+</section>
 
+<!-- videos -->
+<section id="videos" data-count="videos">
+  <h2>Online lecture videos</h2>
+  <p class="lead">Full lecture courses and workshop talks, free to watch.</p>
+  <div class="grid">
+    <a class="card" href="https://www.youtube.com/playlist?list=PLbRMhDVUMngcGHvAEaDw7VQTR7U5PQLyr" target="_blank">
+      <span class="tag">NPTEL</span>
+      <span class="ct">Approximate Methods in Quantum Chemistry</span>
+      <span class="cd">Full lecture course on the approximate methods of quantum chemistry.</span>
+      <span class="go">Watch playlist &rarr;</span>
+    </a>
+    <a class="card" href="http://www.chemistry.iitkgp.ac.in/fac/SM/IQC_YT_LINKS.htm" target="_blank">
+      <span class="tag">DST Swayam</span>
+      <span class="ct">Quantum Chemistry and Spectroscopy</span>
+      <span class="cd">Lecture series on introductory quantum chemistry and molecular spectroscopy.</span>
+      <span class="go">Watch lectures &rarr;</span>
+    </a>
+    <a class="card" href="https://www.youtube.com/watch?v=sjiU0-fHWNE&amp;t=256s" target="_blank">
+      <span class="tag">IIT PAL</span>
+      <span class="ct">Atomic Structure</span>
+      <span class="cd">Lectures for school students preparing for higher studies in science.</span>
+      <span class="go">Watch &rarr;</span>
+    </a>
+    <a class="card" href="https://youtu.be/XXCXG1OwDwI?t=7212" target="_blank">
+      <span class="tag">Workshop</span>
+      <span class="ct">Quantum Computing for Chemistry</span>
+      <span class="cd">Lecture from a hands-on workshop on quantum computing for chemistry.</span>
+      <span class="go">Watch &rarr;</span>
+    </a>
+    <a class="card" href="https://youtu.be/aqxjKpEH4ec" target="_blank">
+      <span class="tag">Workshop</span>
+      <span class="ct">QM/MM Methods</span>
+      <span class="cd">Workshop lecture on hybrid quantum mechanics / molecular mechanics methods.</span>
+      <span class="go">Watch &rarr;</span>
+    </a>
+    <a class="card" href="https://youtu.be/anaTgSkhnSs?t=4851" target="_blank">
+      <span class="tag">Faculty training</span>
+      <span class="ct">Moodle Training</span>
+      <span class="cd">Training session for IIT Kharagpur faculty on online teaching during the Covid lockdown.</span>
+      <span class="go">Watch &rarr;</span>
+    </a>
+  </div>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
 
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-</BODY>
-</HTML>
+<!-- tools -->
+<section id="tools">
+  <h2>Interactive web tools</h2>
+  <p class="lead">Browser-based tools written for my courses. They run in any browser with nothing to install.</p>
 
+  <h3>Quantum mechanics and quantum chemistry</h3>
+  <div class="grid">
+    <a class="card" href="angmom.html" target="_blank">
+      <span class="ct">Angular Momentum Operators</span>
+      <span class="cd">Explore angular momentum operators, their matrices and eigenvalues.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+    <a class="card" href="stn_non_stn.html" target="_blank">
+      <span class="ct">Stationary vs. Non-Stationary States</span>
+      <span class="cd">See how a single eigenstate and a superposition of states evolve differently in time.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+    <a class="card" href="tdpt_perturbations.html" target="_blank">
+      <span class="ct">Time-Dependent Perturbation Theory</span>
+      <span class="cd">Worked examples of transitions driven by different time-dependent perturbations.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+    <a class="card" href="quantstat.html" target="_blank">
+      <span class="ct">Quantum Statistics</span>
+      <span class="cd">Boltzmann, Fermi&ndash;Dirac and Bose&ndash;Einstein statistics, using a particle in a 1D box as the example.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+    <a class="card" href="CSFgenerator.html" target="_blank">
+      <span class="ct">CSF Generator</span>
+      <span class="cd">Generate configuration state functions for a given number of electrons, orbitals and spin.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+    <a class="card" href="QFT_concepts.html" target="_blank">
+      <span class="ct">QFT and Applications</span>
+      <span class="cd">Concepts and applications of the quantum Fourier transform.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+  </div>
+
+  <h3>Biochemistry and laboratory</h3>
+  <div class="grid">
+    <a class="card" href="enz_kin.html" target="_blank">
+      <span class="ct">Michaelis&ndash;Menten Kinetics Plotter</span>
+      <span class="cd">Plot enzyme kinetics data and extract <i>K</i><sub>M</sub> and <i>V</i><sub>max</sub>.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+    <a class="card" href="ug_icexp1.html" target="_blank">
+      <span class="ct">Spectrophotometric p<i>K</i><sub>a</sub> Determination</span>
+      <span class="cd">Companion tool for the undergraduate experiment on determining p<i>K</i><sub>a</sub> from absorbance data.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+    <a class="card" href="pI_test.html" target="_blank">
+      <span class="ct">pI of Peptides</span>
+      <span class="cd">Work out the isoelectric point of a peptide from its amino-acid sequence.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+  </div>
+
+  <h3>Practice</h3>
+  <div class="grid">
+    <a class="card" href="MQSP_QGenerator.html" target="_blank">
+      <span class="ct">Practice Questions for Quantum Chemical Calculations</span>
+      <span class="cd">Generate practice problems on setting up and interpreting quantum-chemical calculations.</span>
+      <span class="go">Open tool &rarr;</span>
+    </a>
+  </div>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
+
+<!-- courses -->
+<section id="courses">
+  <h2>Courses taught at IIT Kharagpur</h2>
+  <p class="lead">Each course with the semesters in which I taught it, most recent first. The current semester is highlighted.</p>
+  <table class="courses">
+    <thead><tr><th>Course</th><th class="cnt">Times</th><th>Semesters</th></tr></thead>
+    <tbody id="courseTable"></tbody>
+  </table>
+
+  <details>
+    <summary id="recordSummary">Show semester-by-semester record</summary>
+    <div class="semgrid" id="semRecord"></div>
+  </details>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
+
+</div>
+<script>
+  /* =====================================================================
+     COURSE LIST: the only place to edit.
+     One line per course per semester:  ["Semester Year", "Code", "Course name"]
+     - Add a new semester by adding lines at the top.
+     - The newest semester in the list is shown as "This semester".
+     - Use the same course name each time so its semesters are grouped together.
+     - Two codes for one offering can be written as "CY61010/CY60032".
+     ===================================================================== */
+  const COURSES = [
+    ["Autumn 2026", "CY61217", "Advanced Quantum Chemistry"],
+    ["Autumn 2026", "CY10001", "Environmental Chemistry"],
+    ["Autumn 2026", "CD61203", "Essential Tools in Computational Sciences"],
+
+    ["Spring 2026", "CY62206", "Modelling of Quantum Systems and Processes"],
+    ["Spring 2026", "CD61001", "Quantum Mechanics and Quantum Computing"],
+
+    ["Autumn 2025", "CY61217", "Advanced Quantum Chemistry"],
+    ["Autumn 2025", "CY19003", "Chemistry Lab"],
+    ["Autumn 2025", "CD61203", "Essential Tools in Computational Sciences"],
+
+    ["Spring 2025", "CY62206", "Modelling of Quantum Systems and Processes"],
+    ["Spring 2025", "CY49006", "Biochemical Techniques Lab"],
+
+    ["Autumn 2024", "CY61217", "Advanced Quantum Chemistry"],
+    ["Autumn 2024", "CY19003", "Chemistry Lab"],
+    ["Autumn 2024", "CD61203", "Essential Tools in Computational Sciences"],
+
+    ["Spring 2024", "CY11003", "Chemistry"],
+    ["Spring 2024", "CY49006", "Biochemical Techniques Lab"],
+    ["Spring 2024", "CD61006", "Quantum Methods in Molecular Simulations"],
+
+    ["Autumn 2023", "CY61217", "Advanced Quantum Chemistry"],
+    ["Autumn 2023", "CD61203", "Essential Tools in Computational Sciences"],
+    ["Autumn 2023", "CY19003", "Chemistry Lab"],
+
+    ["Spring 2023", "CY11003", "Chemistry"],
+    ["Spring 2023", "CY19003", "Chemistry Lab"],
+    ["Spring 2023", "CD61006", "Quantum Methods in Molecular Simulations"],
+
+    ["Autumn 2022", "CY11003", "Chemistry"],
+    ["Autumn 2022", "CY19003", "Chemistry Lab"],
+
+    ["Spring 2022", "CY41012", "Molecular Thermodynamics and Kinetics"],
+    ["Spring 2022", "CY19001", "Chemistry Lab"],
+
+    ["Autumn 2021", "CY40014", "Introduction to Computational Chemistry"],
+    ["Autumn 2021", "CY19001", "Chemistry Lab"],
+
+    ["Spring 2021", "TS62002", "Quantum Methods in Molecular Simulations"],
+    ["Spring 2021", "CY19001", "Chemistry Lab"],
+
+    ["Autumn 2020", "CY40014", "Introduction to Computational Chemistry"],
+    ["Autumn 2020", "CY19001", "Chemistry Lab"],
+
+    ["Spring 2020", "CY0001", "Preparatory Chemistry"],
+    ["Spring 2020", "TS62002", "Quantum Methods in Molecular Simulations"],
+    ["Spring 2020", "CY19001", "Chemistry Lab"],
+
+    ["Autumn 2019", "CY40019", "Introduction to Quantum Chemistry and Spectroscopy"],
+    ["Autumn 2019", "CY39001", "Physical Chemistry Lab II"],
+
+    ["Spring 2019", "TS62002", "Quantum Methods in Molecular Simulations"],
+    ["Spring 2019", "CY19001", "Chemistry Lab"],
+
+    ["Autumn 2018", "CY40019", "Introduction to Quantum Chemistry and Spectroscopy"],
+    ["Autumn 2018", "CY19001", "Chemistry Lab"],
+
+    ["Spring 2018", "TS62002", "Quantum Methods in Molecular Simulations"],
+    ["Spring 2018", "CY11001", "Chemistry"],
+    ["Spring 2018", "CY19001", "Chemistry Lab"],
+
+    ["Autumn 2017", "CY11001", "Chemistry"],
+    ["Autumn 2017", "CY19001", "Chemistry Lab"],
+
+    ["Spring 2017", "CY61010", "Chemical Bonding and Reactivity"],
+    ["Spring 2017", "CY49006", "Biochemical Techniques Lab"],
+    ["Spring 2017", "CY19001", "Chemistry Lab"],
+
+    ["Autumn 2016", "CY40019", "Introduction to Quantum Chemistry and Spectroscopy"],
+    ["Autumn 2016", "CY19001", "Chemistry Lab"],
+
+    ["Spring 2016", "CY11001", "Chemistry"],
+    ["Spring 2016", "CY19001", "Chemistry Lab"],
+
+    ["Autumn 2015", "CY11001", "Chemistry"],
+    ["Autumn 2015", "CY19001", "Chemistry Lab"],
+
+    ["Spring 2015", "CY11001", "Chemistry"],
+    ["Spring 2015", "CY49006", "Biochemical Techniques Lab"],
+
+    ["Autumn 2014", "CY40019", "Introduction to Quantum Chemistry and Spectroscopy"],
+    ["Autumn 2014", "CY11001", "Chemistry"],
+
+    ["Spring 2014", "CY61044", "Molecular Spectroscopy and Molecular Structure"],
+    ["Spring 2014", "CY49006", "Biochemical Techniques Lab"],
+
+    ["Autumn 2013", "CY60105", "Advanced Quantum Chemistry"],
+    ["Autumn 2013", "CY19001", "Chemistry Lab"],
+
+    ["Spring 2013", "CY61010/CY60032", "Chemical Bonding and Reactivity"],
+    ["Spring 2013", "CY19001", "Chemistry Lab"],
+
+    ["Autumn 2012", "CY40019", "Introduction to Quantum Chemistry and Spectroscopy"],
+  ];
+
+  // Syllabus links (optional): course name -> PDF file
+  const SYLLABUS = {
+    "Advanced Quantum Chemistry": "aqc_cos.pdf",
+    "Biochemical Techniques Lab": "CY49006_SM.pdf",
+    "Introduction to Quantum Chemistry and Spectroscopy": "iqc_cos.pdf",
+    "Molecular Spectroscopy and Molecular Structure": "mss_cos.pdf",
+    "Chemical Bonding and Reactivity": "cbr_cos.pdf"
+  };
+
+  /* ---------- Everything below is generated automatically ---------- */
+  const semKey = s => { const [t, y] = s.split(' '); return +y * 2 + (t === 'Autumn' ? 1 : 0); };
+  const shortSem = s => { const [t, y] = s.split(' '); return (t === 'Autumn' ? 'Aut ' : 'Spr ') + y.slice(2); };
+  const esc = x => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  const semesters = [...new Set(COURSES.map(c => c[0]))].sort((a, b) => semKey(b) - semKey(a));
+  const current = semesters[0];
+  const firstYear = semesters[semesters.length - 1].split(' ')[1];
+
+  // Group by course name
+  const byCourse = {};
+  COURSES.forEach(([sem, code, name]) => {
+    const d = byCourse[name] || (byCourse[name] = { codes: [], sems: [] });
+    code.split('/').forEach(cc => { if (!d.codes.includes(cc)) d.codes.push(cc); });
+    if (!d.sems.includes(sem)) d.sems.push(sem);
+  });
+  Object.values(byCourse).forEach(d => d.sems.sort((a, b) => semKey(b) - semKey(a)));
+  const courseNames = Object.keys(byCourse).sort((a, b) =>
+    semKey(byCourse[b].sems[0]) - semKey(byCourse[a].sems[0]) || a.localeCompare(b));
+
+  // Stats
+  document.getElementById('statSince').textContent = 'Since ' + firstYear;
+  document.getElementById('statCourses').textContent = courseNames.length;
+  document.getElementById('statOfferings').textContent = COURSES.length;
+  document.getElementById('statVideos').textContent = document.querySelectorAll('#videos .card').length;
+  document.getElementById('statTools').textContent = document.querySelectorAll('#tools .card').length;
+
+  // This semester
+  document.getElementById('currentTitle').textContent = 'This semester: ' + current;
+  document.getElementById('currentGrid').innerHTML = COURSES.filter(c => c[0] === current)
+    .map(([, code, name]) => `<div class="now-card"><span class="code">${esc(code)}</span><span class="nt">${esc(name)}</span></div>`).join('');
+
+  // Course table
+  document.getElementById('courseTable').innerHTML = courseNames.map(name => {
+    const d = byCourse[name];
+    const syl = SYLLABUS[name] ? ` <a class="syl" href="${SYLLABUS[name]}">syllabus</a>` : '';
+    const chips = d.sems.map(s => `<span class="chip${s === current ? ' now' : ''}" title="${s}">${shortSem(s)}</span>`).join('');
+    return `<tr><td><span class="cname">${esc(name)}</span>${syl}<br><span class="codes">${d.codes.join(' / ')}</span></td>` +
+           `<td class="cnt">${d.sems.length}</td><td class="chips">${chips}</td></tr>`;
+  }).join('');
+
+  // Semester-by-semester record
+  document.getElementById('recordSummary').textContent = `Show semester-by-semester record (${semesters.length} semesters)`;
+  document.getElementById('semRecord').innerHTML = semesters.map(sem =>
+    `<div class="sem"><h4>${sem}</h4><ul>` +
+    COURSES.filter(c => c[0] === sem).map(([, code, name]) => `<li>${esc(name)} <span class="codes">(${esc(code)})</span></li>`).join('') +
+    `</ul></div>`).join('');
+</script>
+</body>
+</html>
