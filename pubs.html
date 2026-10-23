@@ -85,7 +85,7 @@
 <BR>
 
 <div class="view-menu">
-    <button id="theoryBtn" class="active" onclick="setView('theory')">Theory Publications</button>
+    <button id="theoryBtn" class="active" onclick="setView('theory')">Selected Publications</button>
     <button id="completeBtn" onclick="setView('all')">Complete List of Publications</button>
 </div>
 <div id="viewNote"></div>
@@ -2463,8 +2463,8 @@
         currentDisplayed = publicationsToDisplay;
         const total = basePublications().length;
         document.getElementById('viewNote').innerHTML = currentView === 'theory'
-            ? `<em>Showing theory-only publications (${publicationsToDisplay.length} of ${total}). Use "Complete List of Publications" for all papers including experimental collaborations.</em>`
-            : `<em>Showing all publications (${publicationsToDisplay.length} of ${total}).</em>`;
+            ? `<em>Showing Selected Publications. Use "Complete List of Publications" for all papers.</em>`
+            : `<em>Showing all publications.</em>`;
 
         const list = document.getElementById('publicationsList');
         list.innerHTML = '';
