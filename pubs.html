@@ -2460,7 +2460,7 @@
         currentDisplayed = publicationsToDisplay;
         const total = basePublications().length;
         document.getElementById('viewNote').innerHTML = currentView === 'theory'
-            ? `<em>Showing Selected Publications (${publicationsToDisplay.length} of ${total}).</em>`
+            ? `<em>Showing Selected Publications.</em>`
             : `<em>Showing all publications (${publicationsToDisplay.length} of ${total}).</em>`;
 
         const list = document.getElementById('publicationsList');
