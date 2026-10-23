@@ -137,10 +137,7 @@
     <label for="quartileFilter">Quartile: </label>
     <select id="quartileFilter" onchange="filterPublications()">
         <option value="all">All</option>
-        <option value="Q1">Q1</option>
-        <option value="Q2">Q2</option>
-        <option value="Q3">Q3</option>
-        <option value="Q4">Q4</option>
+        <option value="Q1Q2">Q1 and Q2</option>
     </select>
 <BR>
     <label for="researchFieldFilter">Research Area: </label>
@@ -2453,7 +2450,7 @@
             (selectedJournal === 'all' || pub.journal === selectedJournal) &&
             (selectedResearchField === 'all' || pub.researchFields.includes(selectedResearchField)) &&
             (selectedPublisher === 'all' || pub.publisher === selectedPublisher) &&
-            (selectedQuartile === 'all' || (journalQuartiles[pub.journal] || {}).q === selectedQuartile)
+            (selectedQuartile === 'all' || ['Q1', 'Q2'].includes((journalQuartiles[pub.journal] || {}).q))
         );
 
         displayPublications(filtered);
@@ -2463,8 +2460,8 @@
         currentDisplayed = publicationsToDisplay;
         const total = basePublications().length;
         document.getElementById('viewNote').innerHTML = currentView === 'theory'
-            ? `<em>Showing Selected Publications. Use "Complete List of Publications" for all papers.</em>`
-            : `<em>Showing all publications.</em>`;
+            ? `<em>Showing Selected Publications (${publicationsToDisplay.length} of ${total}).</em>`
+            : `<em>Showing all publications (${publicationsToDisplay.length} of ${total}).</em>`;
 
         const list = document.getElementById('publicationsList');
         list.innerHTML = '';
@@ -2546,17 +2543,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
