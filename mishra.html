@@ -1,153 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
-<link rel='stylesheet' type='text/css' href='menu_style.css' />
-<title></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About | Sabyashachi Mishra | IIT Kharagpur</title>
+<meta name="description" content="Sabyashachi Mishra, Professor of Chemistry, IIT Kharagpur: career, research supervision, sponsored projects, awards, talks, and professional service." />
+<link rel="stylesheet" type="text/css" href="menu_style.css" />
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #111;
+    background: #fff;
+    margin: 20px;
+  }
+  .page { max-width: 960px; margin: 40px auto 60px; }
+  a { color: #0b3d91; }
 
+  /* profile header */
+  .profile {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px 40px;
+    padding: 24px 26px;
+    border: 1px solid #c9d3e3;
+    border-top: 5px solid #0b3d91;
+    border-radius: 4px;
+    background: #f7f9fc;
+  }
+  .profile h1 { font-size: 30px; margin: 0 0 4px; }
+  .profile .role { font-size: 18px; font-weight: bold; color: #0b3d91; margin: 0; }
+  .profile .dept { margin: 4px 0 0; color: #222; }
+  .ids { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .ids a { font-size: 13.5px; font-weight: bold; text-decoration: none; border: 1px solid #0b3d91; border-radius: 3px; padding: 2px 9px; background: #fff; }
+  .ids a:hover { background: #0b3d91; color: #fff; }
+  .contact { display: flex; flex-wrap: wrap; gap: 4px 28px; margin: 10px 0 0; font-size: 15px; }
+  .contact .lbl { font-size: 12.5px; font-weight: bold; color: #555; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 4px; }
+  .contact a { text-decoration: none; }
+  .logo { align-self: center; justify-self: end; }
+  .logo img { display: block; width: 230px; height: auto; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+
+  section { padding-top: 32px; }
+  h2 { font-size: 22px; margin: 0 0 14px; padding-bottom: 4px; border-bottom: 2px solid #0b3d91; }
+  h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: #333; margin: 0 0 8px; }
+
+  /* timeline */
+  .timeline { list-style: none; margin: 0; padding: 0 0 0 4px; }
+  .timeline li { position: relative; display: grid; grid-template-columns: 120px 1fr; gap: 18px; padding: 0 0 18px; }
+  .timeline li::before { content: ""; position: absolute; left: 131px; top: 10px; bottom: -10px; width: 2px; background: #c9d3e3; }
+  .timeline li:last-child::before { display: none; }
+  .timeline li::after { content: ""; position: absolute; left: 126px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid #0b3d91; box-sizing: border-box; }
+  .timeline li.current::after { background: #0b3d91; }
+  .timeline .when { font-weight: bold; color: #0b3d91; font-size: 15px; text-align: right; }
+  .timeline .what { padding-left: 16px; }
+  .timeline .pos { font-weight: bold; }
+  .timeline .where { color: #333; }
+  .timeline .note { display: inline-block; font-size: 12.5px; font-weight: bold; color: #0b3d91; border: 1px solid #0b3d91; border-radius: 3px; padding: 0 6px; margin-left: 6px; }
+  .timeline .subline { font-size: 14.5px; color: #333; margin-top: 3px; padding-left: 12px; border-left: 2px solid #c9d3e3; }
+
+  /* boxes with year column */
+  .two { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .box { border: 1px solid #c9d3e3; border-radius: 4px; padding: 14px 16px; }
+  .box.wide { grid-column: 1 / -1; }
+  .box ul { margin: 0; padding-left: 0; list-style: none; }
+  .box li { display: grid; grid-template-columns: 52px 1fr; gap: 10px; padding: 5px 0; border-top: 1px solid #eef1f6; font-size: 15px; }
+  .box li:first-child { border-top: none; }
+  .yr { font-weight: bold; color: #0b3d91; }
+  .sub { color: #444; font-size: 14px; }
+
+  /* supervision */
+  .figures { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+  .fig { border: 1px solid #c9d3e3; border-left: 5px solid #0b3d91; border-radius: 4px; padding: 8px 16px; background: #f7f9fc; }
+  .fig .n { font-size: 24px; font-weight: bold; color: #0b3d91; line-height: 1.2; display: block; }
+  .fig .l { font-size: 14px; color: #333; }
+  ul.phd { list-style: none; margin: 0; padding: 0; }
+  ul.phd li { display: grid; grid-template-columns: 52px 1fr; gap: 10px; padding: 7px 0; border-top: 1px solid #e3e8f0; font-size: 15px; }
+  ul.phd li:first-child { border-top: none; }
+  .who { font-weight: bold; }
+
+  /* projects */
+  .proj { list-style: none; margin: 0; padding: 0; }
+  .proj li { display: grid; grid-template-columns: 110px 1fr; gap: 14px; padding: 9px 0; border-top: 1px solid #e3e8f0; font-size: 15px; }
+  .proj li:first-child { border-top: none; }
+  .proj .t { font-weight: bold; }
+  .role-tag { display: inline-block; font-size: 12px; font-weight: bold; border-radius: 3px; padding: 0 6px; margin-left: 4px; background: #0b3d91; color: #fff; }
+  .role-tag.co { background: #fff; color: #0b3d91; border: 1px solid #0b3d91; }
+
+
+  /* talks */
+  ul.talks { margin: 0; padding-left: 22px; font-size: 15px; }
+  ul.talks li { margin: 4px 0; }
+  .date { color: #555; white-space: nowrap; }
+
+  /* service */
+  ul.plain { margin: 0; padding-left: 20px; font-size: 15px; }
+  ul.plain li { margin: 4px 0; }
+
+  /* theses */
+  .theses { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .thesis { border: 1px solid #c9d3e3; border-top: 4px solid #0b3d91; border-radius: 4px; padding: 14px 16px; background: #f7f9fc; }
+  .thesis .kind { font-size: 13px; font-weight: bold; letter-spacing: 0.05em; text-transform: uppercase; color: #0b3d91; }
+  .thesis .dates { font-size: 13.5px; color: #444; }
+  .thesis .tt { font-weight: bold; margin: 8px 0; line-height: 1.35; }
+  .thesis .sv { font-size: 14.5px; color: #222; }
+
+  .top { font-size: 13px; text-align: right; margin-top: 10px; }
+  .top a { color: #555; }
+
+  @media (max-width: 760px) {
+    body { margin: 10px; font-size: 15px; }
+    .profile { grid-template-columns: 1fr; padding: 18px; }
+    .logo { grid-row: 1; justify-self: start; }
+    .logo img { width: 160px; }
+    .two, .theses { grid-template-columns: 1fr; }
+    .timeline li { grid-template-columns: 86px 1fr; gap: 14px; }
+    .timeline li::before { left: 97px; }
+    .timeline li::after { left: 92px; }
+    .proj li { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>
 </head>
 <body>
 <ul class="menu red">
-        <li><a href="index.html" title="">Home</a></li>
-     <li><a href="group.html" title="">Group</a></li>
-        <li><a href="pubs.html" title="" >Publications</a></li>
-        <li><a href="research.html" title="">Research</a></li>
-        <li><a href="teaching.html" title="">Teaching</a></li>
-        <li><a href="misc.html" title="">Miscellaneous</a></li>
+  <li><a href="index.html" title="">Home</a></li>
+  <li><a href="group.html" title="">Group</a></li>
+  <li><a href="pubs.html" title="">Publications</a></li>
+  <li><a href="research.html" title="">Research</a></li>
+  <li><a href="teaching.html" title="">Teaching</a></li>
+  <li><a href="misc.html" title="">Miscellaneous</a></li>
 </ul>
-<p style="font-family:verdana;">
 
+<div class="page">
 
-<P STYLE="margin-top: 0.47in; margin-left: 0.47in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=2>
-Dr. Sabyashachi Mishra <BR>
-Professor <BR>
-Department of Chemistry<BR>
-IIT Kharagpur<BR> 
-Kharagpur, 721302 <BR> 
-West Bengal, India <BR> <BR>
-Tel:+91-3222-282328   <BR>
-Email: mishra[at]chem.iitkgp.ac.in <BR>
-</P>
+<!-- ================= PROFILE ================= -->
+<div class="profile">
+  <div>
+    <h1>Sabyashachi Mishra</h1>
+    <p class="role">Professor of Chemistry</p>
+    <p class="dept">
+      Department of Chemistry and Centre for Computational and Data Sciences<br>
+      Indian Institute of Technology Kharagpur, Kharagpur 721302, West Bengal, India
+    </p>
+    <p class="contact">
+      <span><span class="lbl">Email</span> mishra[at]chem.iitkgp.ac.in</span>
+      <span><span class="lbl">Phone</span> <a href="tel:+913222282328">+91-3222-282328</a></span>
+    </p>
+    <div class="ids">
+      <a href="https://scholar.google.com/citations?user=1DeS-SIAAAAJ&amp;hl=en" target="_blank">Google Scholar</a>
+      <a href="https://orcid.org/0000-0002-2551-1021" target="_blank">ORCID</a>
+      <a href="https://www.scopus.com/authid/detail.uri?authorId=57203176168" target="_blank">Scopus</a>
+      <a href="https://www.webofscience.com/wos/author/record/C-6708-2008" target="_blank">Web of Science</a>
+      <a href="https://www.iitkgp.ac.in/department/CY/faculty/cy-mishra" target="_blank">IIT Kharagpur profile</a>
+    </div>
+  </div>
+  <a class="logo" href="index.html" title="QSM Lab home"><img src="qsm-logo.png" alt="QSM Lab logo" onerror="this.parentNode.style.display='none'"></a>
+</div>
 
-<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4> <B> Affiliations</B> 
-<UL>
-<FONT SIZE=2>
-<LI> Since 2012: Faculty - Department of Chemistry, IIT Kharagpur, India.
-<LI> 2009 - 2012: Postdoc - Department of Biochemistry, University of Zurich, Switzerland.
-<LI> 2007 - 2009: Postdoc - Department of Chemistry, University of Basel, Switzerland.
-<LI> 2003 - 2006: PhD - Department of Chemistry, Technical University of Munich, Germany.
-<LI> 2001 - 2003: MSc - School of Chemistry, University of Hyderabad, India, 1st Rank.
-<LI> 1998 - 2001:       BSc - Ravenshaw College, Cuttack, India, University 1st Rank.
-</UL>
-</P>
+<!-- ================= CAREER ================= -->
+<section id="career">
+  <h2>Career and education</h2>
+  <ol class="timeline">
+    <li class="current">
+      <div class="when">2012 &ndash; now</div>
+      <div class="what"><span class="pos">Faculty</span>, Department of Chemistry<br><span class="where">IIT Kharagpur, India</span>
+        <div class="subline">Associate Head, Centre for Computational and Data Sciences (2020&ndash;2021)</div>
+        <div class="subline">Joint Faculty, Centre for Computational and Data Sciences (2026&ndash;2028)</div>
+      </div>
+    </li>
+    <li>
+      <div class="when">2009 &ndash; 2012</div>
+      <div class="what"><span class="pos">Postdoctoral researcher</span>, Department of Biochemistry<br><span class="where">University of Zurich, Switzerland</span></div>
+    </li>
+    <li>
+      <div class="when">2007 &ndash; 2009</div>
+      <div class="what"><span class="pos">Postdoctoral researcher</span>, Department of Chemistry<br><span class="where">University of Basel, Switzerland</span></div>
+    </li>
+    <li>
+      <div class="when">2003 &ndash; 2006</div>
+      <div class="what"><span class="pos">PhD in Chemistry</span>, Department of Chemistry<br><span class="where">Technical University of Munich, Germany</span></div>
+    </li>
+    <li>
+      <div class="when">2001 &ndash; 2003</div>
+      <div class="what"><span class="pos">MSc in Chemistry</span>, School of Chemistry <span class="note">Rank 1</span><br><span class="where">University of Hyderabad, India</span></div>
+    </li>
+    <li>
+      <div class="when">1998 &ndash; 2001</div>
+      <div class="what"><span class="pos">BSc in Chemistry (Hons)</span> <span class="note">Rank 1</span><br><span class="where">Ravenshaw College, Cuttack, India</span></div>
+    </li>
+  </ol>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
 
-<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4> <B> Awards-Honours-Grants</B> 
-<UL>
-<FONT SIZE=2>
-<LI> Member of the National Academy of Sciences India (NASI), 2020.
-<LI> International Strategic Fund Award of University of Bristol, UK, 2019.
-<LI> <a href="gppics/sm_oba.JPG" target="_blank">Odisha Young Scientist Award (2017). </a> 
-<LI> <a href="gppics/sm_ifa.png" target="_blank"> Faculty Excellence Award of IIT Kharagpur (2017).</a>
-<LI> Associate of the Indian Academy of Sciences (2016). 
-<LI> Amongst the teachers of IIT Kharagpur with top teaching feedback
-<UL> 
-<LI> for the academic year 2017-18
-<LI> for the academic year 2016-17
-<LI> for the academic year 2015-16
-<LI> for the academic year 2014-15
-</UL>
-<LI> Ramanujan Fellowship of the Department of Science and Technology, India, 2012.
-<LI> DST INSPIRE Faculty Award from the Department of Science and Technology, India, 2012.
-<LI> Personal research grants from 
-<UL>
-<LI> The Holcim Foundation (2010)
-<LI> Forschungskredit, University of Zürich (2010)
-<LI> The Novartis Foundation (2009)
-</UL>
-<LI> Short-term research visit grants from 
-<UL> 
-<LI> The European Cooperation in Science and Technology (University of Lille,  France, May 2005) 
-<LI> The Indian Academy of Sciences (IISc Bangalore, May-July 2002)
-</UL>
-<LI> University gold medals for securing university's top rank in 
-<UL> <LI> M.Sc. University of Hyderabad, 2003 
-<LI> B.Sc. Ravenshaw Autonomous College, 2001 (now Ravenshaw University).
-</UL>
-<LI>CSIR JRF (Dec 2002, Shortlisted for SPM Interview)  and GATE-2003 (CY, AIR 16, 99.47 percentile).
-<LI>ICI scholarship of University of Hyderabad (2002-2003); NCC scholarship for academic excellence (1996, 1998); National merit scholarships (1996-2001).
-</UL>
+<!-- ================= SUPERVISION ================= -->
+<section id="supervision">
+  <h2>Research supervision</h2>
+  <div class="figures">
+    <div class="fig"><span class="n">11</span><span class="l">PhD theses completed</span></div>
+    <div class="fig"><span class="n">9</span><span class="l">PhD students at present</span></div>
+    <div class="fig"><span class="n">30</span><span class="l">MS/BS theses completed</span></div>
+  </div>
+  <h3>PhD theses supervised</h3>
+  <ul class="phd">
+    <li><span class="yr">2026</span><span><span class="who">Moromi Nath</span> (submitted): Vibrational and Electric-Field Control of Spin&ndash;Orbit Anisotropy in Single Molecular Magnets and Spin Qubits</span></li>
+    <li><span class="yr">2025</span><span><span class="who">Dr. Sanjukta Parida</span>: Electronic Structure, Spectroscopy, and Charge Transport in Perylene-based Molecular Aggregates</span></li>
+    <li><span class="yr">2025</span><span><span class="who">Dr. Kishan Kumar Dakua</span>: Excited-State Quantum Dynamics of Photophysical Processes in Organic Chromophores and Transition-Metal Complexes</span></li>
+    <li><span class="yr">2025</span><span><span class="who">Dr. Harshdeep Singh</span>: Hybrid Quantum-Classical Algorithms for Quantum Chemistry</span></li>
+    <li><span class="yr">2025</span><span><span class="who">Dr. Shalini Joshi</span>: Magnetic Anisotropy and Spin Crossover in Transition Metal Complexes with Multi-reference Electronic Structure Calculations</span></li>
+    <li><span class="yr">2024</span><span><span class="who">Dr. Sunita Muduli</span>: Significance of Protein Dynamics in the Catalytic Activity of DapE and DapF Enzymes of the Lysine Biosynthetic Pathway</span></li>
+    <li><span class="yr">2023</span><span><span class="who">Dr. Atanuka Paul</span>: Hybrid QM/MM Investigation of the Role of Metal Ions in the Substrate Binding and Catalysis of the Microbial Enzyme DapE</span></li>
+    <li><span class="yr">2021</span><span><span class="who">Dr. Vipin Kumar Mishra</span>: Computational Study of Regio- and Stereo-Selective Catalysis by 8-Lipoxygenase</span></li>
+    <li><span class="yr">2020</span><span><span class="who">Dr. Soumitra Manna</span>: Photoelectron Spectra and Photoionization Dynamics of Small Molecules with Heavy Atoms</span></li>
+    <li><span class="yr">2019</span><span><span class="who">Dr. Sabyasachi Roy Chowdhury</span>: Magnetic Anisotropy and Light-Induced Spin Crossover in Transition Metal Complexes</span></li>
+    <li><span class="yr">2017</span><span><span class="who">Dr. Debodyuti Dutta</span>: Catalytic Action of Microbial Enzyme DapE and Rational Design of its Potential Inhibitors</span></li>
+  </ul>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
 
-<P  STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4> <B> Presentations at Workshops/Hands-on-Sessions/Popular Science Lecture</B>
-<UL>
-<FONT SIZE=2>
-<LI>NSM Workshop on Quantum Computing, CCDS, IIT Kharagpur, 03/2025.
-<LI>SERB Workshop Popular Lecture "Schroedinger's Cat", Department of Chemistry, IIT Kharagpur, 06/2024.
-<LI>Workshop on High Performance Computing in Bioinformatics, CCDS IIT Kharagpur, 02/2024.
-<LI>Nurturance Program for NTS awardees, Department of Physics, IIT Kharagpur, 12/2022
-<LI>UGC-HRDC Refresher Course in Chemistry, Pt Ravishankar Shukla University, Chhatisgarh, 07/2022.
-<LI>NSM-IIT KGP Workshop on Simulation Methods in Scientific Computing, CCDS, IIT Khragpur, 06/2021.
-<LI>TEQIP Workshop on "Applications of Computers in Chemistry", IIT Kharagpur, 02/2020
-<LI>Application of Computational Methods in Modern Science, Bajkul Milani College, West Bengal, 09/2019.  
-<LI>National Symposium in Chemitry, Bhadrak College, Bhadrak, 03/2019.  
-</UL>
+<!-- ================= PROJECTS ================= -->
+<section id="projects">
+  <h2>Sponsored research projects</h2>
+  <ul class="proj">
+    <li><span class="yr">2026&ndash;2031</span><span><span class="t">A Formal Framework for Initialization and Decoherence in Molecular Spin Qubits</span><span class="role-tag">PI</span><br><span class="sub">Anusandhan National Research Foundation (ANRF), Govt. of India &middot; INR 30 lakhs</span></span></li>
+    <li><span class="yr">2022&ndash;2025</span><span><span class="t">Coordination Induced Spin Crossover in Transition Metal Complexes</span><span class="role-tag">PI</span><br><span class="sub">Science and Engineering Research Board (SERB), Govt. of India &middot; INR 52.5 lakhs</span></span></li>
+    <li><span class="yr">2019&ndash;2022</span><span><span class="t">Nonadiabatic Dynamics of Spin Crossover in Transition Metal Complexes</span><span class="role-tag">PI</span><br><span class="sub">Council of Scientific and Industrial Research (CSIR), Govt. of India &middot; INR 6.3 lakhs</span></span></li>
+    <li><span class="yr">2019&ndash;2021</span><span><span class="t">Perylene-based Supramolecular Polymers: from Controlled Structure to Controlled Function</span><span class="role-tag co">Co-PI</span><br><span class="sub">SPARC, MHRD, Govt. of India &middot; INR 65.4 lakhs</span></span></li>
+    <li><span class="yr">2016&ndash;2019</span><span><span class="t">Conformational Dynamics, Substrate Specificity and Catalytic Mechanism of Lipoxygenases</span><span class="role-tag">PI</span><br><span class="sub">Science and Engineering Research Board (SERB), Govt. of India &middot; INR 55 lakhs</span></span></li>
+    <li><span class="yr">2014&ndash;2017</span><span><span class="t">Chemical Dynamics and Relativistic Effects in the Excited States</span><span class="role-tag">PI</span><br><span class="sub">Sponsored Research and Industrial Consultancy, IIT Kharagpur &middot; INR 21 lakhs</span></span></li>
+    <li><span class="yr">2012&ndash;2017</span><span><span class="t">Catalytic Hydrolysis by a Microbial Enzyme with Potential as an Antibiotic Target: A Computational Study</span><span class="role-tag">PI</span><br><span class="sub">Department of Science and Technology (DST), Govt. of India &middot; INR 73 lakhs</span></span></li>
+    <li><span class="yr">2012&ndash;2015</span><span><span class="t">Cooperativity in Ligand Migration in a Dimeric Microbial Hemoglobin</span><span class="role-tag">PI</span><br><span class="sub">Sponsored Research and Industrial Consultancy, IIT Kharagpur &middot; INR 5 lakhs</span></span></li>
+  </ul>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
 
-<P  STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4> <B> Presentations at Conferences</B>
-<UL>
-<FONT SIZE=2>
-<LI>Society for Physical Chemistry Meeting (SoPhyC-2025), IIT Patna, 10/2025.
-<LI>Asian and Oceanian Spectroscopy  Conference (AOSC-2025), Goa, 09/2025. 
-<LI>International Conference on Molecular Spin Qubits toward Quantum Computer and Sensors (ICMSQ2025), Sendai, Japan, 06/2025. 
-<LI>Recent Advances in Modeling Rare Events (RARE), Khajuraho, 03/2025.
-<LI>Advances in Functional Solids, IIT Kharagpur, 11/2024.
-<LI>Modern Trends in Molecular Magnetism, IISc Bangalore,  11/2024.
-<LI>Society for Physical Chemistry Meeting (SoPhyC), IIT Bombay, 10/2024.
-<LI>Kaleidoscope, A Discussion Meeting in Chemistry, Udaipur, 07/2024.
-<LI>Spectroscopy and Dynamics of Molecules and Clusters (SDMC 2024), IIT Guwahati, 02/2024.
-<LI>Theoretical Chemistry Symposium, IIT Madras, 12/2023.
-<LI>Structure and Dynamics: Spectroscopy and Scattering (SDSS-2023), IACS Kolkata, 10/2023.
-<LI>From Proteins to Networks, University of Zurich, 03/2023.
-<LI>Theoretical Chemistry Symposium, IISER Kolkata, 12/2021.
-<LI>Recent Trends in Molecular Magnetism, IISER Bhopal, 12/2019.
-<LI>Recent Advances in Molecular Magnetism, IIT Kharagpur, 11/2019.
-<LI>Guest Lecture on Multi-scale Simulation of Enzymatic Action, School of Chemistry, University of Bristol, UK, 07/2019.  
-<LI>Symposium on Materials Simulation from Classical to Quantum, Department of Physics, IIT Kharagpur, 05/2019.  
-<LI>Theoretical Chemistry Symposium, BITS Pilani, 02/2019. 
-<LI>Guest Lecture at University of Hyderabad, Hyderabad, 07/2018.  
-<LI>National Symposium on Frontiers in Chemical Sciences, Vidyasagar University, Midnapore, 03/2018.  
-<LI>Guest Lecture at Ravenshaw University, Cuttack, 03/2018.  
-<LI>Conference on Electronic Spectroscopy, Structure and Dynamics, IACS Kolkata, 02/2018. 
-<LI>National Symposium on Convergence of Chemistry and Materials, BITS Hyderabad, 12/2017. 
-<LI>QM/MM Methods and Applications, Manchester University, UK, 09/2017. 
-<LI>Kaleidoscope, A Discussion Meeting in Chemistry, Goa, India, 07/2017. 
-<LI>CRSI ACS Meeting, IICT Hyderabad, India, 07/2017. 
-<LI>Modelling of Chemical and Biological Reactivity (MCBR-5), CLRI Chennai, India, 02/2017. 
-<LI>Ramanujan Fellows Conclave, IISER Bhopal, 01/2017. 
-<LI>Theoretical Chemistry Symposium, University of Hyderabad, India, 12/2016. 
-<LI>Brainstorming meeting of the National Supercomputing Mission (NSM), Centre for Development of Advanced Computing, Pune, 04/2016.
-<LI>Ramanujan Fellows Conclave, IIT Mumbai, 02/2016. 
-<LI> <a href="gppics/TWAS_ROCASA_Group_Pic.jpg" target="_blank">The World Academy of Science Young Scientists Conference</a>, JNCASR Bangalore, 12/2015. 
-<LI>Physical and Biophysical Chemistry: Theory and Experiment, IIT Mumbai, 12/2015.
-<LI>International Congress of Quantum Chemistry, Beijing, 06/2015.
-<LI>Workshop on Computational Modelling, IACS Kolkata, 10/2014.
-<LI>Ramanujan Fellows Conclave, JNCASR, Bangalore, 02/2014. 
-<LI>Symposium on Chemistry with Computers, IIIT Hyderabad, 01/2014.
-<LI>Theoretical Chemistry Symposium, IIT Guwahati, India, 12/2012. 
-</UL>
+<!-- ================= AWARDS ================= -->
+<section id="awards">
+  <h2>Awards, honours and grants</h2>
+  <div class="two">
 
-<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4> <B> Research Theses</B> 
-<UL>
-<FONT SIZE=2>
-<LI><B>Ph.D. Thesis</B> (August 2003 - November 2006)<BR>
-Vibronic Coupling by the Spin-Orbit Operator in Linear Molecules.<BR>
-Supervisor: <a href="http://www.theo.ch.tum.de/?id=625" target="_blank">Professor Wolfgang Domcke</a>, Technical University of Munich, Germany.
-<LI><B>M.Sc. Thesis</B> (December 2002 - April 2003)<BR>
-Study of Orientational Order in Physical Vapor Deposited Films of Polar Crystallites.<BR>
-Supervisor: Professor T. P. Radhakrishnan,  University of Hyderabad, India.
-<LI><B>Summer Project</B> (May 2002 - July 2002) <BR>
-Theory of Breaking of a Weak Link in a Stiff Ring Polymer. <BR>
-Supervisor: Professor K. L. Sebastian,  Indian Institute of Science, Bangalore, India.
-</UL>
-<P>
-</P>
+    <div class="box">
+      <h3>Fellowships and recognition</h3>
+      <ul>
+        <li><span class="yr">2020</span><span>Member, National Academy of Sciences, India (NASI)</span></li>
+        <li><span class="yr">2018</span><span><a href="gppics/sm_oba.JPG" target="_blank">Odisha Young Scientist Award</a>, Government of Odisha</span></li>
+        <li><span class="yr">2017</span><span><a href="gppics/sm_ifa.png" target="_blank">Faculty Excellence Award</a>, IIT Kharagpur</span></li>
+        <li><span class="yr">2016</span><span>Associate, Indian Academy of Sciences, Bangalore</span></li>
+        <li><span class="yr">2012</span><span>Ramanujan Fellowship, Department of Science and Technology, India</span></li>
+        <li><span class="yr">2012</span><span>DST INSPIRE Faculty Award, Department of Science and Technology, India</span></li>
+      </ul>
+      <h3 style="margin-top:16px">Teaching</h3>
+      <ul>
+        <li><span class="yr">4&times;</span><span>Among the teachers of IIT Kharagpur with the best teaching feedback<br>
+          <span class="sub">Academic years 2014&ndash;15 to 2017&ndash;18</span></span></li>
+      </ul>
+    </div>
 
+    <div class="box">
+      <h3>Research grants and awards</h3>
+      <ul>
+        <li><span class="yr">2019</span><span>International Strategic Fund Award, University of Bristol, UK</span></li>
+        <li><span class="yr">2010</span><span><i>Forschungskredit</i> (research credit), University of Zurich</span></li>
+        <li><span class="yr">2010</span><span>Extra-mural research grant, Holcim Foundation</span></li>
+        <li><span class="yr">2009</span><span>Extra-mural research grant, Novartis Foundation</span></li>
+        <li><span class="yr">2005</span><span>Short-term research visit grant, European Cooperation in Science and Technology (COST)<br><span class="sub">University of Lille, France</span></span></li>
+      </ul>
+      <h3 style="margin-top:16px">As a student</h3>
+      <ul>
+        <li><span class="yr">2003</span><span>University gold medal, top rank in MSc Chemistry, University of Hyderabad</span></li>
+        <li><span class="yr">2003</span><span>GATE 2003, Chemistry: All India Rank 16</span></li>
+        <li><span class="yr">2002</span><span>Summer Research Fellowship, Indian Academy of Sciences (IISc Bangalore)</span></li>
+        <li><span class="yr">2001</span><span>University gold medal, top rank in BSc Chemistry (Hons), Ravenshaw College</span></li>
+      </ul>
+    </div>
 
+  </div>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
 
+<!-- ================= TALKS ================= -->
+<section id="talks">
+  <h2>Presentations at conferences and symposia</h2>
+  <ul class="talks">
+    <li>Golden Jubilee Guest Lecture, University of Hyderabad, <span class="date">04/2026</span></li>
+    <li>Biophysical Society Symposium, IIT Kharagpur, <span class="date">02/2026</span></li>
+    <li>Society for Physical Chemistry Meeting (SoPhyC-2025), IIT Patna, <span class="date">10/2025</span></li>
+    <li>Asian and Oceanian Spectroscopy Conference (AOSC-2025), Goa, <span class="date">09/2025</span></li>
+    <li>International Conference on Molecular Spin Qubits toward Quantum Computer and Sensors (ICMSQ2025), Sendai, Japan, <span class="date">06/2025</span></li>
+    <li>Recent Advances in Modeling Rare Events (RARE), Khajuraho, <span class="date">03/2025</span></li>
+    <li>Advances in Functional Solids, IIT Kharagpur, <span class="date">11/2024</span></li>
+    <li>Modern Trends in Molecular Magnetism, IISc Bangalore, <span class="date">11/2024</span></li>
+    <li>Society for Physical Chemistry Meeting (SoPhyC), IIT Bombay, <span class="date">10/2024</span></li>
+    <li>Kaleidoscope, A Discussion Meeting in Chemistry, Udaipur, <span class="date">07/2024</span></li>
+    <li>Spectroscopy and Dynamics of Molecules and Clusters (SDMC 2024), IIT Guwahati, <span class="date">02/2024</span></li>
+    <li>Theoretical Chemistry Symposium, IIT Madras, <span class="date">12/2023</span></li>
+    <li>Structure and Dynamics: Spectroscopy and Scattering (SDSS-2023), IACS Kolkata, <span class="date">10/2023</span></li>
+    <li>From Proteins to Networks, University of Zurich, Switzerland, <span class="date">03/2023</span></li>
+    <li>Theoretical Chemistry Symposium, IISER Kolkata, <span class="date">12/2021</span></li>
+    <li>Recent Trends in Molecular Magnetism, IISER Bhopal, <span class="date">12/2019</span></li>
+    <li>Recent Advances in Molecular Magnetism, IIT Kharagpur, <span class="date">11/2019</span></li>
+    <li>Guest Lecture on Multi-scale Simulation of Enzymatic Action, School of Chemistry, University of Bristol, UK, <span class="date">07/2019</span></li>
+    <li>Symposium on Materials Simulation from Classical to Quantum, Department of Physics, IIT Kharagpur, <span class="date">05/2019</span></li>
+    <li>Theoretical Chemistry Symposium, BITS Pilani, <span class="date">02/2019</span></li>
+    <li>Guest Lecture, University of Hyderabad, <span class="date">07/2018</span></li>
+    <li>National Symposium on Frontiers in Chemical Sciences, Vidyasagar University, Midnapore, <span class="date">03/2018</span></li>
+    <li>Guest Lecture, Ravenshaw University, Cuttack, <span class="date">03/2018</span></li>
+    <li>Conference on Electronic Spectroscopy, Structure and Dynamics, IACS Kolkata, <span class="date">02/2018</span></li>
+    <li>National Symposium on Convergence of Chemistry and Materials, BITS Hyderabad, <span class="date">12/2017</span></li>
+    <li>QM/MM Methods and Applications, University of Manchester, UK, <span class="date">09/2017</span></li>
+    <li>Kaleidoscope, A Discussion Meeting in Chemistry, Goa, <span class="date">07/2017</span></li>
+    <li>CRSI-ACS Meeting, IICT Hyderabad, <span class="date">07/2017</span></li>
+    <li>Modelling of Chemical and Biological Reactivity (MCBR-5), CLRI Chennai, <span class="date">02/2017</span></li>
+    <li>Ramanujan Fellows Conclave, IISER Bhopal, <span class="date">01/2017</span></li>
+    <li>Theoretical Chemistry Symposium, University of Hyderabad, <span class="date">12/2016</span></li>
+    <li>Brainstorming Meeting of the National Supercomputing Mission (NSM), C-DAC Pune, <span class="date">04/2016</span></li>
+    <li>Ramanujan Fellows Conclave, IIT Bombay, <span class="date">02/2016</span></li>
+    <li><a href="gppics/TWAS_ROCASA_Group_Pic.jpg" target="_blank">The World Academy of Sciences Young Scientists Conference</a>, JNCASR Bangalore, <span class="date">12/2015</span></li>
+    <li>Physical and Biophysical Chemistry: Theory and Experiment, IIT Bombay, <span class="date">12/2015</span></li>
+    <li>International Congress of Quantum Chemistry, Beijing, China, <span class="date">06/2015</span></li>
+    <li>Workshop on Computational Modelling, IACS Kolkata, <span class="date">10/2014</span></li>
+    <li>Ramanujan Fellows Conclave, JNCASR Bangalore, <span class="date">02/2014</span></li>
+    <li>Symposium on Chemistry with Computers, IIIT Hyderabad, <span class="date">01/2014</span></li>
+    <li>Theoretical Chemistry Symposium, IIT Guwahati, <span class="date">12/2012</span></li>
+  </ul>
 
+  <h2 style="margin-top:30px">Hands-on sessions, workshops and popular science lectures</h2>
+  <ul class="talks">
+    <li>Industry&ndash;Academia Workshop 2.0 on Quantum Technologies, IIT Alumni Centre, Bengaluru, <span class="date">08/2026</span></li>
+    <li>ML for Molecules and Materials, IIT Kharagpur, <span class="date">08/2026</span></li>
+    <li>IAPT Workshop on Quantum Computing, Manipur University, <span class="date">07/2026</span></li>
+    <li>NSM Workshop on Quantum Computing, Manipur University, <span class="date">05/2026</span></li>
+    <li>NSM Workshop on Quantum Computing, University of Hyderabad, <span class="date">04/2026</span></li>
+    <li>NSM Workshop on Quantum Computing, IIT Kharagpur Research Park, Kolkata, <span class="date">02/2026</span></li>
+    <li>NSM Workshop on Quantum Computing, CCDS, IIT Kharagpur, <span class="date">03/2025</span></li>
+    <li>SERB Workshop, popular lecture &ldquo;Schr&ouml;dinger&rsquo;s Cat&rdquo;, Department of Chemistry, IIT Kharagpur, <span class="date">06/2024</span></li>
+    <li>Workshop on High-Performance Computing in Bioinformatics, CCDS, IIT Kharagpur, <span class="date">02/2024</span></li>
+    <li>Nurturance Program for NTS awardees, Department of Physics, IIT Kharagpur, <span class="date">12/2022</span></li>
+    <li>UGC-HRDC Refresher Course in Chemistry, Pt. Ravishankar Shukla University, Chhattisgarh, <span class="date">07/2022</span></li>
+    <li>NSM-IIT KGP Workshop on Simulation Methods in Scientific Computing, CCDS, IIT Kharagpur, <span class="date">06/2021</span></li>
+    <li>TEQIP Workshop on Applications of Computers in Chemistry, IIT Kharagpur, <span class="date">02/2020</span></li>
+    <li>Application of Computational Methods in Modern Science, Bajkul Milani College, West Bengal, <span class="date">09/2019</span></li>
+    <li>National Symposium in Chemistry, Bhadrak College, Bhadrak, <span class="date">03/2019</span></li>
+  </ul>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
+
+<!-- ================= SERVICE ================= -->
+<section id="service">
+  <h2>Professional service</h2>
+  <div class="two">
+    <div class="box">
+      <h3>Institute responsibilities</h3>
+      <ul>
+        <li><span class="yr">2026&ndash;</span><span>Senate-nominated Member, Research Program Evaluation Committee (RPEC)</span></li>
+        <li><span class="yr">2022&ndash;</span><span>Programme Coordinator, NSO Health &amp; Fitness</span></li>
+              <li><span class="yr">2020</span><span>Instructor, Moodle training programme for IIT Kharagpur faculty</span></li>
+        <li><span class="yr">2016</span><span>Member, Publication Sub-Committee for the Annual Convocation (2016&ndash;2025)</span></li>
+        <li><span class="yr">2015</span><span>Programme Officer, NSO Health &amp; Fitness (2015&ndash;2018)</span></li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Conferences and symposia organized</h3>
+      <ul>
+        <li><span class="yr">2024</span><span>Modern Trends in Inorganic Chemistry (Organizing Secretary)</span></li>
+        <li><span class="yr">2022</span><span>International Conference on Modern Trends in Molecular Magnetism</span></li>
+        <li><span class="yr">2020</span><span>TEQIP Workshop on Applications of Computers in Chemistry</span></li>
+        <li><span class="yr">2020</span><span>Functional Smart and Supramolecular Materials Symposium</span></li>
+        <li><span class="yr">2019</span><span>Recent Advances in Molecular Magnetism Symposium</span></li>
+        <li><span class="yr">2019</span><span>Advances in Functional Materials Symposium</span></li>
+        <li><span class="yr">2018</span><span>Electronic Structure and Dynamics Symposium</span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
+
+<!-- ================= THESES ================= -->
+<section id="theses">
+  <h2>My research theses</h2>
+  <div class="theses">
+    <div class="thesis">
+      <div class="kind">PhD thesis</div>
+      <div class="dates">August 2003 &ndash; November 2006</div>
+      <div class="tt">Vibronic Coupling by the Spin&ndash;Orbit Operator in Linear Molecules</div>
+      <div class="sv">Supervisor: <a href="http://www.theo.ch.tum.de/?id=625" target="_blank">Prof. Wolfgang Domcke</a><br>Technical University of Munich, Germany</div>
+    </div>
+    <div class="thesis">
+      <div class="kind">MSc thesis</div>
+      <div class="dates">December 2002 &ndash; April 2003</div>
+      <div class="tt">Study of Orientational Order in Physical Vapor Deposited Films of Polar Crystallites</div>
+      <div class="sv">Supervisor: Prof. T. P. Radhakrishnan<br>University of Hyderabad, India</div>
+    </div>
+    <div class="thesis">
+      <div class="kind">Summer project</div>
+      <div class="dates">May &ndash; July 2002</div>
+      <div class="tt">Theory of Breaking of a Weak Link in a Stiff Ring Polymer</div>
+      <div class="sv">Supervisor: Prof. K. L. Sebastian<br>Indian Institute of Science, Bangalore, India</div>
+    </div>
+  </div>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
+
+</div>
+</body>
+</html>
