@@ -43,6 +43,23 @@
             text-align: center;
             margin-bottom: 10px;
         }
+        .qbadge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 1px 6px;
+            margin-left: 6px;
+            border: 1px solid #222;
+            border-radius: 3px;
+            color: #222;
+            text-decoration: none;
+            vertical-align: middle;
+        }
+        .qbadge.q1 { background: #1b5e20; border-color: #1b5e20; color: #fff; }
+        .qbadge.q2 { background: #81c784; border-color: #4c9a50; color: #000; }
+        .qbadge.q3 { background: #dcf0dc; border-color: #8bbf8d; color: #000; }
+        .qbadge.q4 { background: #fff; border-color: #888; color: #000; }
+        .qnote { text-align: center; font-size: 12px; color: #444; margin-bottom: 10px; }
         .publication-item {
             margin-bottom: 10px;
             padding: 10px;
@@ -68,7 +85,7 @@
 <BR>
 
 <div class="view-menu">
-    <button id="theoryBtn" class="active" onclick="setView('theory')">Selected Publications</button>
+    <button id="theoryBtn" class="active" onclick="setView('theory')">Theory Publications</button>
     <button id="completeBtn" onclick="setView('all')">Complete List of Publications</button>
 </div>
 <div id="viewNote"></div>
@@ -116,6 +133,15 @@
         <option value="all">All</option>
         <!-- Publisher options will be dynamically populated -->
     </select>
+
+    <label for="quartileFilter">Quartile: </label>
+    <select id="quartileFilter" onchange="filterPublications()">
+        <option value="all">All</option>
+        <option value="Q1">Q1</option>
+        <option value="Q2">Q2</option>
+        <option value="Q3">Q3</option>
+        <option value="Q4">Q4</option>
+    </select>
 <BR>
     <label for="researchFieldFilter">Research Area: </label>
     <select id="researchFieldFilter" onchange="filterPublications()">
@@ -132,6 +158,8 @@
 
 <a href="independent_pubs.html" title="" >Independent publications of group members</a>
 
+
+<div class="qnote">Quartile = best SCImago Journal Rank (SJR 2025) quartile of the journal across its subject categories. Click a badge for the journal's SCImago page.</div>
 
 <ul id="publicationsList" class="publication-list">
     <!-- Publication items will go here -->
@@ -297,7 +325,7 @@
     "publisher": "American Chemical Society (ACS)",
 	"url": "https://pubs.acs.org/doi/10.1021/acsami.5c25977",
     "researchFields": [
-      "Computation with Experiment",
+      "Computation/Theory",
 	  "DFT Applications"
     ]
   },
@@ -1656,7 +1684,7 @@
     "publisher": "Royal Society of Chemistry (RSC)",
     "url": "http://dx.doi.org/10.1039/c8dt01818a",
     "researchFields": [
-      "Computation with Experiment",
+      "Computation/Theory",
       "DFT Applications"
     ]
   },
@@ -2300,6 +2328,59 @@
        // Add other publications here
     ];
 
+    // Best SCImago (SJR 2025) quartile across the journal's subject categories, and SCImago source id
+    const journalQuartiles = {
+        "J. Chem. Phys.": { q: "Q1", sid: "28134" },
+        "Phys. Chem. Chem. Phys.": { q: "Q2", sid: "27011" },
+        "Inorg. Chem.": { q: "Q1", sid: "25264" },
+        "J. Phys. Chem. B": { q: "Q1", sid: "26970" },
+        "J. Mat. Chem. A": { q: "Q1", sid: "21100232403" },
+        "Dalton Trans.": { q: "Q2", sid: "9500153949" },
+        "Chem. Phys.": { q: "Q2", sid: "26584" },
+        "RSC Advances": { q: "Q1", sid: "21100199840" },
+        "Biophys. J.": { q: "Q1", sid: "14859" },
+        "ChemPhysChem": { q: "Q2", sid: "26588" },
+        "J. Phys. Chem. A": { q: "Q2", sid: "26969" },
+        "J. Chem. Inform. Model.": { q: "Q1", sid: "130080" },
+        "ACS Appl. Bio Mat.": { q: "Q1", sid: "21100912215" },
+        "Biochemistry": { q: "Q2", sid: "16867" },
+        "J. Molec. Graph. Model.": { q: "Q2", sid: "24621" },
+        "ChemistrySelect": { q: "Q3", sid: "21100850505" },
+        "Molecular Physics": { q: "Q3", sid: "26990" },
+        "Resonance - J. Sci. Ed.": { q: "Q3", sid: "17600155129" },
+        "ACS Applied Materials & Interfaces": { q: "Q1", sid: "19700171101" },
+        "ACS Appl. Mat. & Interf.": { q: "Q1", sid: "19700171101" },
+        "Organometallics": { q: "Q2", sid: "26423" },
+        "Chem. Eur. J.": { q: "Q1", sid: "23392" },
+        "ChemSusChem": { q: "Q1", sid: "12000154478" },
+        "J. Phys. Chem. C": { q: "Q1", sid: "5200153123" },
+        "Crystal Growth and Design": { q: "Q2", sid: "24672" },
+        "Chemical Eng. J.": { q: "Q1", sid: "16398" },
+        "J. Mol. Liq.": { q: "Q1", sid: "26965" },
+        "Small": { q: "Q1", sid: "3200147828" },
+        "Comput. Biol. Chem.": { q: "Q2", sid: "24599" },
+        "Biochim. Biophys. Acta (BBA)": { q: "Q2", sid: "16829" },
+        "Proteins: Struct. Func. Bioinform.": { q: "Q2", sid: "14283" },
+        "J. Mat. Chem. C": { q: "Q1", sid: "21100229207" },
+        "J. Photochem. Photobiol. A": { q: "Q1", sid: "26966" },
+        "J. Fluoresc.": { q: "Q2", sid: "25282" },
+        "J. Biomolec. Struct. Dyn.": { q: "Q2", sid: "17596" },
+        "J. Biol. Inorg. Chem.": { q: "Q2", sid: "25280" },
+        "ACS Omega": { q: "Q1", sid: "21100828963" },
+        "J. Phys. Chem. Lett.": { q: "Q1", sid: "19600166212" },
+        "Chem. Asia. J.": { q: "Q2", sid: "4800156201" },
+        "Adv. Synth. Catal.": { q: "Q1", sid: "22669" },
+        "J. Ind. Chem. Soc.": { q: "Q2", sid: "24097" },
+        "Molecular Neurobiology": { q: "Q1", sid: "14160" },
+        "Org. Lett.": { q: "Q1", sid: "26396" },
+        "European Journal of Inorg. Chem.": { q: "Q3", sid: "25256" },
+        "Colloids Surf. A": { q: "Q1", sid: "26589" },
+        "Cell Reports": { q: "Q1", sid: "21100201068" },
+        "Spectrochim. Acta A": { q: "Q1", sid: "24530" },
+        "J. Am. Chem. Soc.": { q: "Q1", sid: "22680" },
+        "Chem. Phys. Lett.": { q: "Q2", sid: "26586" }
+    };
+
     // A paper is "theory-only" if it is tagged Computation/Theory and not Computation with Experiment
     function isTheoryOnly(pub) {
         return pub.researchFields.includes('Computation/Theory') &&
@@ -2362,6 +2443,7 @@
         const selectedJournal = v('journalFilter');
         const selectedResearchField = v('researchFieldFilter');
         const selectedPublisher = v('publisherFilter');
+        const selectedQuartile = v('quartileFilter');
 
         const filtered = basePublications().filter(pub =>
             (selectedAuthor === 'all' || pub.authors.includes(selectedAuthor)) &&
@@ -2370,7 +2452,8 @@
             (selectedYearEnd === 'all' || pub.year <= parseInt(selectedYearEnd)) &&
             (selectedJournal === 'all' || pub.journal === selectedJournal) &&
             (selectedResearchField === 'all' || pub.researchFields.includes(selectedResearchField)) &&
-            (selectedPublisher === 'all' || pub.publisher === selectedPublisher)
+            (selectedPublisher === 'all' || pub.publisher === selectedPublisher) &&
+            (selectedQuartile === 'all' || (journalQuartiles[pub.journal] || {}).q === selectedQuartile)
         );
 
         displayPublications(filtered);
@@ -2380,17 +2463,21 @@
         currentDisplayed = publicationsToDisplay;
         const total = basePublications().length;
         document.getElementById('viewNote').innerHTML = currentView === 'theory'
-            ? `<em>Showing selected publications. Use "Complete List of Publications" for all papers.</em>`
-            : `<em>Showing all publications.</em>`;
+            ? `<em>Showing theory-only publications (${publicationsToDisplay.length} of ${total}). Use "Complete List of Publications" for all papers including experimental collaborations.</em>`
+            : `<em>Showing all publications (${publicationsToDisplay.length} of ${total}).</em>`;
 
         const list = document.getElementById('publicationsList');
         list.innerHTML = '';
         publicationsToDisplay.forEach(pub => {
+            const jq = journalQuartiles[pub.journal];
+            const badge = jq
+                ? `<a class="qbadge ${jq.q.toLowerCase()}" href="https://www.scimagojr.com/journalsearch.php?q=${jq.sid}&tip=sid" target="_blank" title="SCImago SJR 2025 quartile">${jq.q}</a>`
+                : '';
             const item = document.createElement('li');
             item.className = 'publication-item';
             item.innerHTML = `<strong>${pub.title}</strong><br>
                               <em>${pub.authors.join(', ')}</em><br>
-                              <a href="${pub.url}" target="_blank">${pub.journal} ${pub.volume} (${pub.year}) ${pub.pages}</a>
+                              <a href="${pub.url}" target="_blank">${pub.journal} ${pub.volume} (${pub.year}) ${pub.pages}</a>${badge}
                               &nbsp;&nbsp;&nbsp;&nbsp;<em>${pub.comments || ''}</em>`;
             list.appendChild(item);
         });
@@ -2398,18 +2485,19 @@
 
     function clearFilters() {
         ['authorFilter', 'yearFilter', 'yearFilterStart', 'yearFilterEnd',
-         'journalFilter', 'researchFieldFilter', 'publisherFilter']
+         'journalFilter', 'researchFieldFilter', 'publisherFilter', 'quartileFilter']
             .forEach(id => document.getElementById(id).value = 'all');
         filterPublications();
     }
 
     // Exports use the list currently on screen (view + filters)
     document.getElementById('downloadCsvBtn').addEventListener('click', function() {
-        let csvContent = 'Authors,Title,Journal,Volume,Pages,Year\n';
+        let csvContent = 'Authors,Title,Journal,Volume,Pages,Year,Quartile (SJR 2025)\n';
         currentDisplayed.forEach(pub => {
             const q = x => `"${String(x).replace(/"/g, '""')}"`;
             csvContent += [q(pub.authors.join('; ')), q(pub.title), q(pub.journal),
-                           q(pub.volume), q(pub.pages), pub.year].join(',') + '\n';
+                           q(pub.volume), q(pub.pages), pub.year,
+                           (journalQuartiles[pub.journal] || {}).q || ''].join(',') + '\n';
         });
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
