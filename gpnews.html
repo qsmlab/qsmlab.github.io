@@ -1,436 +1,394 @@
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
 <meta charset="UTF-8">
-<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group News | QSM Lab | Sabyashachi Mishra | IIT Kharagpur</title>
+<meta name="description" content="News from the Quantum Simulation of Molecules (QSM) Lab at IIT Kharagpur: PhD defences, awards, journal covers, fellowships and media coverage." />
+<link rel="stylesheet" type="text/css" href="menu_style.css" />
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #111;
+    background: #fff;
+    margin: 20px;
+  }
+  .page { max-width: 900px; margin: 40px auto 60px; }
+  a { color: #0b3d91; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  .tagline { font-size: 17px; color: #333; margin: 0 0 22px; padding-bottom: 10px; border-bottom: 2px solid #0b3d91; }
+
+  .news {
+    display: grid;
+    grid-template-columns: 210px 1fr;
+    gap: 22px;
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1px solid #c9d3e3;
+    border-radius: 4px;
+    background: #fff;
+    transition: box-shadow 0.15s;
+  }
+  .news:hover { box-shadow: 0 4px 12px rgba(11,61,145,0.12); }
+  .pic { background: #f3f5f9; border-radius: 3px; height: 160px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .pic img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  .pic.nopic { display: none; }
+  .news:has(.nopic) { grid-template-columns: 1fr; }
+
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .tag { font-size: 12px; font-weight: bold; letter-spacing: 0.05em; text-transform: uppercase;
+         border: 1px solid #0b3d91; color: #0b3d91; border-radius: 3px; padding: 1px 7px; }
+  .tag.phd { background: #0b3d91; color: #fff; }
+  .date { font-size: 14px; color: #555; font-weight: bold; }
+  .news h2 { font-size: 18px; margin: 4px 0 6px; line-height: 1.3; }
+  .news p { margin: 0; font-size: 15.5px; color: #222; }
+
+  .top { font-size: 13px; text-align: right; margin-top: 10px; }
+  .top a { color: #555; }
+
+  @media (max-width: 640px) {
+    body { margin: 10px; font-size: 15px; }
+    .news { grid-template-columns: 1fr; gap: 12px; padding: 14px; }
+    .pic { height: 200px; }
+  }
+</style>
 </head>
 <body>
 <ul class="menu red">
-        <li><a href="index.html" title="">Home</a></li>
-     <li><a href="group.html" title="">Group</a></li>
-        <li><a href="pubs.html" title="" >Publications</a></li>
-        <li><a href="research.html" title="">Research</a></li>
-        <li><a href="teaching.html" title="">Teaching</a></li>
-        <li><a href="misc.html" title="">Miscellaneous</a></li>
+  <li><a href="index.html" title="">Home</a></li>
+  <li><a href="group.html" title="">Group</a></li>
+  <li><a href="pubs.html" title="">Publications</a></li>
+  <li><a href="research.html" title="">Research</a></li>
+  <li><a href="teaching.html" title="">Teaching</a></li>
+  <li><a href="misc.html" title="">Miscellaneous</a></li>
 </ul>
-<CENTER>
-<p style="font-family: Arial, sans-serif;">
-<br><br>
 
-<head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+<div class="page">
 
-        .news-item {
-            display: flex;
-            width: 80%;
-            height: 250px;
-            box-sizing: border-box;
-            padding: 20px;
-            overflow: scroll;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .news-item.reverse {
-            flex-direction: row-reverse;
-        }
-
-        .news-image-wrapper,
-        .news-content-wrapper {
-            width: 50%;
-            box-sizing: border-box;
-            padding: 10px;
-        }
-
-        .news-heading {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #007BFF; 
-        }
-
-        .news-image {
-            width: 50%;
-            height: auto;
-        }
-
-        .news-content {
-            font-size: 16px;
-        }
-    </style>
-</head>
-<body>
-
-<center>
 <h1>Group News</h1>
-</center>
-    <div class="news-item ">
-        <div class="news-image-wrapper">
-            <img src="gppics/Sanjukta_defense.jpeg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content">
-Sanjukta Parida successfully defended her PhD Thesis in November 2025. Prof. Ayan Datta of IACS Kolkata was the examiner. Congratulations Sanjukta!</p>
-        </div>
-    </div>
+<p class="tagline">PhD defences, awards, journal covers and other news from the QSM Lab.</p>
 
-    <div class="news-item reverse ">
-        <div class="news-image-wrapper">
-            <img src="gppics/KD_Defense.jpeg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content">
-Kishan Kumar Dakua successfully defended his PhD Thesis in November 2025. Prof. G. Naresh Patwari of IIT Bombay was the examiner. Congratulations Kishan!</p>
-        </div>
+<!-- To add news: copy one "news item" block, paste it at the top of the list, and change the image, tag, date, heading and text.
+     Tags: phd (PhD defence), award, cover (journal cover), media, fellow (fellowship), outreach, talk -->
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/Sanjukta_defense.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">November 2025</span></div>
+      <h2>Sanjukta Parida defends her PhD thesis</h2>
+      <p>Sanjukta Parida successfully defended her PhD thesis in November 2025. Prof. Ayan Datta of IACS Kolkata was the examiner. Congratulations Sanjukta!</p>
     </div>
-    <div class="news-item ">
-        <div class="news-image-wrapper">
-            <img src="gppics/HS_Defense.jpeg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content">
-Harshdeep Singh successfully defended his PhD Thesis in November 2025. Prof. Sanjay Kumar of IIT Madras was the examiner. Congratulations Harshdeep!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/KD_Defense.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">November 2025</span></div>
+      <h2>Kishan Kumar Dakua defends his PhD thesis</h2>
+      <p>Kishan Kumar Dakua successfully defended his PhD thesis in November 2025. Prof. G. Naresh Patwari of IIT Bombay was the examiner. Congratulations Kishan!</p>
     </div>
-
-   <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/sharc_cl.jpeg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-  <h2 class="news-heading">The Science Matters Covers Harshdeep's SHARC-VQE Algorithm</h2>
-	    <p class="news-content">
-The Science Matters News Portal recently <a href="https://thesciencematters.org/new-quantum-algorithm-promises-faster-cleaner-molecular-simulations/" target="_blank"> highlighted</a>  Harshdeep Singh’s work on 
-Simplified Hamiltonian Approach with Refinement and Correction (SHARC) enabled Variational Quantum Eigensolver (VQE) for Molecular Simulation.  
-Congratulations Harshdeep! </p> </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/HS_Defense.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">November 2025</span></div>
+      <h2>Harshdeep Singh defends his PhD thesis</h2>
+      <p>Harshdeep Singh successfully defended his PhD thesis in November 2025. Prof. Sanjay Kumar of IIT Madras was the examiner. Congratulations Harshdeep!</p>
     </div>
-
-    <div class="news-item ">
-        <div class="news-image-wrapper">
-            <img src="gppics/Shalini_Defense.jpg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content">
-Shalini Joshi successfully defended her PhD Thesis in September 2025. Prof. Gopalan Rajaraman of IIT Bombay was the examiner. Congratulations Shalini!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/sharc_cl.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag media">In the media</span><span class="date">2025</span></div>
+      <h2>The Science Matters covers Harshdeep's SHARC-VQE algorithm</h2>
+      <p>The Science Matters news portal <a href="https://thesciencematters.org/new-quantum-algorithm-promises-faster-cleaner-molecular-simulations/" target="_blank">highlighted</a> Harshdeep Singh&rsquo;s work on the Simplified Hamiltonian Approach with Refinement and Correction (SHARC) enabled Variational Quantum Eigensolver (VQE) for molecular simulation. Congratulations Harshdeep!</p>
     </div>
-   <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/hmo2.jpeg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-  <h2 class="news-heading">Quantum Zeitgeist Features Harshdeep's Work</h2>
-	    <p class="news-content">
-Harshdeep Singh’s recent work on applying quantum computing to study the excited states of molecular systems has been highlighted by  <a
-href="https://quantumzeitgeist.com/quantum-computing-enhances-huckel-theory-simulations-promises-efficient-molecular-studies/" target="_blank"> Quantum Zeitgeist</a>, a leading portal covering emerging trends in quantum computing and quantum technologies. This recognition underscores the growing impact of his research in advancing quantum methods for complex molecular simulations. Congratulations Harshdeep! </p> </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/Shalini_Defense.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">September 2025</span></div>
+      <h2>Shalini Joshi defends her PhD thesis</h2>
+      <p>Shalini Joshi successfully defended her PhD thesis in September 2025. Prof. Gopalan Rajaraman of IIT Bombay was the examiner. Congratulations Shalini!</p>
     </div>
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/CI4.jpeg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Inorganic Chemistry Front Cover</h2>
-            <p class="news-content">Kishan and Rituparna's paper featured on  <a href="https://pubs.acs.org/toc/inocaj/64/32" target="_blank" > Inorganic Chemistry Cover Page</a>. Congratulations Kishan and Rituparna.</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/hmo2.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag media">In the media</span></div>
+      <h2>Quantum Zeitgeist features Harshdeep's work</h2>
+      <p>Harshdeep Singh&rsquo;s work on using quantum computing to study the excited states of molecular systems was highlighted by <a href="https://quantumzeitgeist.com/quantum-computing-enhances-huckel-theory-simulations-promises-efficient-molecular-studies/" target="_blank">Quantum Zeitgeist</a>, a portal covering emerging trends in quantum computing and quantum technologies. Congratulations Harshdeep!</p>
     </div>
-   <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/SP_JPCC.jpg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-  <h2 class="news-heading">Sanjukta's paper on JPC C Cover</h2>
-            <p class="news-content">Sanjukta Parida's paper featured on <a href="https://pubs.acs.org/toc/jpccck/129/22" target="_blank"> JPC C Cover page</a>. Congratulations Sanjukta!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/CI4.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag cover">Journal cover</span><span class="date">2025</span></div>
+      <h2>Inorganic Chemistry front cover</h2>
+      <p>Kishan and Rituparna&rsquo;s paper was featured on the <a href="https://pubs.acs.org/toc/inocaj/64/32" target="_blank">cover of Inorganic Chemistry</a>. Congratulations Kishan and Rituparna!</p>
     </div>
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/sk_py_workshop.jpg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Soumyajit Conducts PyChem Workshop</h2>
-            <p class="news-content">Soumyajit Karmakar recently conducted a workshop on Python in Chemistry at Midnapore City College. Congratulations Soumyajit!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/SP_JPCC.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag cover">Journal cover</span><span class="date">2025</span></div>
+      <h2>Sanjukta's paper on the cover of J. Phys. Chem. C</h2>
+      <p>Sanjukta Parida&rsquo;s paper was featured on the <a href="https://pubs.acs.org/toc/jpccck/129/22" target="_blank">cover of J. Phys. Chem. C</a>. Congratulations Sanjukta!</p>
     </div>
-   <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/jpcb_cover_sourav.png" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-  <h2 class="news-heading">Sourav's paper on JPC B Cover</h2>
-            <p class="news-content">Sourav Manna's paper featured on <a href="https://pubs.acs.org/toc/jpcbfk/129/11" target="_blank"> JPC B Cover page</a>. Congratulations Sourav!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/sk_py_workshop.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag outreach">Outreach</span></div>
+      <h2>Soumyajit conducts a Python in Chemistry workshop</h2>
+      <p>Soumyajit Karmakar conducted a workshop on Python in Chemistry at Midnapore City College. Congratulations Soumyajit!</p>
     </div>
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/SK_SMCB.jpeg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Presentation Award</h2>
-            <p class="news-content">Soumyajit Karmakar received the best Oral Presentation award at the Statistical Mechanics in Chemistry and Biology (SMCB) 2024 held between December 17-19, 2024 at IIT Tirupati. 
- Congratulations Soumyajit!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/jpcb_cover_sourav.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag cover">Journal cover</span><span class="date">2025</span></div>
+      <h2>Sourav's paper on the cover of J. Phys. Chem. B</h2>
+      <p>Sourav Manna&rsquo;s paper was featured on the <a href="https://pubs.acs.org/toc/jpcbfk/129/11" target="_blank">cover of J. Phys. Chem. B</a>. Congratulations Sourav!</p>
     </div>
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/Sunita_defense.jpeg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content">
-Sunita Muduli successfully defended her PhD Thesis in November 2024. Prof. Lalitha Guruprasad of University of Hyderabad was the examiner. Congratulations Sunita!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/SK_SMCB.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">December 2024</span></div>
+      <h2>Best Oral Presentation Award for Soumyajit</h2>
+      <p>Soumyajit Karmakar received the Best Oral Presentation Award at Statistical Mechanics in Chemistry and Biology (SMCB 2024), IIT Tirupati, December 17&ndash;19, 2024. Congratulations Soumyajit!</p>
     </div>
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/soumyajit.jpg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Associate Member of RSC</h2>
-            <p class="news-content">Soumyajit Karmakar was selected as an Associate Member of the Royal Society of Chemistry (RSC). 
- Congratulations Soumyajit!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/Sunita_defense.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">November 2024</span></div>
+      <h2>Sunita Muduli defends her PhD thesis</h2>
+      <p>Sunita Muduli successfully defended her PhD thesis in November 2024. Prof. Lalitha Guruprasad of the University of Hyderabad was the examiner. Congratulations Sunita!</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/MN_AFS.jpeg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Flash Talk Award</h2>
-            <p class="news-content">
-Moromi Nath received the Best Flash Talk Prize at the Advances in Functional Solids (AFS 2024) organized by Department of Chemistry, IIT Kharagpur during November 9-12, 2024. Congratulations Moromi! </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/soumyajit.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag fellow">Fellowship</span></div>
+      <h2>Soumyajit becomes an Associate Member of the RSC</h2>
+      <p>Soumyajit Karmakar was selected as an Associate Member of the Royal Society of Chemistry (RSC). Congratulations Soumyajit!</p>
     </div>
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/SP_JPCB.jpeg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Sanjukta's paper on JPC B Cover</h2>
-            <p class="news-content">Sanjukta Parida's paper featured on <a href="https://pubs.acs.org/toc/jpcbfk/128/40" target="_blank"> JPC B Cover page</a>. Congratulations Sanjukta!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/MN_AFS.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">November 2024</span></div>
+      <h2>Best Flash Talk Prize for Moromi</h2>
+      <p>Moromi Nath received the Best Flash Talk Prize at Advances in Functional Solids (AFS 2024), Department of Chemistry, IIT Kharagpur, November 9&ndash;12, 2024. Congratulations Moromi!</p>
     </div>
-
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/MN_Pop.jpeg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Popular Science Lecture</h2>
-            <p class="news-content">Moromi Nath was invited to present a Popular Science Lecture on "The beauty of Chemistry" for school Students in Silchar, Assam. Congratulations Moromi!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/SP_JPCB.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag cover">Journal cover</span><span class="date">2024</span></div>
+      <h2>Sanjukta's paper on the cover of J. Phys. Chem. B</h2>
+      <p>Sanjukta Parida&rsquo;s paper was featured on the <a href="https://pubs.acs.org/toc/jpcbfk/128/40" target="_blank">cover of J. Phys. Chem. B</a>. Congratulations Sanjukta!</p>
     </div>
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/HS_TCS.png" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Poster Award</h2>
-            <p class="news-content">
-Harshdeep Singh received the Best Poster Prize at the Theoretical Chemistry Symposium (TCS 2023) organized by Department of Chemistry, IIT Madras during December 7-10, 2023. Congratulations Harshdeep.</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/MN_Pop.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag outreach">Outreach</span></div>
+      <h2>Moromi gives a popular science lecture</h2>
+      <p>Moromi Nath was invited to give a popular science lecture, &ldquo;The Beauty of Chemistry&rdquo;, for school students in Silchar, Assam. Congratulations Moromi!</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/ap_defense.jpg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content">Atanuka Paul successfully defended her PhD Thesis in May 2023. Prof. Arnab Mukherjee of IISER Pune was the examiner. Congratulations Atanuka!</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/HS_TCS.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">December 2023</span></div>
+      <h2>Best Poster Prize for Harshdeep</h2>
+      <p>Harshdeep Singh received the Best Poster Prize at the Theoretical Chemistry Symposium (TCS 2023), Department of Chemistry, IIT Madras, December 7&ndash;10, 2023. Congratulations Harshdeep!</p>
     </div>
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/sunita_nehu.jpg" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Poster Award</h2>
-            <p class="news-content">Sunita Muduli received the Best Poster Prize at the National Conference on "Recent Advances in Chemistry: Theoretical and Computational Aspects (RAC-TCA 2022)"  organized by Department of Chemistry, NIT Meghalaya and North Eastern Hill University during November 18-20, 2022. Congratulations Sunita. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/ap_defense.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">May 2023</span></div>
+      <h2>Atanuka Paul defends her PhD thesis</h2>
+      <p>Atanuka Paul successfully defended her PhD thesis in May 2023. Prof. Arnab Mukherjee of IISER Pune was the examiner. Congratulations Atanuka!</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/kishan_barc.png" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Poster Award</h2>
-            <p class="news-content">Kishan Kumar Dakua received the Best Poster Prize at the Current Trends in Theoretical Chemistry organized by BARC Mumbai, India  during September 22 - 24, 2022. Congratulations Kishan. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/sunita_nehu.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">November 2022</span></div>
+      <h2>Best Poster Prize for Sunita</h2>
+      <p>Sunita Muduli received the Best Poster Prize at the National Conference on Recent Advances in Chemistry: Theoretical and Computational Aspects (RAC-TCA 2022), organized by NIT Meghalaya and North Eastern Hill University, November 18&ndash;20, 2022. Congratulations Sunita!</p>
     </div>
-
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/soumyajit_pmrf.png" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PMRF Fellowship</h2>
-            <p class="news-content">Soumyajit Karmakar eceived the 'Prime Minister's Research Fellowship (PMRF)' from
-the Ministry of Education, Government of India in October 2022. Congratulations Soumyajit.  </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/soumyajit_pmrf.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag fellow">Fellowship</span><span class="date">October 2022</span></div>
+      <h2>Prime Minister's Research Fellowship for Soumyajit</h2>
+      <p>Soumyajit Karmakar received the Prime Minister&rsquo;s Research Fellowship (PMRF) from the Ministry of Education, Government of India, in October 2022. Congratulations Soumyajit!</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/hs_pmrf.png" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PMRF Fellowship</h2>
-            <p class="news-content"> Harshdeep Singh received the 'Prime Minister's Research Fellowship (PMRF)' from
-the Ministry of Education, Government of India in May 2022. Congratulations Harshdeep. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/kishan_barc.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">September 2022</span></div>
+      <h2>Best Poster Prize for Kishan</h2>
+      <p>Kishan Kumar Dakua received the Best Poster Prize at Current Trends in Theoretical Chemistry, BARC Mumbai, September 22&ndash;24, 2022. Congratulations Kishan!</p>
     </div>
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/sunita_posteraward.png" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Poster Award</h2>
-            <p class="news-content">Sunita Muduli  received the "Physical Chemistry Chemical Physics (PCCP) Poster Prize" for Best Poster at the National Conference on Molecular Modelling and Simulations (NCMMS 2022) organized by Vellore Institute of Technology (VIT) Bhopal, India during February 28 - March 02, 2022. Congratulations Sunita! </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/hs_pmrf.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag fellow">Fellowship</span><span class="date">May 2022</span></div>
+      <h2>Prime Minister's Research Fellowship for Harshdeep</h2>
+      <p>Harshdeep Singh received the Prime Minister&rsquo;s Research Fellowship (PMRF) from the Ministry of Education, Government of India, in May 2022. Congratulations Harshdeep!</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/sk.png" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Oral Presentation Award</h2>
-            <p class="news-content">Soumyajit Karmakar received the 'Best Mini Oral Presentation Award' in the MedChem 2021 virtual conference on Emerging Infectious Diseases and Therapeutics Strategies organized by Indian Institute of Technology Madras during December 1-3, 2021.  </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/sunita_posteraward.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">March 2022</span></div>
+      <h2>PCCP Poster Prize for Sunita</h2>
+      <p>Sunita Muduli received the Physical Chemistry Chemical Physics (PCCP) Poster Prize at the National Conference on Molecular Modelling and Simulations (NCMMS 2022), VIT Bhopal, February 28 &ndash; March 2, 2022. Congratulations Sunita!</p>
     </div>
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/hs.png" alt="News Image 1" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Qiskit Fall Fest Prize</h2>
-            <p class="news-content">Harshdeep Singh received First Prize for the project titled "Random Number Generator using a Variational Quantum Circuit" in the Qiskit Fall Fest 2021, organized by Ahmedabad University on October 17, 2021. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/sk.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">December 2021</span></div>
+      <h2>Best Mini Oral Presentation Award for Soumyajit</h2>
+      <p>Soumyajit Karmakar received the Best Mini Oral Presentation Award at MedChem 2021, a virtual conference on Emerging Infectious Diseases and Therapeutic Strategies organized by IIT Madras, December 1&ndash;3, 2021.</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/vipin_phd.jpeg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content">Vipin Kumar Mishra successfully defended his PhD Thesis in October 2021. Prof. Prasad Bharatam of NIPER Mohali  was the examiner. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/hs.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">October 2021</span></div>
+      <h2>First Prize at Qiskit Fall Fest for Harshdeep</h2>
+      <p>Harshdeep Singh won First Prize for the project &ldquo;Random Number Generator using a Variational Quantum Circuit&rdquo; at Qiskit Fall Fest 2021, organized by Ahmedabad University on October 17, 2021.</p>
     </div>
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/vipin_ics.png" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading"> Indian Chemical Society Award</h2>
-            <p class="news-content"> Vipin Kumar Mishra received the Professor Santi Ranjan Palit Memorial Award for oral presentation in the 57th Annual Convention of Chemists, 2020 and International Conference on “Recent Trends in Chemical Sciences (RTCS-2020)” organized by the Indian Chemical Society, Kolkata during December 26-29, 2020. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/vipin_phd.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">October 2021</span></div>
+      <h2>Vipin Kumar Mishra defends his PhD thesis</h2>
+      <p>Vipin Kumar Mishra successfully defended his PhD thesis in October 2021. Prof. Prasad Bharatam of NIPER Mohali was the examiner.</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/mannaPhD.jpeg"  alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content"> Soumitra Manna successfully defended his PhD Thesis in August 2020. Prof. Sanjay Kumar, IIT Madras was the examiner. </p>
-        </div>
-
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/vipin_ics.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">December 2020</span></div>
+      <h2>Indian Chemical Society award for Vipin</h2>
+      <p>Vipin Kumar Mishra received the Professor Santi Ranjan Palit Memorial Award for oral presentation at the 57th Annual Convention of Chemists and International Conference on Recent Trends in Chemical Sciences (RTCS-2020), organized by the Indian Chemical Society, Kolkata, December 26&ndash;29, 2020.</p>
     </div>
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src= "gppics/vipin_ysa.png"  alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading"> Young Scientist Award</h2>
-            <p class="news-content"> Vipin Kumar Mishra received the Young Scientist Award in the International Conference on Sustainable Energy and Environmental Challenges (ICSEEC-2020) organized by the G. H. Raisoni University, Madhya Pradesh, on July 21, 2020.</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/mannaPhD.jpeg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">August 2020</span></div>
+      <h2>Soumitra Manna defends his PhD thesis</h2>
+      <p>Soumitra Manna successfully defended his PhD thesis in August 2020. Prof. Sanjay Kumar of IIT Madras was the examiner.</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/IMG-20200205-WA0007.jpg"  alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content">Sabyasachi Roy Chowdhury successfully defended his PhD Thesis in February 2020. Prof. Kumar Vanka, NCL, Pune was the examiner. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/vipin_ysa.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">July 2020</span></div>
+      <h2>Young Scientist Award for Vipin</h2>
+      <p>Vipin Kumar Mishra received the Young Scientist Award at the International Conference on Sustainable Energy and Environmental Challenges (ICSEEC-2020), organized by G. H. Raisoni University, Madhya Pradesh, on July 21, 2020.</p>
     </div>
-
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/src_ramm.jpg"   alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Poster Award</h2>
-            <p class="news-content">  Sabyasachi Roy Chowdhury received best poster award in the 'Recent Advances in Molecular Magnetism' conference organized by IIT Kharagpur in November 2019. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/IMG-20200205-WA0007.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">February 2020</span></div>
+      <h2>Sabyasachi Roy Chowdhury defends his PhD thesis</h2>
+      <p>Sabyasachi Roy Chowdhury successfully defended his PhD thesis in February 2020. Prof. Kumar Vanka of NCL Pune was the examiner.</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/sm_apatcc.jpg"  alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Poster Award</h2>
-            <p class="news-content">Soumitra Manna received best poster award in the '9th Conference of the Asia-Pacific Association of Theoretical and Computational Chemistry' in Sydney, Australia in October 2019. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/src_ramm.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">November 2019</span></div>
+      <h2>Best Poster Award for Sabyasachi</h2>
+      <p>Sabyasachi Roy Chowdhury received the Best Poster Award at Recent Advances in Molecular Magnetism, IIT Kharagpur, November 2019.</p>
     </div>
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/dd_phd.jpg"  alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">PhD Defense</h2>
-            <p class="news-content"> Debodyuti Dutta successfully defended his PhD Thesis in October 2017. Prof. Balasubramanian, JNCASR, Bangalore was the examiner. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/sm_apatcc.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">October 2019</span></div>
+      <h2>Best Poster Award for Soumitra</h2>
+      <p>Soumitra Manna received the Best Poster Award at the 9th Conference of the Asia-Pacific Association of Theoretical and Computational Chemistry (APATCC), Sydney, Australia, October 2019.</p>
     </div>
-
-    <div class="news-item reverse">
-        <div class="news-image-wrapper">
-            <img src="gppics/src-mtmm.jpg" alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Best Poster Award</h2>
-            <p class="news-content"> Sabyasachi Roy Chowdhury received best poster award in the 'Modern Trends in Molecular Magnets' conference organized by IIT Bombay during May 2016, from Professor Annie K. Powell, University of Karlsruhe, Germany. </p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/dd_phd.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag phd">PhD defence</span><span class="date">October 2017</span></div>
+      <h2>Debodyuti Dutta defends his PhD thesis</h2>
+      <p>Debodyuti Dutta successfully defended his PhD thesis in October 2017. Prof. Balasubramanian of JNCASR Bangalore was the examiner.</p>
     </div>
-
-
-    <div class="news-item">
-        <div class="news-image-wrapper">
-            <img src="gppics/ddutta_pic.png"  alt="News Image 2" class="news-image">
-        </div>
-        <div class="news-content-wrapper">
-            <h2 class="news-heading">Presentation at Young Scientists Meet</h2>
-            <p class="news-content">  Debodyuti Dutta spoke 'On the Mechanism of Action of DapE from QM/MM Study' in the 'Recent Developments of Chemical Science and Technology: A Young Scientists Meet' organized by the National Institute of Technology, Rourkela, during March 2014.</p>
-        </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/src-mtmm.jpg" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag award">Award</span><span class="date">May 2016</span></div>
+      <h2>Best Poster Award for Sabyasachi</h2>
+      <p>Sabyasachi Roy Chowdhury received the Best Poster Award at Modern Trends in Molecular Magnets, IIT Bombay, May 2016, from Prof. Annie K. Powell, Karlsruhe Institute of Technology, Germany.</p>
     </div>
+  </article>
+  <!-- news item -->
+  <article class="news">
+    <div class="pic"><img src="gppics/ddutta_pic.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nopic')"></div>
+    <div class="body">
+      <div class="meta"><span class="tag talk">Talk</span><span class="date">March 2014</span></div>
+      <h2>Debodyuti speaks at Young Scientists Meet</h2>
+      <p>Debodyuti Dutta spoke on &ldquo;On the Mechanism of Action of DapE from QM/MM Study&rdquo; at Recent Developments of Chemical Science and Technology: A Young Scientists Meet, NIT Rourkela, March 2014.</p>
+    </div>
+  </article>
 
-
-
-</BODY>
-
-
-</HTML>
-
+<p class="top"><a href="#">Back to top</a></p>
+</div>
+</body>
+</html>
