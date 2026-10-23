@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group | QSM Lab | Sabyashachi Mishra | IIT Kharagpur</title>
+<meta name="description" content="Members and alumni of the Quantum Simulation of Molecules (QSM) Lab of Sabyashachi Mishra at IIT Kharagpur, including Sabyasachi Roy Chowdhury, Harshdeep Singh, Soumyajit Karmakar, Vipin Kumar Mishra, Sunita Muduli, Shalini Joshi, Kishan Kumar Dakua, Soumitra Manna, Moromi Nath, Sanjukta Parida, Debodyuti Dutta, Sourav Manna and Rituparna Sinha." />
+<link rel="stylesheet" type="text/css" href="menu_style.css" />
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #111;
+    background: #fff;
+    margin: 20px;
+  }
+  .page { max-width: 1000px; margin: 40px auto 60px; }
+  a { color: #0b3d91; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  .tagline { font-size: 17px; color: #333; margin: 0 0 18px; }
+
+  /* group photo */
+  .hero { position: relative; margin: 0 0 8px; }
+  .hero img { display: block; width: 100%; max-height: 460px; object-fit: cover; border-radius: 6px; }
+  .hero-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 15px; }
+  .btn { display: inline-block; font-weight: bold; text-decoration: none; border: 1px solid #0b3d91; border-radius: 3px; padding: 6px 14px; }
+  .btn:hover { background: #0b3d91; color: #fff; }
+
+  section { padding-top: 32px; }
+  h2 { font-size: 22px; margin: 0 0 14px; padding-bottom: 4px; border-bottom: 2px solid #0b3d91; }
+  h2 .count { font-size: 15px; font-weight: normal; color: #555; margin-left: 8px; }
+
+  /* photos */
+  .ph { width: 96px; height: 96px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px #c9d3e3; flex-shrink: 0; background: #e8edf5; }
+  .initials { width: 96px; height: 96px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+              font-size: 30px; font-weight: bold; color: #0b3d91; background: #e8edf5; box-shadow: 0 0 0 1px #c9d3e3; }
+
+  /* PI */
+  .pi { display: flex; gap: 24px; align-items: center; padding: 20px 22px; border: 1px solid #c9d3e3; border-top: 5px solid #0b3d91;
+        border-radius: 4px; background: #f7f9fc; }
+  .pi .ph, .pi .initials { width: 130px; height: 130px; }
+  .pi .nm { font-size: 22px; font-weight: bold; }
+  .pi .pos { font-size: 16px; font-weight: bold; color: #0b3d91; }
+  .pi .det { color: #333; margin-top: 4px; }
+  .pi .links { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* member cards */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .member, .alum { display: flex; gap: 16px; align-items: flex-start; padding: 16px; border: 1px solid #c9d3e3; border-radius: 4px; background: #fff;
+                   transition: box-shadow 0.15s, transform 0.15s; }
+  .member:hover, .alum:hover { box-shadow: 0 4px 12px rgba(11,61,145,0.13); transform: translateY(-2px); }
+  .member .ph, .member .initials { width: 84px; height: 84px; }
+  .member .initials { font-size: 26px; }
+  .info { min-width: 0; }
+  .nm { font-size: 16.5px; font-weight: bold; line-height: 1.3; }
+  .nm a { text-decoration: none; }
+  .nm a:hover { text-decoration: underline; }
+  .pos { font-size: 14px; font-weight: bold; color: #0b3d91; margin-top: 2px; }
+  .det { font-size: 14px; color: #333; margin-top: 2px; }
+  .field { display: inline-block; font-size: 12.5px; font-weight: bold; color: #0b3d91; border: 1px solid #0b3d91; border-radius: 3px; padding: 0 6px; margin-top: 8px; }
+
+  /* alumni */
+  .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .alum { background: #f7f9fc; }
+  .alum .ph, .alum .initials { width: 76px; height: 76px; }
+  .alum .initials { font-size: 24px; }
+  .thesis { font-size: 14px; color: #222; font-style: italic; margin-top: 4px; line-height: 1.4; }
+  .now { font-size: 14px; margin-top: 6px; }
+  .lbl { font-size: 11.5px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; color: #fff; background: #0b3d91; border-radius: 3px; padding: 1px 5px; margin-right: 4px; }
+  h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: #333; margin: 24px 0 10px; }
+
+  /* students */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid #c9d3e3; border-radius: 3px; padding: 5px 12px; background: #f7f9fc; font-size: 15px; }
+  table.students { border-collapse: collapse; width: 100%; font-size: 15px; }
+  table.students td { border-bottom: 1px solid #e3e8f0; padding: 6px 8px; vertical-align: top; }
+  table.students td.y { width: 60px; font-weight: bold; color: #0b3d91; }
+  .where { color: #444; }
+  ul.visitors { margin: 0; padding-left: 20px; font-size: 15px; }
+  ul.visitors li { margin: 4px 0; }
+
+  .top { font-size: 13px; text-align: right; margin-top: 10px; }
+  .top a { color: #555; }
+
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) {
+    body { margin: 10px; font-size: 15px; }
+    .grid, .grid2 { grid-template-columns: 1fr; }
+    .pi { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+<script>
+  // If a photo is missing, show the person's initials instead of a broken image
+  function noPhoto(img) {
+    var d = document.createElement('div');
+    d.className = 'initials';
+    d.textContent = img.alt.replace(/^Dr\.\s*/, '').split(/\s+/).filter(function (w) { return /^[A-Z]/.test(w); })
+                           .map(function (w) { return w[0]; }).filter(function (c, i, a) { return i === 0 || i === a.length - 1; }).join('');
+    img.replaceWith(d);
+  }
+</script>
+</head>
+<body>
+<ul class="menu red">
+  <li><a href="index.html" title="">Home</a></li>
+  <li><a href="group.html" title="">Group</a></li>
+  <li><a href="pubs.html" title="">Publications</a></li>
+  <li><a href="research.html" title="">Research</a></li>
+  <li><a href="teaching.html" title="">Teaching</a></li>
+  <li><a href="misc.html" title="">Miscellaneous</a></li>
+</ul>
+
+<div class="page">
+
+<h1>The QSM Lab</h1>
+<p class="tagline">Quantum Simulation of Molecules, Department of Chemistry, IIT Kharagpur</p>
+
+<div class="hero"><img src="gppics/gppic_22_2.jpg" alt="QSM Lab group photo" onerror="this.parentNode.style.display='none'"></div>
+<div class="hero-bar">
+  <span></span>
+  <a class="btn" href="gpnews.html">Group news &rarr;</a>
+</div>
+
+<!-- ================= PI ================= -->
+<section>
+  <h2>Principal investigator</h2>
+  <div class="pi">
+    <img class="ph" src="gppics/SM_pic.jpeg" alt="Sabyashachi Mishra" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Sabyashachi Mishra</div>
+      <div class="pos">Professor, Department of Chemistry</div>
+      <div class="det">PhD, Technical University of Munich</div>
+      <div class="det">mishra[at]chem.iitkgp.ac.in</div>
+      <div class="links"><a class="btn" href="misc.html">About &amp; CV</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CURRENT MEMBERS =================
+     To add a member: copy one "member" block below and change the photo, name, position, MSc and field. -->
+<section>
+  <h2>PhD students</h2>
+  <div class="grid">
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/pic_moromi.jpg" alt="Moromi Nath" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Moromi Nath</div>
+      <div class="pos">Senior Research Fellow</div>
+      <div class="det">MSc, Pondicherry University</div>
+      <span class="field">Molecular Magnetism</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/soumyajit.jpg" alt="Soumyajit Karmakar" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Soumyajit Karmakar</div>
+      <div class="pos">Prime Minister's Research Fellow</div>
+      <div class="det">MSc, IIT Kharagpur</div>
+      <span class="field">Enzyme Catalysis</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/sourav_manna.jpg" alt="Sourav Manna" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm"><a href="https://souravmannaiitkgp2022-wq.github.io/souravmanna-portfolio-page/index.html" target="_blank">Sourav Manna</a></div>
+      <div class="pos">Senior Research Fellow</div>
+      <div class="det">MSc, IIT Kharagpur</div>
+      <span class="field">Enzyme Catalysis</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/shubham.jpeg" alt="Shubham Verma" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Shubham Verma</div>
+      <div class="pos">Junior Research Fellow</div>
+      <div class="det">MSc, IIT Kharagpur</div>
+      <span class="field">Quantum Computing</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/rituparna_pic.jpeg" alt="Rituparna Sinha" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Rituparna Sinha</div>
+      <div class="pos">Junior Research Fellow</div>
+      <div class="det">MSc, IIT Hyderabad</div>
+      <span class="field">Spin Crossover</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/abhinaba.jpeg" alt="Abhinaba Pahari" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Abhinaba Pahari</div>
+      <div class="pos">Junior Research Fellow</div>
+      <div class="det">MSc, IIT Kharagpur</div>
+      <span class="field">Quantum Computing</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/vijay.jpeg" alt="Vijay Kumar" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Vijay Kumar</div>
+      <div class="pos">Junior Research Fellow</div>
+      <div class="det">MSc, IIT Kharagpur</div>
+      <span class="field">Quantum Computing</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/subhankar_bera.jpg" alt="Subhankar Bera" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Subhankar Bera</div>
+      <div class="pos">Junior Research Fellow</div>
+      <div class="det">MSc, IIT Kharagpur</div>
+      <span class="field">Spin Qubits</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/ramgopal.png" alt="Ramgopal Kumawat" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Ramgopal Kumawat</div>
+      <div class="pos">Junior Research Fellow</div>
+      <div class="det">MSc, IIT Kharagpur</div>
+      <span class="field">Spin Qubits</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/sohini.jpeg" alt="Sohini Dey" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Sohini Dey</div>
+      <div class="pos">Junior Research Fellow</div>
+      <div class="det">MSc, Jadavpur University</div>
+      <span class="field">Quantum Computing</span>
+    </div>
+  </div>
+  <!-- member -->
+  <div class="member">
+    <img class="ph" src="gppics/manohar.jpeg" alt="Manohar Ghosh" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Manohar Ghosh</div>
+      <div class="pos">Junior Research Fellow</div>
+      <div class="det">MSc, IIT Kharagpur</div>
+      <span class="field">Quantum Computing</span>
+    </div>
+  </div>
+  </div>
+
+  <h3>Current MS and BS students</h3>
+  <div class="chips">
+    <span class="chip">Debraj Mishra</span>
+    <span class="chip">Abhishek Kumar Ojha</span>
+    <span class="chip">P. Kavin</span>
+  </div>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
+
+<!-- ================= ALUMNI ================= -->
+<section>
+  <h2>Alumni</h2>
+  <h3 style="margin-top:0">PhD</h3>
+  <div class="grid2">
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/sanjukta.jpg" alt="Dr. Sanjukta Parida" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Sanjukta Parida</div>
+      <div class="pos">PhD 2019&ndash;2025</div>
+      <div class="thesis">Electronic Structure, Spectroscopy, and Charge Transport in Perylene-based Molecular Aggregates</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/harshdeep.jpeg" alt="Dr. Harshdeep Singh" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Harshdeep Singh</div>
+      <div class="pos">PhD 2021&ndash;2025</div>
+      <div class="thesis">Hybrid Quantum-Classical Algorithms for Quantum Chemistry</div>
+      <div class="now"><span class="lbl">Now</span> Chalmers University of Technology, Sweden</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/kishan.jpg" alt="Dr. Kishan Kumar Dakua" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Kishan Kumar Dakua</div>
+      <div class="pos">PhD 2019&ndash;2025</div>
+      <div class="thesis">Excited-State Quantum Dynamics of Photophysical Processes in Organic Chromophores and Transition-Metal Complexes</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/pic_shalini.jpg" alt="Dr. Shalini Joshi" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Shalini Joshi</div>
+      <div class="pos">PhD 2019&ndash;2025</div>
+      <div class="thesis">Magnetic Anisotropy and Spin Crossover in Transition Metal Complexes with Multi-reference Electronic Structure Calculations</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/sunita.jpg" alt="Dr. Sunita Muduli" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Sunita Muduli</div>
+      <div class="pos">PhD 2019&ndash;2024</div>
+      <div class="thesis">Significance of Protein Dynamics in the Catalytic Activity of DapE and DapF Enzymes of the Lysine Biosynthetic Pathway</div>
+      <div class="now"><span class="lbl">Now</span> Department of Physics, IISc Bangalore</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/atanuka.jpg" alt="Dr. Atanuka Paul" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Atanuka Paul</div>
+      <div class="pos">PhD 2015&ndash;2023</div>
+      <div class="thesis">Hybrid QM/MM Investigation of the Role of Metal Ions in the Substrate Binding and Catalysis of the Microbial Enzyme DapE</div>
+      <div class="now"><span class="lbl">Now</span> R&amp;D Scientist, West Bengal Chemical Industries Limited</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/vipin.jpg" alt="Dr. Vipin Kumar Mishra" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Vipin Kumar Mishra</div>
+      <div class="pos">PhD 2015&ndash;2021</div>
+      <div class="thesis">Computational Study of Regio- and Stereo-Selective Catalysis by 8-Lipoxygenase</div>
+      <div class="now"><span class="lbl">Now</span> Assistant Professor, VIT Bhopal</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/soumitra.jpg" alt="Dr. Soumitra Manna" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Soumitra Manna</div>
+      <div class="pos">PhD 2014&ndash;2020</div>
+      <div class="thesis">Photoelectron Spectra and Photoionization Dynamics of Small Molecules with Heavy Atoms</div>
+      <div class="now"><span class="lbl">Now</span> Postdoc, University of Insubria, Italy</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/sabyasachi.jpg" alt="Dr. Sabyasachi Roy Chowdhury" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Sabyasachi Roy Chowdhury</div>
+      <div class="pos">PhD 2014&ndash;2019</div>
+      <div class="thesis">Magnetic Anisotropy and Light-Induced Spin Crossover in Transition Metal Complexes</div>
+      <div class="now"><span class="lbl">Now</span> Assistant Professor, BITS Pilani, Dubai</div>
+    </div>
+  </div>
+  <!-- alumnus -->
+  <div class="alum">
+    <img class="ph" src="gppics/ddutta_pic.png" alt="Dr. Debodyuti Dutta" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Debodyuti Dutta</div>
+      <div class="pos">PhD 2012&ndash;2017</div>
+      <div class="thesis">Catalytic Action of Microbial Enzyme DapE and Rational Design of its Potential Inhibitors</div>
+      <div class="now"><span class="lbl">Now</span> Revenue Services, Govt. of West Bengal</div>
+    </div>
+  </div>
+  </div>
+
+  <h3>Postdoctoral researchers</h3>
+  <div class="grid2">
+  <div class="alum">
+    <img class="ph" src="gppics/karuna.png" alt="Dr. Karunamoy Rajak" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Karunamoy Rajak</div>
+      <div class="pos">Postdoc 2019&ndash;2022</div>
+      <div class="now"><span class="lbl">Now</span> Postdoc, IISER Kolkata</div>
+    </div>
+  </div>
+  <div class="alum">
+    <img class="ph" src="gppics/susanta_pic.jpg" alt="Dr. Susanta Ghanta" onerror="noPhoto(this)">
+    <div class="info">
+      <div class="nm">Dr. Susanta Ghanta</div>
+      <div class="pos">Postdoc 2014&ndash;2016</div>
+      <div class="now"><span class="lbl">Now</span> Assistant Professor, NIT Agartala</div>
+    </div>
+  </div>
+  </div>
+
+  <h3>MSc and BS project students</h3>
+  <table class="students">
+    <tbody>
+      <tr><td class="y">2024</td><td>Pritha Ghosh</td><td class="where"></td></tr>
+      <tr><td class="y">2024</td><td>Fakhruddin Hakim Hussain</td><td class="where"></td></tr>
+      <tr><td class="y">2023</td><td>Muskan Agrawal</td><td class="where">now at IISc Bangalore</td></tr>
+      <tr><td class="y">2023</td><td>Swarnali Sarkar</td><td class="where">now at IIT Kharagpur</td></tr>
+      <tr><td class="y">2023</td><td>D. Pavan Kalyan</td><td class="where"></td></tr>
+      <tr><td class="y">2022</td><td>Sourav Manna</td><td class="where">now at IIT Kharagpur</td></tr>
+      <tr><td class="y">2022</td><td>Saptarshi Saha</td><td class="where">now at University of Louisville, USA</td></tr>
+      <tr><td class="y">2022</td><td>Mohit Kumar</td><td class="where"></td></tr>
+      <tr><td class="y">2021</td><td>Soumyajit Karmakar</td><td class="where">now at IIT Kharagpur</td></tr>
+      <tr><td class="y">2021</td><td>Tamsuk Paul</td><td class="where">now at University of Chicago</td></tr>
+      <tr><td class="y">2020</td><td>Ankit K. Dubey</td><td class="where"></td></tr>
+      <tr><td class="y">2020</td><td>Mehul Vora</td><td class="where"></td></tr>
+      <tr><td class="y">2018</td><td>Kedarnath Bera</td><td class="where">now at ONGC, India</td></tr>
+      <tr><td class="y">2018</td><td>R. Sudhakar</td><td class="where"></td></tr>
+      <tr><td class="y">2017</td><td>Mrinal Arandhara</td><td class="where">now at IISc Bangalore</td></tr>
+      <tr><td class="y">2017</td><td>Suraj Verma</td><td class="where">now at IISER Bhopal</td></tr>
+      <tr><td class="y">2016</td><td>Sourav Dey</td><td class="where">now at IIT Bombay</td></tr>
+      <tr><td class="y">2016</td><td>Saransh Gour</td><td class="where"></td></tr>
+      <tr><td class="y">2015</td><td>Kajal Kumbhakar</td><td class="where">now at Bose Institute, Kolkata</td></tr>
+      <tr><td class="y">2015</td><td>Ayush Narsaria</td><td class="where">now at Vrije Universiteit Amsterdam</td></tr>
+      <tr><td class="y">2014</td><td>Kartikeya Pradhan</td><td class="where"></td></tr>
+      <tr><td class="y">2014</td><td>Sucheta Banerjee</td><td class="where">now at IIT Bombay</td></tr>
+      <tr><td class="y"></td><td>Arif Ahmed Begg</td><td class="where"></td></tr>
+      <tr><td class="y"></td><td>Ishita Mondal</td><td class="where"></td></tr>
+      <tr><td class="y"></td><td>Ambrish Tiwari</td><td class="where"></td></tr>
+      <tr><td class="y"></td><td>Sagar Ketul Nilesh</td><td class="where"></td></tr>
+      <tr><td class="y"></td><td>Bankar Bhavesh Suresh</td><td class="where"></td></tr>
+      <tr><td class="y"></td><td>Arindam Bose</td><td class="where"></td></tr>
+      <tr><td class="y"></td><td>Biman Giri</td><td class="where"></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Visitors and interns</h3>
+  <ul class="visitors">
+    <li><b>Dr. Bidisha Tah</b>, Short-term visitor from IACS Kolkata &middot; <span class="where">now at Ben-Gurion University, Israel</span></li>
+    <li><b>B. Manasa</b>, INSPIRE visitor from NISER Bhubaneswar</li>
+    <li><b>Ashwini Balaji</b>, Summer/winter intern, IIT Kharagpur</li>
+    <li><b>Deepjoy Rudra Sarma</b>, Summer/winter intern, IIT Kharagpur</li>
+    <li><b>Mandar V. Deshpande</b>, Academy summer visitor from IISER Bhopal</li>
+    <li><b>Palash Jyoti Boruah</b>, Academy summer visitor from NIT Meghalaya, Shillong</li>
+    <li><b>Radhika Varshney</b>, Summer visitor from NIT Rourkela</li>
+    <li><b>Ankita Pradhan</b>, Summer visitor from VSSUT Burla, Odisha</li>
+    <li><b>Siddharth Maji</b>, Summer visitor from BITS Mesra</li>
+    <li><b>Anupam Anand Ojha</b>, Summer visitor from IISER Thiruvananthapuram</li>
+    <li><b>Sourav Ghosh</b>, Summer visitor from IIT Guwahati</li>
+    <li><b>Souroprobho Chowdhury</b>, Summer visitor from Heritage Institute of Technology, Kolkata &middot; <span class="where">now at University of Manchester</span></li>
+    <li><b>Manisit Das</b>, Winter visitor from IIT Kharagpur &middot; <span class="where">now at University of North Carolina at Chapel Hill</span></li>
+    <li><b>Sayan Mukherjee</b>, Winter visitor from IIT Kanpur &middot; <span class="where">now at Texas A&amp;M University</span></li>
+  </ul>
+  <p class="top"><a href="#">Back to top</a></p>
+</section>
+
+</div>
+</body>
+</html>
