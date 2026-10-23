@@ -18,9 +18,6 @@
   .page { max-width: 960px; margin: 40px auto 60px; }
   h1 { font-size: 28px; margin: 0 0 6px; }
   .tagline { font-size: 18px; color: #333; margin: 0 0 14px; }
-  .stats { display: flex; flex-wrap: wrap; gap: 28px; margin: 18px 0 6px; }
-  .stat .n { display: block; font-size: 28px; font-weight: bold; color: #0b3d91; line-height: 1.1; }
-  .stat .l { font-size: 14px; color: #333; }
 
   .jump { margin: 18px 0 0; font-size: 15px; }
   .jump a { color: #0b3d91; text-decoration: none; font-weight: bold; margin-right: 18px; }
@@ -99,6 +96,8 @@
 
 <div class="page">
 
+<h1>Teaching</h1>
+<p class="tagline">Quantum chemistry, computational chemistry and quantum computing, from first-year chemistry to postgraduate courses.</p>
 
 <p class="jump">
   <a href="#current">This semester</a>
@@ -366,7 +365,6 @@
 
   const semesters = [...new Set(COURSES.map(c => c[0]))].sort((a, b) => semKey(b) - semKey(a));
   const current = semesters[0];
-  const firstYear = semesters[semesters.length - 1].split(' ')[1];
 
   // Group by course name
   const byCourse = {};
@@ -378,13 +376,6 @@
   Object.values(byCourse).forEach(d => d.sems.sort((a, b) => semKey(b) - semKey(a)));
   const courseNames = Object.keys(byCourse).sort((a, b) =>
     semKey(byCourse[b].sems[0]) - semKey(byCourse[a].sems[0]) || a.localeCompare(b));
-
-  // Stats
-  document.getElementById('statSince').textContent = 'Since ' + firstYear;
-  document.getElementById('statCourses').textContent = courseNames.length;
-  document.getElementById('statOfferings').textContent = COURSES.length;
-  document.getElementById('statVideos').textContent = document.querySelectorAll('#videos .card').length;
-  document.getElementById('statTools').textContent = document.querySelectorAll('#tools .card').length;
 
   // This semester
   document.getElementById('currentTitle').textContent = 'This semester: ' + current;
