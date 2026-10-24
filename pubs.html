@@ -1,72 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-	<title>Publications | QSM Lab | Sabyashachi Mishra | IIT Kharagpur</title>
-  	<meta name="description" content="Publications of Dr. Sabyashachi Mishra with co-authors Wolfgang Domcke, Amedeo Caflisch, Markus Meuwly, Sanjib Kumar Patra, Sungjune Park, Aninda Jiban Bhattacharyya, Subbalakshmi Jayanty" />
-  	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <link rel='stylesheet' type='text/css' href='menu_style.css' />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            margin: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        .sort-menu, .filter-menu {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .publication-list {
-            list-style-type: disc;
-            padding-left: 25px;
-        }
-        .view-menu {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .view-menu button {
-            font-size: 14px;
-            padding: 6px 14px;
-            margin: 0 4px;
-            cursor: pointer;
-            border: 1px solid #555;
-            background: #fff;
-        }
-        .view-menu button.active {
-            background: #333;
-            color: #fff;
-        }
-        #viewNote {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .qbadge {
-            display: inline-block;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 1px 6px;
-            margin-left: 6px;
-            border: 1px solid #222;
-            border-radius: 3px;
-            color: #222;
-            text-decoration: none;
-            vertical-align: middle;
-        }
-        .qbadge.q1 { background: #1b5e20; border-color: #1b5e20; color: #fff; }
-        .qbadge.q2 { background: #81c784; border-color: #4c9a50; color: #000; }
-        .qbadge.q3 { background: #dcf0dc; border-color: #8bbf8d; color: #000; }
-        .qbadge.q4 { background: #fff; border-color: #888; color: #000; }
-        .qnote { text-align: center; font-size: 12px; color: #444; margin-bottom: 10px; }
-        .publication-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publications | QSM Lab | Sabyashachi Mishra | IIT Kharagpur</title>
+<meta name="description" content="Publications of Dr. Sabyashachi Mishra with co-authors Wolfgang Domcke, Amedeo Caflisch, Markus Meuwly, Sanjib Kumar Patra, Sungjune Park, Aninda Jiban Bhattacharyya, Subbalakshmi Jayanty" />
+<link rel="stylesheet" type="text/css" href="menu_style.css" />
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #111;
+    background: #fff;
+    margin: 20px;
+  }
+  .page { max-width: 1000px; margin: 40px auto 60px; }
+  a { color: #0b3d91; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  .tagline { font-size: 17px; color: #333; margin: 0 0 18px; padding-bottom: 10px; border-bottom: 2px solid #0b3d91; }
+
+  .collage { margin: 0 0 22px; text-align: center; }
+  .collage img { max-width: 100%; height: auto; border-radius: 6px; }
+
+  /* view switch */
+  .view-menu { display: inline-flex; border: 1px solid #0b3d91; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+  .view-menu button {
+    font: inherit; font-size: 15px; font-weight: bold;
+    padding: 8px 18px; cursor: pointer; border: none;
+    background: #fff; color: #0b3d91;
+  }
+  .view-menu button + button { border-left: 1px solid #0b3d91; }
+  .view-menu button.active { background: #0b3d91; color: #fff; }
+  #viewNote { font-size: 15px; color: #333; margin: 2px 0 16px; }
+
+  /* sort + filters panel */
+  .sort-menu { display: none; }   /* only one sort option (Year); kept in the page for the script */
+  .filter-menu {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px 14px;
+    padding: 16px 18px;
+    border: 1px solid #c9d3e3;
+    border-top: 4px solid #0b3d91;
+    border-radius: 4px;
+    background: #f7f9fc;
+    margin-bottom: 14px;
+  }
+  .filter-menu > em { grid-column: 1 / -1; font-style: normal; font-size: 13px; font-weight: bold;
+                      text-transform: uppercase; letter-spacing: 0.05em; color: #333; }
+  .field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .field label { font-size: 13.5px; font-weight: bold; color: #333; }
+  .field select { font: inherit; font-size: 14.5px; padding: 5px 6px; border: 1px solid #b5c1d6; border-radius: 3px; background: #fff; width: 100%; min-width: 0; }
+  .field.range .pair { display: flex; gap: 6px; }
+  .field.wide { grid-column: span 2; }
+  .actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .actions button {
+    font: inherit; font-size: 14.5px; font-weight: bold; cursor: pointer;
+    padding: 6px 14px; border: 1px solid #0b3d91; border-radius: 3px; background: #fff; color: #0b3d91;
+  }
+  .actions button:hover { background: #0b3d91; color: #fff; }
+
+  .below { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px 20px; margin: 0 0 10px; font-size: 14.5px; }
+  .below a { font-weight: bold; text-decoration: none; }
+  .below a:hover { text-decoration: underline; }
+  .qnote { font-size: 13px; color: #444; }
+
+  /* list */
+  .publication-list { list-style: none; padding: 0; margin: 0; border-top: 2px solid #0b3d91; }
+  .publication-item { position: relative; padding: 10px 12px 12px 32px; border-bottom: 1px solid #e3e8f0; font-size: 15.5px; line-height: 1.5; }
+  .publication-item:nth-child(even) { background: #eef2f8; }   /* alternate shading */
+  .publication-item:hover { background: #e2e9f4; }
+  .publication-item::before { content: "\2022"; position: absolute; left: 14px; top: 9px; font-size: 18px; color: #0b3d91; }   /* bullet */
+  .publication-item strong { font-size: 16px; }
+  .publication-item em { color: #333; }
+
+  /* quartile badges */
+  .qbadge {
+    display: inline-block; font-size: 12px; font-weight: bold;
+    padding: 1px 6px; margin-left: 6px;
+    border: 1px solid #222; border-radius: 3px; color: #222;
+    text-decoration: none; vertical-align: middle;
+  }
+  .qbadge.q1 { background: #1b5e20; border-color: #1b5e20; color: #fff; }
+  .qbadge.q2 { background: #81c784; border-color: #4c9a50; color: #000; }
+  .qbadge.q3 { background: #dcf0dc; border-color: #8bbf8d; color: #000; }
+  .qbadge.q4 { background: #fff; border-color: #888; color: #000; }
+
+  @media (max-width: 860px) { .filter-menu { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) {
+    body { margin: 10px; font-size: 15px; }
+    .filter-menu { grid-template-columns: 1fr; }
+    .field.wide { grid-column: auto; }
+    .view-menu { display: flex; }
+    .view-menu button { flex: 1; padding: 8px 8px; }
+  }
+</style>
 </head>
 <body>
 <ul class="menu red">
@@ -78,11 +107,12 @@
 	<li><a href="misc.html" title="">Miscellaneous</a></li>
 </ul>
 
+<div class="page">
 
-<h1></h1>
-<BR>
-<IMG SRC="pub_pics/Cover_Collage_3.png" NAME="" ALT="" ALIGN=MIDDLE WIDTH=650  ><BR>
-<BR>
+<h1>Publications</h1>
+<p class="tagline">Journal articles, book chapters and conference papers of the QSM Lab.</p>
+
+<div class="collage"><img src="pub_pics/Cover_Collage_3.png" alt="Journal covers featuring QSM Lab papers" onerror="this.parentNode.style.display='none'"></div>
 
 <div class="view-menu">
     <button id="theoryBtn" class="active" onclick="setView('theory')">Selected Publications</button>
@@ -98,69 +128,73 @@
 </div>
 
 <div class="filter-menu">
-     <em>Filter by:</em> <BR>
-    <label for="authorFilter">Author: </label>
-    <select id="authorFilter" onchange="filterPublications()">
-        <option value="all">All</option>
-        <!-- Author options will be dynamically populated -->
-    </select>
-
-    <label for="yearFilter">Year: </label>
-    <select id="yearFilter" onchange="filterPublications()">
-        <option value="all">All</option>
-        <!-- Year options will be dynamically populated -->
-    </select>
-
-    <label for="yearFilterStart">Year Range: </label>
-    <select id="yearFilterStart" onchange="filterPublications()">
-        <option value="all">Start Year</option>
-        <!-- Start Year options will be dynamically populated -->
-    </select>
-
-    <select id="yearFilterEnd" onchange="filterPublications()">
-        <option value="all">End Year</option>
-        <!-- End Year options will be dynamically populated -->
-    </select>
-<BR>
-    <label for="journalFilter">Journal: </label>
-    <select id="journalFilter" onchange="filterPublications()">
-        <option value="all">All</option>
-        <!-- Journal options will be dynamically populated -->
-    </select>
-
-    <label for="publisherFilter">Publisher: </label>
-    <select id="publisherFilter" onchange="filterPublications()">
-        <option value="all">All</option>
-        <!-- Publisher options will be dynamically populated -->
-    </select>
-
-    <label for="quartileFilter">Quartile: </label>
-    <select id="quartileFilter" onchange="filterPublications()">
-        <option value="all">All</option>
-        <option value="Q1Q2">Q1 and Q2</option>
-    </select>
-<BR>
-    <label for="researchFieldFilter">Research Area: </label>
-    <select id="researchFieldFilter" onchange="filterPublications()">
-        <option value="all">All</option>
-        <!-- Research Field options will be dynamically populated -->
-    </select>
-<BR>
-    <button onclick="clearFilters()">Clear All Filters</button>
-<button id="downloadCsvBtn">Download CSV</button>
-<button onclick="generateBibTeX()">Download BibTeX</button>
-
-
+    <em>Filter by</em>
+    <div class="field wide">
+        <label for="authorFilter">Author</label>
+        <select id="authorFilter" onchange="filterPublications()">
+            <option value="all">All</option>
+        </select>
+    </div>
+    <div class="field">
+        <label for="yearFilter">Year</label>
+        <select id="yearFilter" onchange="filterPublications()">
+            <option value="all">All</option>
+        </select>
+    </div>
+    <div class="field range">
+        <label for="yearFilterStart">Year range</label>
+        <div class="pair">
+            <select id="yearFilterStart" onchange="filterPublications()">
+                <option value="all">From</option>
+            </select>
+            <select id="yearFilterEnd" onchange="filterPublications()" aria-label="End year">
+                <option value="all">To</option>
+            </select>
+        </div>
+    </div>
+    <div class="field wide">
+        <label for="journalFilter">Journal</label>
+        <select id="journalFilter" onchange="filterPublications()">
+            <option value="all">All</option>
+        </select>
+    </div>
+    <div class="field">
+        <label for="publisherFilter">Publisher</label>
+        <select id="publisherFilter" onchange="filterPublications()">
+            <option value="all">All</option>
+        </select>
+    </div>
+    <div class="field">
+        <label for="quartileFilter">Quartile</label>
+        <select id="quartileFilter" onchange="filterPublications()">
+            <option value="all">All</option>
+            <option value="Q1Q2">Q1 and Q2</option>
+        </select>
+    </div>
+    <div class="field wide">
+        <label for="researchFieldFilter">Research area</label>
+        <select id="researchFieldFilter" onchange="filterPublications()">
+            <option value="all">All</option>
+        </select>
+    </div>
+    <div class="actions">
+        <button onclick="clearFilters()">Clear all filters</button>
+        <button id="downloadCsvBtn">Download CSV</button>
+        <button onclick="generateBibTeX()">Download BibTeX</button>
+    </div>
 </div>
 
-<a href="independent_pubs.html" title="" >Independent publications of group members</a>
-
-
-<div class="qnote">Quartile = SCImago Journal Rank (SJR 2025) quartile of the journal across its subject categories (badge linked to its SCImago page).</div>
+<div class="below">
+    <a href="independent_pubs.html" title="">Independent publications of group members &rarr;</a>
+    <span class="qnote">Quartile = SCImago Journal Rank (SJR 2025) quartile of the journal across its subject categories (badge linked to its SCImago page).</span>
+</div>
 
 <ul id="publicationsList" class="publication-list">
     <!-- Publication items will go here -->
 </ul>
+
+</div>
+
 
 
 
