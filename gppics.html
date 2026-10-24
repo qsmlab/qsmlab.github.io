@@ -1,101 +1,140 @@
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
-<link rel='stylesheet' type='text/css' href='menu_style.css' />
-<title></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group Pictures | QSM Lab | IIT Kharagpur</title>
+<meta name="description" content="Pictures of the Quantum Simulation of Molecules (QSM) Lab at IIT Kharagpur: group photos, celebrations and conferences." />
+<link rel="stylesheet" type="text/css" href="menu_style.css" />
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #111;
+    background: #fff;
+    margin: 20px;
+  }
+  .page { max-width: 1100px; margin: 40px auto 60px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  .tagline { font-size: 17px; color: #333; margin: 0 0 22px; padding-bottom: 10px; border-bottom: 2px solid #0b3d91; }
 
+  /* gallery: photos keep their own shape, nothing is cropped */
+  .gallery { columns: 3 300px; column-gap: 14px; }
+  .photo {
+    break-inside: avoid; margin: 0 0 14px; display: block; width: 100%;
+    padding: 0; border: 1px solid #c9d3e3; border-radius: 4px; background: #f7f9fc;
+    cursor: zoom-in; overflow: hidden;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .photo:hover, .photo:focus-visible { box-shadow: 0 6px 16px rgba(11,61,145,0.18); transform: translateY(-2px); outline: none; }
+  .photo img { display: block; width: 100%; height: auto; }
+  .photo.missing { display: none; }
+
+  /* full-screen viewer */
+  .viewer { position: fixed; inset: 0; z-index: 500; background: rgba(8, 18, 40, 0.94);
+            display: flex; align-items: center; justify-content: center; }
+  .viewer[hidden] { display: none; }
+  .viewer img { max-width: 92vw; max-height: 86vh; border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+  .viewer button { position: absolute; border: none; background: rgba(255,255,255,0.12); color: #fff;
+                   font-size: 28px; width: 52px; height: 52px; border-radius: 50%; cursor: pointer; }
+  .viewer button:hover { background: rgba(255,255,255,0.25); }
+  .viewer .prev { left: 18px; top: 50%; transform: translateY(-50%); }
+  .viewer .next { right: 18px; top: 50%; transform: translateY(-50%); }
+  .viewer .close { right: 18px; top: 18px; font-size: 26px; }
+  .viewer .count { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; color: #dfe6f3; font-size: 14px; }
+
+  @media (max-width: 640px) {
+    body { margin: 10px; font-size: 15px; }
+    .gallery { columns: 1; }
+    .viewer button { width: 44px; height: 44px; font-size: 24px; }
+    .viewer .prev { left: 6px; } .viewer .next { right: 6px; }
+  }
+</style>
 </head>
 <body>
 <ul class="menu red">
-        <li><a href="index.html" title="">Home</a></li>
-     <li><a href="group.html" title="">Group</a></li>
-        <li><a href="pubs.html" title="" >Publications</a></li>
-        <li><a href="research.html" title="">Research</a></li>
-        <li><a href="teaching.html" title="">Teaching</a></li>
-        <li><a href="misc.html" title="">Miscellaneous</a></li>
+  <li><a href="index.html" title="">Home</a></li>
+  <li><a href="group.html" title="">Group</a></li>
+  <li><a href="pubs.html" title="">Publications</a></li>
+  <li><a href="research.html" title="">Research</a></li>
+  <li><a href="teaching.html" title="">Teaching</a></li>
+  <li class="current"><a href="misc.html" title="">Miscellaneous</a></li>
 </ul>
-<CENTER>
-<TABLE WIDTH=80% BORDER=0 CELLPADDING=4 CELLSPACING=3></TABLE>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 10;
-            padding: 10;
-        }
 
-        .album-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 20px;
-        }
+<div class="page">
 
-         .album-item {
-            flex: 1 1 calc(35% - 20px); /* Adjust the percentage to fit the number of pictures per row */
-            box-sizing: border-box;
-            margin-bottom: 20px;
-            border: 2px solid #ccc; /* Simple frame around each image */
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+<h1>Group Pictures</h1>
+<p class="tagline">Moments from the QSM Lab. Click a photo to see it full size.</p>
 
-        .album-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-    </style>
+<!-- To add a photo: copy one <button class="photo"> line and change the file name (and the alt text, which describes the photo). -->
+<div class="gallery" id="gallery">
+  <button class="photo"><img src="gppics/gppic_22_3.jpg" alt="QSM Lab group photo" loading="lazy"></button>
+  <button class="photo"><img src="gppics/IMG-20200205-WA0008.jpg" alt="QSM Lab, February 2020" loading="lazy"></button>
+  <button class="photo"><img src="gppics/IMG-20200206-WA0000.jpg" alt="QSM Lab, February 2020" loading="lazy"></button>
+  <button class="photo"><img src="gppics/smgp_2019.JPG" alt="QSM Lab, 2019" loading="lazy"></button>
+  <button class="photo"><img src="gppics/smgp_2019_2.jpg" alt="QSM Lab, 2019" loading="lazy"></button>
+  <button class="photo"><img src="gppics/tcs_gp.jpg" alt="QSM Lab at the Theoretical Chemistry Symposium" loading="lazy"></button>
+  <button class="photo"><img src="gppics/gppic7.jpg" alt="QSM Lab group photo" loading="lazy"></button>
+  <button class="photo"><img src="gppics/smgp.JPG" alt="QSM Lab group photo" loading="lazy"></button>
+  <button class="photo"><img src="gppics/gppic3.jpg" alt="QSM Lab group photo" loading="lazy"></button>
+  <button class="photo"><img src="gppics/gppic6.jpg" alt="QSM Lab group photo" loading="lazy"></button>
+  <button class="photo"><img src="gppics/gppic5.jpg" alt="QSM Lab group photo" loading="lazy"></button>
+  <button class="photo"><img src="gppics/gppic4.jpg" alt="QSM Lab group photo" loading="lazy"></button>
+  <button class="photo"><img src="gppics/gppic1.jpg" alt="QSM Lab group photo" loading="lazy"></button>
+</div>
 
-<body>
-<center>
-    <div class="album-container">
-        <div class="album-item">
-            <img src="gppics/gppic_22_3.jpg" alt="Image 1">
-        </div>
-        <div class="album-item">
-            <img src="gppics/IMG-20200205-WA0008.jpg" alt="Image 2">
-        </div>
-        <div class="album-item">
-            <img src="gppics/IMG-20200206-WA0000.jpg" alt="Image 3">
-        </div>
-        <div class="album-item">
-            <img src="gppics/smgp_2019.JPG" alt="Image 4">
-        </div>
-        <div class="album-item">
-            <img src="gppics/smgp_2019_2.jpg" alt="Image 4">
-        </div>
-        <div class="album-item">
-            <img src="gppics/tcs_gp.jpg" alt="Image 4">
-        </div>
-        <div class="album-item">
-            <IMG SRC="gppics/gppic7.jpg" NAME="" ALT="" >
-        </div>
-        <div class="album-item">
-            <IMG SRC="gppics/smgp.JPG"   NAME="" ALT="" >
-        </div>
-        <div class="album-item">
-            <IMG SRC="gppics/gppic3.jpg" NAME="" ALT="" >
-        </div>
-        <div class="album-item">
-            <IMG SRC="gppics/gppic6.jpg" NAME="" ALT="" >
-        </div>
-        <div class="album-item">
-            <IMG SRC="gppics/gppic5.jpg" NAME="" ALT="" >
-        </div>
-        <div class="album-item">
-            <IMG SRC="gppics/gppic4.jpg" NAME="" ALT="" >
-        </div>
-        <div class="album-item">
-            <IMG SRC="gppics/gppic1.jpg" NAME="" ALT="" >
-        </div>
-    </div>
+</div>
 
-</CENTER>
+<div class="viewer" id="viewer" hidden role="dialog" aria-label="Photo viewer">
+  <button class="close" aria-label="Close">&times;</button>
+  <button class="prev" aria-label="Previous photo">&#8249;</button>
+  <img id="viewerImg" alt="">
+  <button class="next" aria-label="Next photo">&#8250;</button>
+  <div class="count" id="viewerCount"></div>
+</div>
 
+<script>
+(function () {
+  var tiles = [].slice.call(document.querySelectorAll('#gallery .photo'));
+  // hide any photo whose file is missing
+  tiles.forEach(function (t) {
+    var img = t.querySelector('img');
+    img.addEventListener('error', function () { t.classList.add('missing'); });
+  });
 
-</BODY>
-</HTML>
+  var viewer = document.getElementById('viewer'), vImg = document.getElementById('viewerImg'),
+      vCount = document.getElementById('viewerCount'), cur = 0, lastFocus = null;
+  function visible() { return tiles.filter(function (t) { return !t.classList.contains('missing'); }); }
+  function show(i) {
+    var v = visible(); if (!v.length) return;
+    cur = (i + v.length) % v.length;
+    var img = v[cur].querySelector('img');
+    vImg.src = img.src; vImg.alt = img.alt;
+    vCount.textContent = (cur + 1) + ' / ' + v.length;
+  }
+  function open(t) { lastFocus = t; show(visible().indexOf(t)); viewer.hidden = false; document.body.style.overflow = 'hidden'; viewer.querySelector('.close').focus(); }
+  function close() { viewer.hidden = true; document.body.style.overflow = ''; if (lastFocus) lastFocus.focus(); }
 
+  tiles.forEach(function (t) { t.addEventListener('click', function () { open(t); }); });
+  viewer.querySelector('.close').addEventListener('click', close);
+  viewer.querySelector('.prev').addEventListener('click', function () { show(cur - 1); });
+  viewer.querySelector('.next').addEventListener('click', function () { show(cur + 1); });
+  viewer.addEventListener('click', function (e) { if (e.target === viewer) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (viewer.hidden) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') show(cur - 1);
+    else if (e.key === 'ArrowRight') show(cur + 1);
+  });
+  // swipe on phones
+  var x0 = null;
+  viewer.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  viewer.addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>
