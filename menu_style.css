@@ -1,102 +1,104 @@
+/* =====================================================================
+   QSM Lab site menu
+   Usage on every page:
+     <ul class="menu red"> ... <li class="current"><a href="...">...</a></li> ... </ul>
+   ("red" is kept only so existing pages keep working; it now uses the site's navy/blue.)
+   ===================================================================== */
+
 :root {
-  --menu-bg: #0f172a;        /* dark slate */
-  --menu-accent: #3b82f6;    /* blue */
-  --menu-text: #e5e7eb;      /* light gray */
+  --menu-bg: #0b1f44;          /* deep navy, matches page headings (#0b3d91) */
+  --menu-accent: #2f6fd6;      /* bright blue for the current page */
+  --menu-accent-2: #0b3d91;    /* site navy */
+  --menu-text: #e5e9f2;
   --menu-text-active: #ffffff;
-  --menu-hover-bg: rgba(59, 130, 246, 0.12);
+  --menu-hover-bg: rgba(255, 255, 255, 0.10);
+  --menu-height: 3.25rem;
 }
 
-/* container */
+/* no gap above the bar; keep anchor jumps clear of the sticky menu */
+html { scroll-padding-top: calc(var(--menu-height) + 0.75rem); overflow-x: clip; }
+body { margin-top: 0 !important; }   /* pages set their own body margin; the bar must touch the top */
+
+/* container: full width whatever the page's body margin is */
 ul.menu {
+  box-sizing: border-box;
   list-style: none;
-  margin: 0;
-  padding: 0 1.5rem;
-  width: 100%;
-  height: 3.25rem;
-  display: flex;                     /* modern layout */
+  margin: 0 calc(50% - 50vw);        /* full-bleed even inside a body margin */
+  padding: 0 max(1.5rem, calc(50vw - 500px));  /* align links with page content on wide screens */
+  min-height: var(--menu-height);
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   background: var(--menu-bg);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.5);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, Helvetica, Arial, sans-serif;
+  border-bottom: 3px solid var(--menu-accent-2);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 0.95rem;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 2px 6px rgba(11, 31, 68, 0.25);
+  position: sticky;                  /* stays visible while scrolling */
+  top: 0;
+  z-index: 100;
 }
 
-/* remove old float layout */
-ul.menu li {
-  margin: 0;
-  padding: 0;
-}
+ul.menu li { margin: 0; padding: 0; float: none; }
 
 /* links */
 ul.menu li a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.35rem 0.9rem;
+  padding: 0 0.95rem;
   height: 2.3rem;
-  border-radius: 999px;              /* pill shape */
+  border-radius: 999px;
   color: var(--menu-text);
   text-decoration: none;
   font-weight: 500;
   letter-spacing: 0.01em;
-  transition:
-    background-color 150ms ease-out,
-    color 150ms ease-out,
-    box-shadow 150ms ease-out,
-    transform 120ms ease-out;
+  white-space: nowrap;
+  transition: background-color 150ms ease-out, color 150ms ease-out, box-shadow 150ms ease-out;
 }
 
-/* hover / focus */
-ul.menu li a:hover,
-ul.menu li a:focus-visible {
+ul.menu li a:hover {
   background-color: var(--menu-hover-bg);
   color: var(--menu-text-active);
-  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.5);
-  outline: none;
 }
 
-/* current / active item
-   (add class="current" to <li> or to <a>, both supported) */
+ul.menu li a:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  color: var(--menu-text-active);
+}
+
+/* current page: add class="current" to the <li> (or to the <a>) */
 ul.menu li.current > a,
 ul.menu li > a.current {
-  background: linear-gradient(135deg, var(--menu-accent), #2563eb);
+  background: var(--menu-accent);
   color: var(--menu-text-active);
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.45);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(47, 111, 214, 0.45);
 }
 
-/* optional: compact “red theme” version */
-ul.menu.red {
-  --menu-bg: #111827;
-  --menu-accent: #ef4444;
-}
+/* legacy class name used by all pages: same colours as above */
+ul.menu.red { --menu-accent: #2f6fd6; }
 
-ul.menu.red li.current > a,
-ul.menu.red li > a.current {
-  background: linear-gradient(135deg, var(--menu-accent), #b91c1c);
-}
-
-/* small screens */
+/* small screens: tidy 3-column grid of buttons instead of a ragged wrap */
 @media (max-width: 640px) {
   ul.menu {
-    flex-wrap: wrap;
-    height: auto;
-    padding-block: 0.4rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+    padding: 0.4rem 0.6rem;
+    position: static;                /* do not take space while scrolling on phones */
+    font-size: 0.9rem;
   }
-
-  ul.menu li {
-    flex: 1 1 auto;
-  }
-
-  ul.menu li a {
-    width: 100%;
-    justify-content: center;
-  }
+  ul.menu li a { width: 100%; box-sizing: border-box; padding: 0 0.4rem; height: 2.2rem; }
 }
 
-/* optional tooltip style replacing #pup */
+@media (prefers-reduced-motion: reduce) {
+  ul.menu li a { transition: none; }
+}
+
+/* tooltip style (used by older pages via #pup) */
 #pup {
   position: absolute;
   z-index: 200;
@@ -105,10 +107,9 @@ ul.menu.red li > a.current {
   margin-top: 5px;
   max-width: 260px;
   border-radius: 0.45rem;
-  border: 1px solid rgba(15, 23, 42, 0.8);
-  background: rgba(15, 23, 42, 0.97);
-  color: #e5e7eb;
+  background: rgba(11, 31, 68, 0.97);
+  color: #e5e9f2;
   font-size: 0.8rem;
   line-height: 1.35;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.55);
+  box-shadow: 0 8px 20px rgba(11, 31, 68, 0.45);
 }
