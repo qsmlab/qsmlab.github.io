@@ -66,6 +66,35 @@
   .below a:hover { text-decoration: underline; }
   .qnote { font-size: 13px; color: #444; }
 
+  /* search boxes with suggestions (author, journal) */
+  .ac { position: relative; }
+  .ac input { box-sizing: border-box; width: 100%; font: inherit; font-size: 14.5px; padding: 5px 30px 5px 8px;
+              border: 1px solid #b5c1d6; border-radius: 3px; background: #fff; }
+  .ac input:focus { outline: 2px solid #2f6fd6; outline-offset: 0; border-color: #2f6fd6; }
+  .ac input.chosen { font-weight: bold; color: #0b3d91; }
+  .ac-clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); border: none; background: none;
+              font-size: 18px; line-height: 1; color: #555; cursor: pointer; padding: 2px 6px; }
+  .ac-list { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 2px); margin: 0; padding: 4px 0;
+             list-style: none; max-height: 260px; overflow-y: auto; background: #fff;
+             border: 1px solid #b5c1d6; border-radius: 3px; box-shadow: 0 6px 16px rgba(11,31,68,0.18); }
+  .ac-list[hidden] { display: none !important; }
+  .ac-list li { padding: 5px 10px; font-size: 14.5px; cursor: pointer; }
+  .ac-list li mark { background: none; color: #0b3d91; font-weight: bold; }
+  .ac-list li.active, .ac-list li:hover { background: #e2e9f4; }
+  .ac-list li.none { color: #666; cursor: default; background: none; }
+  .ac.browse input { padding-right: 52px; }
+  .ac.browse .ac-clear { right: 26px; }
+  .ac-toggle { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); border: none; background: none;
+               font-size: 13px; color: #0b3d91; cursor: pointer; padding: 2px 6px; }
+  .ac.browse .ac-list { width: min(720px, calc(100vw - 60px)); right: auto; max-height: 340px;
+                        display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 6px; padding: 6px; }
+  .ac.browse .ac-list li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 3px; }
+  .ac.browse .ac-list li.none, .ac.browse .ac-list li.head { grid-column: 1 / -1; }
+  .ac-list li.head { font-size: 12.5px; font-weight: bold; color: #555; cursor: default; background: none; text-transform: uppercase; letter-spacing: 0.04em; }
+  .ac.browse.journals .ac-list { grid-template-columns: repeat(2, 1fr); }
+  .ac.browse.journals .ac-list li { white-space: normal; }
+  @media (max-width: 560px) { .ac.browse .ac-list { grid-template-columns: repeat(2, 1fr); width: auto; right: 0; } }
+
   /* list */
   .publication-list { list-style: none; padding: 0; margin: 0; border-top: 2px solid #0b3d91; }
   .publication-item { position: relative; padding: 10px 12px 12px 32px; border-bottom: 1px solid #e3e8f0; font-size: 15.5px; line-height: 1.5; }
@@ -130,8 +159,15 @@
 <div class="filter-menu">
     <em>Filter by</em>
     <div class="field wide">
-        <label for="authorFilter">Author</label>
-        <select id="authorFilter" onchange="filterPublications()">
+        <label for="authorSearch">Author</label>
+        <div class="ac browse" data-select="authorFilter">
+            <input type="text" id="authorSearch" placeholder="Click to see all authors, or type a name" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="authorList">
+            <button type="button" class="ac-clear" aria-label="Clear author" hidden>&times;</button>
+            <button type="button" class="ac-toggle" aria-label="Show all authors" tabindex="-1">&#9662;</button>
+            <ul class="ac-list" id="authorList" role="listbox" hidden></ul>
+        </div>
+        <!-- hidden original dropdown: still used by the filter script -->
+        <select id="authorFilter" onchange="filterPublications()" hidden>
             <option value="all">All</option>
         </select>
     </div>
@@ -153,8 +189,15 @@
         </div>
     </div>
     <div class="field wide">
-        <label for="journalFilter">Journal</label>
-        <select id="journalFilter" onchange="filterPublications()">
+        <label for="journalSearch">Journal</label>
+        <div class="ac browse journals" data-select="journalFilter">
+            <input type="text" id="journalSearch" placeholder="Click to see all journals, or type a name" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="journalList">
+            <button type="button" class="ac-clear" aria-label="Clear journal" hidden>&times;</button>
+            <button type="button" class="ac-toggle" aria-label="Show all journals" tabindex="-1">&#9662;</button>
+            <ul class="ac-list" id="journalList" role="listbox" hidden></ul>
+        </div>
+        <!-- hidden original dropdown: still used by the filter script -->
+        <select id="journalFilter" onchange="filterPublications()" hidden>
             <option value="all">All</option>
         </select>
     </div>
@@ -2573,6 +2616,122 @@
     populateFilterOptions();
     sortPublications();
 
+</script>
+
+
+<script>
+/* Search boxes with live suggestions for Author and Journal.
+   They set the hidden dropdowns (authorFilter, journalFilter) and call the existing filterPublications(). */
+(function () {
+  function setup(box) {
+    var select = document.getElementById(box.getAttribute('data-select'));
+    var input = box.querySelector('input'), list = box.querySelector('.ac-list'), clearBtn = box.querySelector('.ac-clear');
+    var shown = [], active = -1;
+
+    function options() {   // current choices, taken from the hidden dropdown (follows Selected/Complete view)
+      return Array.prototype.slice.call(select.options).map(function (o) { return o.value; }).filter(function (v) { return v !== 'all'; });
+    }
+    function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+    function norm(t) { return String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[.\s]+/g, ' ').trim(); }
+
+    var browse = box.classList.contains('browse');
+    function surname(v) { var w = String(v).trim().split(/\s+/); return w[w.length - 1]; }
+    function bySurname(a, b) { return surname(a).localeCompare(surname(b)) || a.localeCompare(b); }
+
+    function render() {
+      var q = norm(input.value);
+      if (!q && !browse) { close(); return; }
+      var all = options();
+      var isJournal = box.classList.contains('journals');
+      if (browse) all.sort(isJournal ? function (a, b) { return a.localeCompare(b); } : bySurname);
+      if (!q) {                                  // author box, nothing typed: show every author
+        shown = all; active = -1;
+        list.innerHTML = '<li class="head">' + all.length + (isJournal ? ' journals, A&ndash;Z' : ' authors, sorted by surname') + '</li>' +
+          all.map(function (v, k) { return '<li role="option" data-k="' + k + '">' + esc(v) + '</li>'; }).join('');
+        list.hidden = false; input.setAttribute('aria-expanded', 'true');
+        return;
+      }
+      var prefix = [], word = [], contains = [];   // name starts with text, then a word starts with it, then anywhere
+      all.forEach(function (v) {
+        var n = norm(v), i = n.indexOf(q);
+        if (i === 0) prefix.push(v); else if (n.indexOf(' ' + q) > -1) word.push(v); else if (i > -1) contains.push(v);
+      });
+      shown = prefix.concat(word, contains).slice(0, browse ? 300 : 50);
+      active = shown.length ? 0 : -1;
+      if (!shown.length) {
+        list.innerHTML = '<li class="none">No match</li>';
+      } else {
+        list.innerHTML = shown.map(function (v, k) {
+          var low = v.toLowerCase(), raw = input.value.trim().toLowerCase(), j = low.indexOf(raw);
+          var label = j > -1 ? esc(v.slice(0, j)) + '<mark>' + esc(v.slice(j, j + raw.length)) + '</mark>' + esc(v.slice(j + raw.length)) : esc(v);
+          return '<li role="option" data-k="' + k + '"' + (k === active ? ' class="active"' : '') + '>' + label + '</li>';
+        }).join('');
+      }
+      list.hidden = false; input.setAttribute('aria-expanded', 'true');
+    }
+    function close() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); }
+    function choose(v) {
+      select.value = v; input.value = v; input.classList.add('chosen'); clearBtn.hidden = false;
+      close(); filterPublications();
+    }
+    function reset(apply) {
+      input.value = ''; input.classList.remove('chosen'); clearBtn.hidden = true; close();
+      if (select.value !== 'all') { select.value = 'all'; if (apply) filterPublications(); }
+    }
+    function highlight() {
+      Array.prototype.forEach.call(list.children, function (li, k) { li.classList.toggle('active', k === active); });
+      if (list.children[active]) list.children[active].scrollIntoView({ block: 'nearest' });
+    }
+
+    input.addEventListener('input', function () {
+      input.classList.remove('chosen');
+      clearBtn.hidden = !input.value;
+      if (!input.value && select.value !== 'all') { select.value = 'all'; filterPublications(); }
+      render();
+    });
+    input.addEventListener('focus', function () {
+      if (browse && input.classList.contains('chosen')) { input.select(); return; }
+      if (browse || (input.value && !input.classList.contains('chosen'))) render();
+    });
+    input.addEventListener('click', function () { if (browse && list.hidden) render(); });
+    var toggle = box.querySelector('.ac-toggle');
+    if (toggle) toggle.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+      if (list.hidden) { if (input.classList.contains('chosen')) { input.value = ''; input.classList.remove('chosen'); } render(); input.focus(); }
+      else close();
+    });
+    input.addEventListener('keydown', function (e) {
+      if (list.hidden && (e.key === 'ArrowDown')) { render(); return; }
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (shown.length) { active = (active + 1) % shown.length; highlight(); } }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); if (shown.length) { active = (active - 1 + shown.length) % shown.length; highlight(); } }
+      else if (e.key === 'Enter') { e.preventDefault(); if (active > -1 && shown[active]) choose(shown[active]); }
+      else if (e.key === 'Escape') { close(); }
+    });
+    list.addEventListener('mousedown', function (e) {           // mousedown so it fires before the input loses focus
+      var li = e.target.closest('li[data-k]'); if (!li) return;
+      e.preventDefault(); choose(shown[+li.getAttribute('data-k')]);
+    });
+    input.addEventListener('blur', function () {
+      setTimeout(close, 100);
+      // typed text that is not a chosen name: keep the last real selection visible
+      if (!input.classList.contains('chosen')) {
+        if (select.value !== 'all') { input.value = select.value; input.classList.add('chosen'); clearBtn.hidden = false; }
+      }
+    });
+    clearBtn.addEventListener('click', function () { reset(true); input.focus(); });
+
+    box._reset = function () { reset(false); };
+  }
+
+  var boxes = document.querySelectorAll('.ac');
+  Array.prototype.forEach.call(boxes, setup);
+  function resetBoxes() { Array.prototype.forEach.call(boxes, function (b) { b._reset(); }); }
+
+  // keep the search boxes in step with "Clear all filters" and the Selected/Complete switch
+  var origClear = window.clearFilters, origView = window.setView;
+  window.clearFilters = function () { resetBoxes(); origClear(); };
+  window.setView = function (v) { resetBoxes(); origView(v); };
+})();
 </script>
 
 </body>
