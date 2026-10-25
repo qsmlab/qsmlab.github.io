@@ -1,1 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gaussian Plume Plotter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: control column beside a large chart; stacks on phones. */
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --fg:#141a24; --muted:#5a6475; --line:#d9dee6;
+  --accent:#1f5fbf; --pin1:#c2410c; --pin2:#0f766e; --pin3:#7c3aed; --std:#8a94a6;
+  --sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f141b; --panel:#161d27; --fg:#e8edf4; --muted:#9aa5b6; --line:#2a3443;
+  --accent:#6aa5ff; --pin1:#fb923c; --pin2:#2dd4bf; --pin3:#c4b5fd; --std:#7b879a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141b; --panel:#161d27; --fg:#e8edf4; --muted:#9aa5b6; --line:#2a3443;
+  --accent:#6aa5ff; --pin1:#fb923c; --pin2:#2dd4bf; --pin3:#c4b5fd; --std:#7b879a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:1.6rem;margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 18px;max-width:70ch}
+.eq{font-family:var(--mono);font-size:.86rem;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;margin:0 0 18px;white-space:pre}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.ctl{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.ctl label{font-weight:600;font-size:.95rem}
+.ctl output{font-family:var(--mono);font-size:.9rem;font-variant-numeric:tabular-nums}
+.ctl input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--accent)}
+.ctl .hint{grid-column:1/-1;color:var(--muted);font-size:.82rem}
+select,button{font:inherit;font-size:.95rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 10px}
+button{cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{min-width:38px;font-family:var(--mono)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--panel);border-color:var(--accent)}
+.chartbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+canvas{width:100%;height:440px;display:block}
+@media (max-width:820px){canvas{height:340px}}
+.read{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:.92rem;margin-top:8px}
+.read b{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem;margin-top:6px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:6px;background:var(--c)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.small{font-size:.85rem;color:var(--muted)}
+h2{font-size:1.15rem;margin:28px 0 8px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:820px){.cols{grid-template-columns:1fr}}
+.cols>div{min-width:0}
+table{border-collapse:collapse;font-size:.9rem;width:100%}
+td,th{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;font-variant-numeric:tabular-nums}
+th{color:var(--muted);font-weight:600}
+td.m{font-family:var(--mono);font-size:.84rem}
+.tbl{overflow-x:auto}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
 
+<div class="wrap">
+  <h1>Gaussian Plume Plotter</h1>
+  <p class="sub">Ground-level (or any height z) concentration downwind of a continuous point source. Move the sliders; pin a curve to compare cases. σ<sub>y</sub> and σ<sub>z</sub> follow the Briggs open-country formulas for the chosen Pasquill stability class, scaled by the σ multipliers.</p>
+  <div class="eq">C(x,y,z) = Q / (2π u σy σz) · exp(−y²/2σy²) · [ exp(−(z−H)²/2σz²) + exp(−(z+H)²/2σz²) ]</div>
+
+  <div class="grid">
+    <div class="panel" id="controls">
+      <div>
+        <div style="font-weight:600;font-size:.95rem;margin-bottom:6px">Stability class</div>
+        <div class="seg" id="cls" role="group" aria-label="Stability class"></div>
+        <div class="small" id="clsdesc" style="margin-top:6px"></div>
+      </div>
+      <div class="ctl"><label for="Q">Emission rate Q</label><output id="oQ"></output>
+        <input type="range" id="Q" min="1" max="500" step="1" value="50"><span class="hint">g s⁻¹</span></div>
+      <div class="ctl"><label for="u">Wind speed u</label><output id="ou"></output>
+        <input type="range" id="u" min="0.5" max="15" step="0.5" value="4"><span class="hint">m s⁻¹</span></div>
+      <div class="ctl"><label for="H">Effective height H</label><output id="oH"></output>
+        <input type="range" id="H" min="0" max="300" step="1" value="52"><span class="hint">m (stack height + plume rise)</span></div>
+      <div class="ctl"><label for="y">Crosswind offset y</label><output id="oy"></output>
+        <input type="range" id="y" min="0" max="500" step="5" value="0"><span class="hint">m from the plume centre line</span></div>
+      <div class="ctl"><label for="z">Receptor height z</label><output id="oz"></output>
+        <input type="range" id="z" min="0" max="200" step="1" value="0"><span class="hint">m (0 = breathing at ground level)</span></div>
+      <div class="ctl"><label for="ky">σy multiplier</label><output id="oky"></output>
+        <input type="range" id="ky" min="0.25" max="3" step="0.05" value="1"><span class="hint">× Briggs σy</span></div>
+      <div class="ctl"><label for="kz">σz multiplier</label><output id="okz"></output>
+        <input type="range" id="kz" min="0.25" max="3" step="0.05" value="1"><span class="hint">× Briggs σz</span></div>
+      <div class="ctl"><label for="X">Plot to distance</label><output id="oX"></output>
+        <input type="range" id="X" min="1" max="20" step="0.5" value="6"><span class="hint">km</span></div>
+      <div class="row">
+        <button id="pin" type="button">Pin this curve</button>
+        <button id="clear" type="button">Clear pins</button>
+        <button id="reset" type="button">Reset</button>
+      </div>
+    </div>
+
+    <div class="chartbox">
+      <canvas id="cv" aria-label="Concentration versus downwind distance"></canvas>
+      <div class="read" id="read"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+
+  <h2>Briggs open-country dispersion coefficients (x in m, 100 m – 10 km)</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Class</th><th>Conditions</th><th>σy (m)</th><th>σz (m)</th></tr></thead>
+    <tbody id="btab"></tbody>
+  </table></div>
+
+  <h2>Same model in Desmos</h2>
+  <p class="small">Open <a href="https://www.desmos.com/calculator" target="_blank" rel="noopener">desmos.com/calculator</a>, paste each line below into its own expression row (press Enter between lines), and accept the sliders Desmos offers. Set the x-axis to 0–10000 m and the y-axis to 0–700 µg m⁻³. Save the graph to get a shareable link.</p>
+  <div class="row" style="margin-bottom:8px"><button id="copy" type="button">Copy Desmos lines</button><span class="small" id="copied" aria-live="polite"></span></div>
+  <pre class="eq" id="desmos"></pre>
+</div>
+
+<script>
+const CL=[
+ {k:"A",d:"Very unstable: strong sun, light wind",ay:.22,az:.20,bz:0,pz:0},
+ {k:"B",d:"Unstable: strong–moderate sun",ay:.16,az:.12,bz:0,pz:0},
+ {k:"C",d:"Slightly unstable: moderate sun, moderate wind",ay:.11,az:.08,bz:.0002,pz:-.5},
+ {k:"D",d:"Neutral: overcast or windy, day or night",ay:.08,az:.06,bz:.0015,pz:-.5},
+ {k:"E",d:"Slightly stable: night, light cloud",ay:.06,az:.03,bz:.0003,pz:-1},
+ {k:"F",d:"Stable: clear calm night (inversion)",ay:.04,az:.016,bz:.0003,pz:-1}];
+const DEF={cls:3,Q:50,u:4,H:52,y:0,z:0,ky:1,kz:1,X:6};
+let S={...DEF}; let pins=[];
+const $=id=>document.getElementById(id);
+const sy=(x,c)=>CL[c].ay*x*Math.pow(1+1e-4*x,-.5);
+const sz=(x,c)=>CL[c].pz===0?CL[c].az*x:CL[c].az*x*Math.pow(1+CL[c].bz*x,CL[c].pz);
+function conc(x,p){ // µg m^-3
+  const a=sy(x,p.cls)*p.ky, b=sz(x,p.cls)*p.kz;
+  return 1e6*p.Q/(2*Math.PI*p.u*a*b)*Math.exp(-p.y*p.y/(2*a*a))*
+    (Math.exp(-((p.z-p.H)**2)/(2*b*b))+Math.exp(-((p.z+p.H)**2)/(2*b*b)));
+}
+function curve(p,X){const n=600,pts=[];for(let i=1;i<=n;i++){const x=10+(X*1000-10)*i/n;pts.push([x,conc(x,p)])}return pts}
+function peak(pts){let m=pts[0];for(const q of pts)if(q[1]>m[1])m=q;return m}
+
+// controls
+const seg=$("cls");
+CL.forEach((c,i)=>{const b=document.createElement("button");b.type="button";b.id="cls"+c.k;b.textContent=c.k;
+  b.onclick=()=>{S.cls=i;sync()};seg.appendChild(b)});
+const fmt={Q:v=>v+" g/s",u:v=>v+" m/s",H:v=>v+" m",y:v=>v+" m",z:v=>v+" m",ky:v=>"×"+(+v).toFixed(2),kz:v=>"×"+(+v).toFixed(2),X:v=>v+" km"};
+for(const k of Object.keys(fmt)){$(k).addEventListener("input",e=>{S[k]=+e.target.value;sync()})}
+$("pin").onclick=()=>{if(pins.length>=3)pins.shift();pins.push({...S});draw()};
+$("clear").onclick=()=>{pins=[];draw()};
+$("reset").onclick=()=>{S={...DEF};pins=[];sync()};
+
+function label(p){return `${CL[p.cls].k} · H ${p.H} m · u ${p.u} · y ${p.y} · z ${p.z}`+(p.ky!==1||p.kz!==1?` · σ×${p.ky}/${p.kz}`:"")}
+
+function sync(){
+  for(const k of Object.keys(fmt)){$(k).value=S[k];$("o"+k).textContent=fmt[k](S[k])}
+  CL.forEach((c,i)=>$("cls"+c.k).setAttribute("aria-pressed",i===S.cls));
+  $("clsdesc").textContent=CL[S.cls].d;
+  draw();
+}
+
+let hover=null;
+const cv=$("cv"),ctx=cv.getContext("2d");
+cv.addEventListener("mousemove",e=>{const r=cv.getBoundingClientRect();hover=e.clientX-r.left;draw()});
+cv.addEventListener("mouseleave",()=>{hover=null;draw()});
+new ResizeObserver(()=>draw()).observe(cv);
+
+function niceMax(v){if(v<=0)return 1;const e=Math.pow(10,Math.floor(Math.log10(v)));for(const m of[1,1.2,1.5,2,2.5,3,4,5,6,8,10])if(m*e>=v)return m*e}
+function ticks(max,n){const raw=max/n,e=Math.pow(10,Math.floor(Math.log10(raw)));let s=e;for(const m of[1,2,2.5,5,10])if(m*e>=raw){s=m*e;break}const t=[];for(let v=0;v<=max+1e-9;v+=s)t.push(+v.toFixed(10));return t}
+
+function draw(){
+  const css=getComputedStyle(document.documentElement),col=n=>css.getPropertyValue(n).trim();
+  const dpr=window.devicePixelRatio||1,W=cv.clientWidth,Hc=cv.clientHeight;
+  if(!W)return; cv.width=W*dpr;cv.height=Hc*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,Hc);
+  const X=S.X, main=curve(S,X), pk=peak(main);
+  const pc=pins.map(p=>({p,pts:curve(p,X)}));
+  let ymax=Math.max(pk[1],...pc.map(o=>peak(o.pts)[1]),80);
+  ymax=niceMax(ymax*1.08);
+  const L=62,R=16,T=16,B=44,pw=W-L-R,ph=Hc-T-B;
+  const sx=x=>L+x/(X*1000)*pw, syy=c=>T+ph-c/ymax*ph;
+  ctx.font="13px "+col("--sans");ctx.lineWidth=1;
+  // grid + y ticks
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  for(const v of ticks(ymax,6)){const yy=syy(v);ctx.strokeStyle=col("--line");ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(L+pw,yy);ctx.stroke();ctx.fillStyle=col("--muted");ctx.fillText(v>=1000?v.toLocaleString():v,L-8,yy)}
+  ctx.textAlign="center";ctx.textBaseline="top";
+  for(const v of ticks(X,Math.min(10,Math.max(4,Math.round(pw/80))))){const xx=sx(v*1000);ctx.strokeStyle=col("--line");ctx.beginPath();ctx.moveTo(xx,T+ph);ctx.lineTo(xx,T+ph+5);ctx.stroke();ctx.fillStyle=col("--muted");ctx.fillText(v,xx,T+ph+8)}
+  ctx.strokeStyle=col("--fg");ctx.beginPath();ctx.moveTo(L,T);ctx.lineTo(L,T+ph);ctx.lineTo(L+pw,T+ph);ctx.stroke();
+  ctx.fillStyle=col("--fg");ctx.fillText("Downwind distance x (km)",L+pw/2,T+ph+26);
+  ctx.save();ctx.translate(16,T+ph/2);ctx.rotate(-Math.PI/2);ctx.textBaseline="middle";ctx.fillText("C (µg m⁻³)",0,0);ctx.restore();
+  // SO2 standard line
+  if(80<ymax){const yy=syy(80);ctx.setLineDash([5,4]);ctx.strokeStyle=col("--std");ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(L+pw,yy);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=col("--muted");ctx.textAlign="right";ctx.textBaseline="bottom";ctx.fillText("India 24-h SO₂ standard, 80",L+pw-4,yy-3)}
+  const line=(pts,c,w)=>{ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();pts.forEach((q,i)=>{const X1=sx(q[0]),Y1=syy(Math.min(q[1],ymax));i?ctx.lineTo(X1,Y1):ctx.moveTo(X1,Y1)});ctx.stroke()};
+  const pcol=["--pin1","--pin2","--pin3"];
+  pc.forEach((o,i)=>line(o.pts,col(pcol[i]),2));
+  line(main,col("--accent"),3);
+  // peak marker
+  ctx.fillStyle=col("--accent");ctx.beginPath();ctx.arc(sx(pk[0]),syy(pk[1]),5,0,7);ctx.fill();
+  ctx.fillStyle=col("--fg");ctx.font="600 13px "+col("--sans");ctx.textBaseline="bottom";
+  const lx=sx(pk[0]);ctx.textAlign=lx>L+pw-150?"right":"left";
+  ctx.fillText(`peak ${pk[1].toFixed(0)} at ${(pk[0]/1000).toFixed(2)} km`,lx+(ctx.textAlign==="left"?8:-8),syy(pk[1])-6);
+  // hover
+  let hx=null;
+  if(hover!==null&&hover>=L&&hover<=L+pw){hx=(hover-L)/pw*X*1000;ctx.strokeStyle=col("--muted");ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(hover,T);ctx.lineTo(hover,T+ph);ctx.stroke()}
+  // readout
+  const xr=hx??pk[0], a=sy(xr,S.cls)*S.ky, b=sz(xr,S.cls)*S.kz;
+  $("read").innerHTML=`<span>${hx!==null?"At":"Peak at"} x = <b>${(xr/1000).toFixed(2)} km</b></span><span>C = <b>${conc(xr,S).toFixed(1)} µg m⁻³</b></span><span>σy = <b>${a.toFixed(1)} m</b></span><span>σz = <b>${b.toFixed(1)} m</b></span><span>H/√2 = <b>${(S.H/Math.SQRT2).toFixed(1)} m</b></span>`;
+  $("legend").innerHTML=`<span style="--c:var(--accent)">Current: ${label(S)}</span>`+pc.map((o,i)=>`<span style="--c:var(${pcol[i]})">Pinned: ${label(o.p)}</span>`).join("");
+}
+
+// Briggs table + Desmos text
+$("btab").innerHTML=CL.map(c=>`<tr><td><b>${c.k}</b></td><td>${c.d}</td><td class="m">${c.ay}x(1+0.0001x)^−½</td><td class="m">${c.pz===0?c.az+"x":c.az+"x(1+"+c.bz+"x)^"+(c.pz===-.5?"−½":"−1")}</td></tr>`).join("");
+const DES=[
+"Q=50",
+"u=4",
+"H=52",
+"y_{0}=0",
+"z_{0}=0",
+"k=4",
+"a_{y}=[0.22,0.16,0.11,0.08,0.06,0.04]",
+"a_{z}=[0.20,0.12,0.08,0.06,0.03,0.016]",
+"b_{z}=[0,0,0.0002,0.0015,0.0003,0.0003]",
+"p_{z}=[0,0,-0.5,-0.5,-1,-1]",
+"m_{y}=1",
+"m_{z}=1",
+"s_{y}(x)=m_{y}a_{y}[k]x(1+0.0001x)^{-0.5}",
+"s_{z}(x)=m_{z}a_{z}[k]x(1+b_{z}[k]x)^{p_{z}[k]}",
+"C(x)=\\frac{10^{6}Q}{2\\pi u s_{y}(x)s_{z}(x)}e^{-\\frac{y_{0}^{2}}{2s_{y}(x)^{2}}}\\left(e^{-\\frac{(z_{0}-H)^{2}}{2s_{z}(x)^{2}}}+e^{-\\frac{(z_{0}+H)^{2}}{2s_{z}(x)^{2}}}\\right)",
+"y=C(x)\\left\\{x>0\\right\\}",
+"y=80"];
+$("desmos").textContent=DES.join("\n");
+$("copy").onclick=async()=>{const t=DES.join("\n");try{await navigator.clipboard.writeText(t);$("copied").textContent="Copied"}catch(e){const r=document.createRange();r.selectNodeContents($("desmos"));const s=getSelection();s.removeAllRanges();s.addRange(r);$("copied").textContent="Selected; press Ctrl+C"}};
+sync();
+</script>
+</body>
+</html>
