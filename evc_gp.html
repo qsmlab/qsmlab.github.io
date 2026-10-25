@@ -6,11 +6,6 @@
 <title>Gaussian Plume Plotter | QSM Lab</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Fallback menu style, used only if the site stylesheet below is missing. The site stylesheet overrides it. */
-body{margin:0}
-ul.menu{list-style:none;margin:0;padding:0 16px;display:flex;flex-wrap:wrap;gap:0;background:#14213d;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-ul.menu li a{display:block;padding:12px 16px;color:#fff;text-decoration:none;font-size:15px}
-ul.menu li a:hover{background:rgba(255,255,255,.12)}
 
 /* Gaussian plume plotter: all styles scoped to #plume so they do not touch the site theme. */
 #plume{
@@ -65,7 +60,7 @@ ul.menu li a:hover{background:rgba(255,255,255,.12)}
 @media (prefers-reduced-motion:reduce){#plume *{transition:none!important}}
 </style>
 <!-- Site stylesheet: change the path to your actual CSS file(s) -->
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css">  <!-- REPLACE with the exact <link> line(s) from teaching.html -->
 </head>
 <body>
 <ul class="menu red">
@@ -127,10 +122,7 @@ ul.menu li a:hover{background:rgba(255,255,255,.12)}
     <tbody id="btab"></tbody>
   </table></div>
 
-  <h2>Same model in Desmos</h2>
-  <p class="small">Open <a href="https://www.desmos.com/calculator" target="_blank" rel="noopener">desmos.com/calculator</a>, paste each line below into its own expression row (press Enter between lines), and accept the sliders Desmos offers. Set the x-axis to 0–10000 m and the y-axis to 0–700 µg m⁻³. Save the graph to get a shareable link.</p>
-  <div class="row" style="margin-bottom:8px"><button id="copy" type="button">Copy Desmos lines</button><span class="small" id="copied" aria-live="polite"></span></div>
-  <pre class="eq" id="desmos"></pre>
+  
 </div>
 
 </main>
@@ -223,8 +215,9 @@ function draw(){
   $("legend").innerHTML=`<span style="--c:var(--accent)">Current: ${label(S)}</span>`+pc.map((o,i)=>`<span style="--c:var(${pcol[i]})">Pinned: ${label(o.p)}</span>`).join("");
 }
 
-// Briggs table + Desmos text
-
+// Briggs table
+$("btab").innerHTML=CL.map(c=>`<tr><td><b>${c.k}</b></td><td>${c.d}</td><td class="m">${c.ay}x(1+0.0001x)^−½</td><td class="m">${c.pz===0?c.az+"x":c.az+"x(1+"+c.bz+"x)^"+(c.pz===-.5?"−½":"−1")}</td></tr>`).join("");
+sync();
 </script>
 </body>
 </html>
