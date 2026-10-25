@@ -224,28 +224,7 @@ function draw(){
 }
 
 // Briggs table + Desmos text
-$("btab").innerHTML=CL.map(c=>`<tr><td><b>${c.k}</b></td><td>${c.d}</td><td class="m">${c.ay}x(1+0.0001x)^−½</td><td class="m">${c.pz===0?c.az+"x":c.az+"x(1+"+c.bz+"x)^"+(c.pz===-.5?"−½":"−1")}</td></tr>`).join("");
-const DES=[
-"Q=50",
-"u=4",
-"H=52",
-"y_{0}=0",
-"z_{0}=0",
-"k=4",
-"a_{y}=[0.22,0.16,0.11,0.08,0.06,0.04]",
-"a_{z}=[0.20,0.12,0.08,0.06,0.03,0.016]",
-"b_{z}=[0,0,0.0002,0.0015,0.0003,0.0003]",
-"p_{z}=[0,0,-0.5,-0.5,-1,-1]",
-"m_{y}=1",
-"m_{z}=1",
-"s_{y}(x)=m_{y}a_{y}[k]x(1+0.0001x)^{-0.5}",
-"s_{z}(x)=m_{z}a_{z}[k]x(1+b_{z}[k]x)^{p_{z}[k]}",
-"C(x)=\\frac{10^{6}Q}{2\\pi u s_{y}(x)s_{z}(x)}e^{-\\frac{y_{0}^{2}}{2s_{y}(x)^{2}}}\\left(e^{-\\frac{(z_{0}-H)^{2}}{2s_{z}(x)^{2}}}+e^{-\\frac{(z_{0}+H)^{2}}{2s_{z}(x)^{2}}}\\right)",
-"y=C(x)\\left\\{x>0\\right\\}",
-"y=80"];
-$("desmos").textContent=DES.join("\n");
-$("copy").onclick=async()=>{const t=DES.join("\n");try{await navigator.clipboard.writeText(t);$("copied").textContent="Copied"}catch(e){const r=document.createRange();r.selectNodeContents($("desmos"));const s=getSelection();s.removeAllRanges();s.addRange(r);$("copied").textContent="Selected; press Ctrl+C"}};
-sync();
+
 </script>
 </body>
 </html>
