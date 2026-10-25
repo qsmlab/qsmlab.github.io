@@ -1,0 +1,382 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+<link rel='stylesheet' type='text/css' href='menu_style.css' />
+<title>Gaussian Plume Plotter | QSM Lab</title>
+<ul class="menu red">
+        <li><a href="index.html" title="">Home</a></li>
+     <li><a href="group.html" title="">Group</a></li>
+        <li><a href="pubs.html" title="" >Publications</a></li>
+        <li><a href="research.html" title="">Research</a></li>
+        <li><a href="teaching.html" title="">Teaching</a></li>
+        <li><a href="misc.html" title="">Miscellaneous</a></li>
+</ul>
+  
+<style>
+/* Layout: control strip, then polar map beside the "air at IIT KGP" breakdown; notes and source table below. Single light theme on white. */
+:root{
+  --bg:#ffffff; --panel:#ffffff; --fg:#141a24; --muted:#5a6475; --line:#dde2e9; --ring:#c9d0da;
+  --accent:#1f5fbf; --campus:#0b3d91;
+  --steel:#b42318; --power:#7a2e8e; --petro:#b8560b; --cement:#6b7280; --kiln:#8b5e34; --urban:#0f766e;
+  --sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.45}
+.wrap{max-width:1240px;margin:0 auto;padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:1.65rem;margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 16px;max-width:78ch}
+h2{font-size:1.15rem;margin:28px 0 8px}
+.bar{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:end;border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:16px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1 1 150px}
+.f label,.lbl{font-weight:600;font-size:.92rem}
+.f output{font-family:var(--mono);font-size:.85rem;color:var(--muted)}
+.f input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.93rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 10px}
+button{cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.presets button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.scdesc{color:var(--muted);font-size:.92rem;margin:-4px 0 12px;max-width:90ch}
+.main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.mapbox{border:1px solid var(--line);border-radius:8px;padding:10px;position:relative;min-width:0}
+canvas{width:100%;aspect-ratio:1/1;display:block;max-width:100%}
+.tipbox{position:absolute;pointer-events:none;background:var(--fg);color:#fff;font-size:13px;line-height:1.4;padding:8px 10px;border-radius:6px;max-width:260px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85rem;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:0;background:var(--c)}
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.big{font-family:var(--mono);font-size:2rem;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.big small{font-size:.9rem;font-weight:400;color:var(--muted)}
+.verdict{display:inline-block;margin-top:6px;font-size:.85rem;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.rows{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.r{display:grid;grid-template-columns:minmax(0,1fr) 70px;gap:4px 10px;align-items:center;font-size:.9rem}
+.r .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .v{font-family:var(--mono);font-size:.84rem;text-align:right;font-variant-numeric:tabular-nums}
+.r .tr{grid-column:1/-1;height:6px;background:#eef1f5;border-radius:3px;overflow:hidden}
+.r .tr span{display:block;height:100%;background:var(--c);border-radius:3px}
+.why{font-size:.88rem;color:var(--muted)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;font-size:.9rem;width:100%;min-width:760px}
+td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;font-variant-numeric:tabular-nums}
+th{color:var(--muted);font-weight:600}
+td.n{font-family:var(--mono);font-size:.84rem;white-space:nowrap}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--c)}
+.notes{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:900px){.notes{grid-template-columns:1fr}}
+.notes>div{min-width:0}
+.notes ul{margin:6px 0 0;padding-left:20px}
+.notes li{margin:3px 0}
+.src{font-size:.85rem;color:var(--muted)}
+.src a{color:var(--accent)}
+</style>
+</head>
+<body style="margin:0">
+
+<div class="wrap">
+  <h1>Kharagpur Airshed Map</h1>
+  <p class="sub">IIT Kharagpur sits at the centre. Each industrial or urban source is placed by its distance and compass bearing from the campus. Pick a weather situation, or set the wind yourself, and the Gaussian plume model estimates how much each source adds to the air on campus.</p>
+
+  <div class="presets" id="presets" role="group" aria-label="Weather situation"></div>
+  <p class="scdesc" id="scdesc"></p>
+
+  <div class="bar">
+    <div class="f"><label for="pol">Pollutant</label>
+      <select id="pol"><option value="pm25">PM2.5</option><option value="pm10">PM10</option><option value="so2">SO₂</option><option value="nox">NOₓ (as NO₂)</option><option value="co">CO</option></select></div>
+    <div class="f"><label for="wd">Wind from</label><input type="range" id="wd" min="0" max="355" step="5"><output id="owd"></output></div>
+    <div class="f"><label for="ws">Wind speed</label><input type="range" id="ws" min="0.5" max="8" step="0.5"><output id="ows"></output></div>
+    <div class="f"><label for="cls">Stability class</label>
+      <select id="cls"><option value="0">A · very unstable</option><option value="1">B · unstable</option><option value="2">C · slightly unstable</option><option value="3">D · neutral</option><option value="4">E · slightly stable</option><option value="5">F · stable (inversion)</option></select></div>
+    <div class="f"><label for="mh">Mixing height</label><input type="range" id="mh" min="50" max="2500" step="50"><output id="omh"></output></div>
+    <div class="f"><label for="sp">Wind meander (±)</label><input type="range" id="sp" min="0" max="45" step="5"><output id="osp"></output></div>
+  </div>
+
+  <div class="main">
+    <div class="mapbox">
+      <canvas id="map" aria-label="Polar map of pollution sources around IIT Kharagpur"></canvas>
+      <div class="tipbox" id="tip" hidden></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="side">
+      <div class="card">
+        <div class="lbl" id="hdr">Added to the air at IIT KGP</div>
+        <div class="big" id="total"></div>
+        <div id="verdict"></div>
+        <div class="rows" id="rows"></div>
+      </div>
+      <div class="card why" id="why"></div>
+    </div>
+  </div>
+
+  <h2>Sources around the campus</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Source</th><th>Distance</th><th>Bearing</th><th>What it does</th><th>Main pollutants</th><th>Location</th></tr></thead>
+    <tbody id="stab"></tbody>
+  </table></div>
+
+  <h2>How to read this</h2>
+  <div class="notes">
+    <div>
+      <b>The model</b>
+      <ul>
+        <li>Every source is a continuous point source. Ground-level concentration at the campus uses the Gaussian plume equation with Briggs open-country σ<sub>y</sub>, σ<sub>z</sub> for the chosen stability class.</li>
+        <li>Each source has a tall-stack part (effective height H) and a fugitive part released near the ground (H = 10 m): yard dust, raw-material handling, open furnaces.</li>
+        <li>When σ<sub>z</sub> grows to the mixing height, the plume is trapped under the lid and treated as well mixed in that layer. A stack whose plume rises above the lid on a stable night does not reach the ground at all.</li>
+        <li>Wind meander averages the result over a band of wind directions, which mimics a one-hour average instead of an instant.</li>
+        <li>The map uses a logarithmic distance scale so that the town (2–5 km) and Kolaghat and Haldia (60–85 km) fit on one picture.</li>
+      </ul>
+    </div>
+    <div>
+      <b>What it leaves out</b>
+      <ul>
+        <li><b>Emission rates are illustrative</b>, set at a plausible order of magnitude for each kind of plant. They are not taken from a measured emission inventory. Use them to compare situations, not to quote a real concentration.</li>
+        <li>No chemistry: SO₂ and NOₓ slowly turn into sulfate and nitrate particles downwind, and NOₓ helps make ozone. Long-range sources (Kolaghat, Haldia) matter more through these secondary particles than the plume model shows.</li>
+        <li>No rain washout, dry deposition, terrain, sea breeze, or regional background haze from the Indo-Gangetic Plain.</li>
+        <li>Village cooking fires and paddy-straw burning are spread all around the campus. They add a large background, especially on November and winter evenings, that a point-source map cannot show.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="src" style="margin-top:16px">Plant locations: <a href="https://www.gem.wiki/Tata_Metaliks_Kharagpur_steel_plant" target="_blank" rel="noopener">Tata Metaliks Kharagpur (GEM)</a>, <a href="https://www.gem.wiki/Rashmi_Metaliks_Kharagpur_Steel_Plant" target="_blank" rel="noopener">Rashmi Metaliks Kharagpur (GEM)</a>, <a href="https://wbidc.com/home/industrial-parks/vidyasagar-industrial-park" target="_blank" rel="noopener">Vidyasagar Industrial Park (WBIDC)</a>, <a href="https://en.wikipedia.org/wiki/List_of_industrial_areas_in_West_Bengal" target="_blank" rel="noopener">industrial areas of West Bengal</a>, <a href="https://en.wikipedia.org/wiki/Haldia_Industrial_Belt" target="_blank" rel="noopener">Haldia Industrial Belt</a>, <a href="https://en.wikipedia.org/wiki/List_of_power_stations_in_West_Bengal" target="_blank" rel="noopener">power stations of West Bengal</a>. Other locations are approximate. Standards: India NAAQS 24-hour limits (PM2.5 60, PM10 100, SO₂ 80, NO₂ 80 µg m⁻³; CO 2 mg m⁻³ as 8-hour).</p>
+</div>
+
+<script>
+// ---------- data ----------
+const CAMPUS={lat:22.3190,lon:87.3100};
+const CAT={
+  steel:{n:"Iron & steel",c:"--steel"}, power:{n:"Coal power",c:"--power"}, petro:{n:"Refinery & petrochemicals",c:"--petro"},
+  cement:{n:"Cement",c:"--cement"}, kiln:{n:"Brick kilns",c:"--kiln"}, urban:{n:"Traffic, rail & town",c:"--urban"}};
+// Emission rates in g/s: illustrative order-of-magnitude values, NOT inventory data.
+const SRC=[
+ {id:"rashmi",nm:"Rashmi Metaliks (Gokulpur)",cat:"steel",lat:22.3607,lon:87.2959,loc:"Plant coordinates (GEM)",
+  what:"Integrated iron & steel: sinter, blast furnaces, coke, captive power, ductile-iron pipe",
+  pol:"PM (iron-ore & coal dust), SO₂, NOₓ, CO, PAHs and benzene from coke making, heavy metals",
+  q:{pm25:25,pm10:50,so2:60,nox:40,co:150},H:110,fug:.3},
+ {id:"tata",nm:"Tata Steel, ex-Tata Metaliks (Gokulpur)",cat:"steel",lat:22.3856,lon:87.2872,loc:"Plant coordinates (GEM)",
+  what:"Two mini blast furnaces (0.6 Mt/yr pig iron), coke, ductile-iron pipe, 17 MW captive power",
+  pol:"PM, SO₂, CO, NOₓ, coke-oven PAHs and benzene",
+  q:{pm25:10,pm10:20,so2:20,nox:15,co:80},H:90,fug:.3},
+ {id:"vip",nm:"Vidyasagar Industrial Park (Rakhajungle)",cat:"steel",lat:22.367,lon:87.333,loc:"Park centre, approximate (WBIDC)",
+  what:"Mixed estate: steel and induction furnaces, machinery, oil depot, food processing",
+  pol:"PM, SO₂, NOₓ, CO, metal fumes; VOCs from fuel storage",
+  q:{pm25:8,pm10:15,so2:8,nox:6,co:30},H:50,fug:.3},
+ {id:"town",nm:"Kharagpur town, rail yard & NH-16",cat:"urban",lat:22.345,lon:87.322,loc:"Indicative centroid",
+  what:"Road traffic on NH-16/NH-49, diesel locomotives and rail workshop, town cooking and burning",
+  pol:"NOₓ, CO, PM2.5 and black carbon, VOCs",
+  q:{pm25:6,pm10:15,so2:1,nox:20,co:120},H:5,fug:1},
+ {id:"kiln",nm:"Brick-kiln belt (Kangsabati banks)",cat:"kiln",lat:22.41,lon:87.27,loc:"Indicative cluster",
+  what:"Coal- and biomass-fired brick kilns, fired mainly November to May",
+  pol:"PM2.5, black carbon, CO, SO₂",
+  q:{pm25:15,pm10:25,so2:10,nox:3,co:150},H:25,fug:0},
+ {id:"mid",nm:"Midnapore town",cat:"urban",lat:22.4243,lon:87.3196,loc:"Town centre",
+  what:"Traffic, small industry, domestic fuel",
+  pol:"PM2.5, NOₓ, CO",
+  q:{pm25:5,pm10:12,so2:1,nox:10,co:80},H:5,fug:1},
+ {id:"jsw",nm:"Salboni cement & industrial park",cat:"cement",lat:22.62,lon:87.33,loc:"Approximate",
+  what:"Cement grinding and kiln operations",
+  pol:"PM (cement and clinker dust), NOₓ, SO₂",
+  q:{pm25:3,pm10:8,so2:5,nox:25,co:10},H:150,fug:.2},
+ {id:"ktps",nm:"Kolaghat Thermal Power Station",cat:"power",lat:22.42,lon:87.87,loc:"Approximate",
+  what:"Coal-fired power station (6 × 210 MW installed)",
+  pol:"SO₂, NOₓ, fly-ash PM, mercury; secondary sulfate downwind",
+  q:{pm25:60,pm10:120,so2:900,nox:500,co:50},H:400,fug:0},
+ {id:"haldia",nm:"Haldia refinery, petrochemicals & port",cat:"petro",lat:22.05,lon:88.08,loc:"Approximate",
+  what:"Oil refinery, naphtha cracker, chemicals, fertiliser, port and coal handling",
+  pol:"SO₂, NOₓ, VOCs (benzene, butadiene), H₂S, PM",
+  q:{pm25:30,pm10:50,so2:400,nox:300,co:100},H:150,fug:.1}
+];
+// geometry: east/north offsets (m) and polar position from campus
+for(const s of SRC){
+  s.e=(s.lon-CAMPUS.lon)*111320*Math.cos(CAMPUS.lat*Math.PI/180);
+  s.n=(s.lat-CAMPUS.lat)*110570;
+  s.d=Math.hypot(s.e,s.n)/1000;
+  s.b=(Math.atan2(s.e,s.n)*180/Math.PI+360)%360;
+}
+const STD={pm25:60,pm10:100,so2:80,nox:80,co:2000};
+const PN={pm25:"PM2.5",pm10:"PM10",so2:"SO₂",nox:"NOₓ",co:"CO"};
+const COMPASS=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+const cp=b=>COMPASS[Math.round(b/22.5)%16];
+
+// Typical Kharagpur weather situations (approximate climatology, for teaching)
+const SCN=[
+ {k:"wn",nm:"Winter night",wd:330,ws:1,cls:5,mh:150,sp:20,
+  d:"December–January, around 2 am. Light north-westerly drift down the Gangetic plain, clear sky, strong ground inversion. Ground-level and fugitive emissions are trapped; tall stacks may sit above the lid."},
+ {k:"wd",nm:"Winter afternoon",wd:315,ws:3,cls:1,mh:1200,sp:25,
+  d:"December–January, 2 pm. Same north-westerly, but the sun has broken the inversion. Plumes loop down to the ground quickly and the deep mixed layer dilutes them."},
+ {k:"pm",nm:"Post-monsoon morning",wd:350,ws:1.5,cls:4,mh:300,sp:20,
+  d:"November, 8 am. Northerly winds return after the monsoon, paddy straw is burning across the region, and the morning inversion is still low."},
+ {k:"sm",nm:"Pre-monsoon afternoon",wd:200,ws:4.5,cls:2,mh:2200,sp:20,
+  d:"April–May, 3 pm. Hot, deep mixing; south to south-westerly winds come in from the Bay of Bengal. The campus is upwind of most local industry."},
+ {k:"bb",nm:"Bay-breeze evening",wd:120,ws:3,cls:3,mh:700,sp:20,
+  d:"Some pre-monsoon evenings, March–May. The wind turns south-easterly off the Bay of Bengal and carries air from the Haldia–Kolaghat side across the campus. Watch SO₂ and NOₓ."},
+ {k:"mo",nm:"Monsoon",wd:225,ws:5,cls:3,mh:1500,sp:15,
+  d:"July–August. Steady south-westerly monsoon flow, overcast and neutral. Rain also washes out particles, which this model does not include."}
+];
+let M={pol:"pm25",...SCN[0],scn:0};
+
+// ---------- dispersion ----------
+const BR=[[.22,.20,0,0],[.16,.12,0,0],[.11,.08,.0002,-.5],[.08,.06,.0015,-.5],[.06,.03,.0003,-1],[.04,.016,.0003,-1]];
+const sY=(x,c)=>BR[c][0]*x*Math.pow(1+1e-4*x,-.5);
+const sZ=(x,c)=>BR[c][3]===0?BR[c][1]*x:BR[c][1]*x*Math.pow(1+BR[c][2]*x,BR[c][3]);
+// ground-level conc (µg/m3) from Q (g/s) at height H, receptor offset x (downwind) y (crosswind)
+function glc(Q,H,x,y,m){
+  if(x<50||Q<=0)return 0;
+  if(H>m.mh)return 0;                  // plume above the lid
+  const a=sY(x,m.cls),b=sZ(x,m.cls),u=m.ws;
+  const lat=Math.exp(-y*y/(2*a*a));
+  if(lat<1e-9)return 0;
+  if(b<0.8*m.mh) return 1e6*Q/(Math.PI*u*a*b)*lat*Math.exp(-H*H/(2*b*b));
+  return 1e6*Q/(Math.sqrt(2*Math.PI)*u*a*m.mh)*lat; // well mixed under the lid
+}
+function contrib(s,m){
+  const Q=s.q[m.pol],n=m.sp>0?31:1;let sum=0;
+  for(let i=0;i<n;i++){
+    const from=m.wd+(n>1?-m.sp+2*m.sp*i/(n-1):0);
+    const to=(from+180)*Math.PI/180, we=Math.sin(to), wn=Math.cos(to);
+    const dx=-s.e, dy=-s.n;                 // vector source -> campus
+    const x=dx*we+dy*wn, y=Math.abs(dx*wn-dy*we);
+    sum+=glc(Q*(1-s.fug),s.H,x,y,m)+glc(Q*s.fug,10,x,y,m);
+  }
+  return sum/n;
+}
+
+// ---------- UI ----------
+const $=id=>document.getElementById(id);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+SCN.forEach((s,i)=>{const b=document.createElement("button");b.type="button";b.id="scn-"+s.k;b.textContent=s.nm;
+  b.onclick=()=>{Object.assign(M,{wd:s.wd,ws:s.ws,cls:s.cls,mh:s.mh,sp:s.sp,scn:i});sync()};$("presets").appendChild(b)});
+for(const [k,ev] of [["pol","change"],["wd","input"],["ws","input"],["cls","change"],["mh","input"],["sp","input"]])
+  $(k).addEventListener(ev,e=>{M[k]=k==="pol"?e.target.value:+e.target.value;if(k!=="pol")M.scn=-1;sync()});
+$("legend").innerHTML=Object.values(CAT).map(c=>`<span><i style="--c:var(${c.c})"></i>${c.n}</span>`).join("")+
+  `<span><i style="--c:var(--campus)"></i>IIT KGP</span>`;
+$("stab").innerHTML=[...SRC].sort((a,b)=>a.d-b.d).map(s=>`<tr><td><span class="dot" style="--c:var(${CAT[s.cat].c})"></span>${s.nm}</td><td class="n">${s.d.toFixed(1)} km</td><td class="n">${s.b.toFixed(0)}° ${cp(s.b)}</td><td>${s.what}</td><td>${s.pol}</td><td>${s.loc}</td></tr>`).join("");
+
+function sync(){
+  $("pol").value=M.pol;$("wd").value=M.wd;$("ws").value=M.ws;$("cls").value=M.cls;$("mh").value=M.mh;$("sp").value=M.sp;
+  $("owd").textContent=`${M.wd}° (${cp(M.wd)}) → blows toward ${cp((M.wd+180)%360)}`;
+  $("ows").textContent=M.ws+" m/s";$("omh").textContent=M.mh+" m";$("osp").textContent="±"+M.sp+"°";
+  SCN.forEach((s,i)=>$("scn-"+s.k).setAttribute("aria-pressed",i===M.scn));
+  $("scdesc").textContent=M.scn>=0?SCN[M.scn].d:"Custom weather.";
+  compute();draw();
+}
+let RES=[];
+function compute(){
+  RES=SRC.map(s=>({s,c:contrib(s,M)})).sort((a,b)=>b.c-a.c);
+  const tot=RES.reduce((t,r)=>t+r.c,0), std=STD[M.pol];
+  const unit=M.pol==="co"?"µg m⁻³":"µg m⁻³";
+  $("hdr").textContent=`${PN[M.pol]} added to the air at IIT KGP`;
+  $("total").innerHTML=`${tot<10?tot.toFixed(1):Math.round(tot)} <small>${unit}</small>`;
+  const f=tot/std;
+  const [txt,col]=f<.1?["Small next to the 24-h standard","#0f766e"]:f<.5?["Noticeable share of the 24-h standard","#b8560b"]:f<1?["Large share of the 24-h standard","#b42318"]:["Above the 24-h standard on its own","#b42318"];
+  $("verdict").innerHTML=`<span class="verdict" style="color:${col}">${txt} (${PN[M.pol]} ${M.pol==="co"?"8-h":"24-h"} limit ${std} µg m⁻³)</span>`;
+  const mx=Math.max(...RES.map(r=>r.c),1e-9);
+  const nz=RES.filter(r=>r.c>=.05),zz=RES.filter(r=>r.c<.05);
+  $("rows").innerHTML=(nz.length?"":`<div class="why">No listed source reaches the campus in this weather.</div>`)+nz.map(r=>`<div class="r"><span class="nm" title="${r.s.nm}">${r.s.nm}</span><span class="v">${r.c<.05?"0":r.c<10?r.c.toFixed(1):Math.round(r.c)}</span><span class="tr"><span style="width:${(r.c/mx*100).toFixed(1)}%;--c:var(${CAT[r.s.cat].c})"></span></span></div>`).join("")+(zz.length?`<div class="why" style="margin-top:4px">Not reaching the campus now: ${zz.map(r=>shortName(r.s)).join(", ")}.</div>`:"");
+  // explanation
+  const up=SRC.filter(s=>{let d=Math.abs(((s.b-M.wd)+540)%360-180);return d<=M.sp+15}).map(s=>s.nm);
+  const lifted=SRC.filter(s=>s.H>M.mh&&s.fug<.05).map(s=>s.nm);
+  let w=`<b>Upwind of the campus right now</b> (within ±${M.sp+15}° of ${cp(M.wd)}): ${up.length?up.join(", "):"no listed source"}. Only sources upwind can reach the campus.`;
+  if(lifted.length)w+=`<br><br><b>Above the lid:</b> ${lifted.join(", ")}. Their effective plume height is above the ${M.mh} m mixing height, so in this model the smoke stays aloft and does not touch the ground at the campus.`;
+  if(M.cls>=4)w+=`<br><br><b>Stable air:</b> plumes from tall stacks hardly spread down, while ground-level smoke from traffic, kilns and plant yards is trapped near the surface. Low sources dominate.`;
+  if(M.cls<=1)w+=`<br><br><b>Unstable air:</b> plumes loop down near their stacks and the deep mixed layer dilutes them, so nearby sources hit hard close by but the overall level is lower.`;
+  $("why").innerHTML=w;
+}
+
+// ---------- map ----------
+const cv=$("map"),ctx=cv.getContext("2d");
+const DMAX=110, RINGS=[2,5,10,20,50,100];
+let G={};
+const rad=d=>Math.log10(1+d)/Math.log10(1+DMAX);
+function toXY(e,n){const d=Math.hypot(e,n)/1000,b=Math.atan2(e,n),r=rad(d)*G.R;return[G.cx+r*Math.sin(b),G.cy-r*Math.cos(b)]}
+function draw(){
+  const dpr=window.devicePixelRatio||1,W=cv.clientWidth;if(!W)return;
+  cv.width=W*dpr;cv.height=W*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,W);
+  G={cx:W/2,cy:W/2,R:W/2-30};
+  const F=css("--sans");
+  // rings
+  ctx.lineWidth=1;
+  for(const r of RINGS){ctx.strokeStyle=css("--ring");ctx.setLineDash(r===10||r===50?[]:[3,4]);ctx.beginPath();ctx.arc(G.cx,G.cy,rad(r)*G.R,0,7);ctx.stroke()}
+  ctx.setLineDash([]);
+  ctx.fillStyle=css("--muted");ctx.font="11px "+F;ctx.textAlign="left";ctx.textBaseline="middle";
+  ctx.textAlign="center";for(const r of RINGS){const p=rad(r)*G.R,t=200*Math.PI/180,lx=G.cx+p*Math.sin(t),ly=G.cy-p*Math.cos(t);ctx.fillStyle="#fff";ctx.fillRect(lx-18,ly-7,36,14);ctx.fillStyle=css("--muted");ctx.fillText(r+" km",lx,ly)}
+  // spokes + compass
+  for(let a=0;a<360;a+=22.5){const t=a*Math.PI/180;ctx.strokeStyle=a%90===0?css("--ring"):"#eef1f5";ctx.beginPath();ctx.moveTo(G.cx,G.cy);ctx.lineTo(G.cx+G.R*Math.sin(t),G.cy-G.R*Math.cos(t));ctx.stroke()}
+  ctx.fillStyle=css("--fg");ctx.font="600 14px "+F;ctx.textAlign="center";ctx.textBaseline="middle";
+  [["N",0],["E",90],["S",180],["W",270]].forEach(([l,a])=>{const t=a*Math.PI/180;ctx.fillText(l,G.cx+(G.R+16)*Math.sin(t),G.cy-(G.R+16)*Math.cos(t))});
+  ctx.fillStyle=css("--muted");ctx.font="11px "+F;
+  [["NE",45],["SE",135],["SW",225],["NW",315]].forEach(([l,a])=>{const t=a*Math.PI/180;ctx.fillText(l,G.cx+(G.R+14)*Math.sin(t),G.cy-(G.R+14)*Math.cos(t))});
+  // plumes
+  const to=(M.wd+180)*Math.PI/180,we=Math.sin(to),wn=Math.cos(to),pe=wn,pn=-we;
+  const qmax=Math.max(...SRC.map(s=>s.q[M.pol]));
+  for(const s of SRC){
+    const Q=s.q[M.pol]; if(Q<=0)continue;
+    const groundOnly=s.H>M.mh;
+    const L=[],Rr=[];
+    for(let i=0;i<=60;i++){
+      const x=Math.pow(i/60,1.6)*150000+30;
+      let half=2*sY(x,M.cls)+x*Math.tan(M.sp*Math.PI/180);
+      const ce=s.e+we*x,cn=s.n+wn*x;
+      L.push(toXY(ce+pe*half,cn+pn*half));Rr.push(toXY(ce-pe*half,cn-pn*half));
+      if(Math.hypot(ce,cn)/1000>DMAX)break;
+    }
+    const col=css(CAT[s.cat].c), a=0.07+0.25*Math.sqrt(Q/qmax);
+    const [sx,sy]=toXY(s.e,s.n);
+    const g=ctx.createRadialGradient(sx,sy,0,sx,sy,G.R*0.9);
+    g.addColorStop(0,hexA(col,a*(groundOnly&&s.fug<.05?0.35:1)));g.addColorStop(1,hexA(col,0));
+    ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(sx,sy);L.forEach(p=>ctx.lineTo(p[0],p[1]));Rr.reverse().forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill();
+  }
+  // campus
+  ctx.fillStyle=css("--campus");ctx.beginPath();ctx.arc(G.cx,G.cy,7,0,7);ctx.fill();
+  ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.stroke();
+  ctx.font="600 12px "+F;ctx.fillStyle=css("--campus");ctx.textAlign="left";ctx.textBaseline="top";ctx.fillText("IIT KGP",G.cx+9,G.cy+5);
+  // sources
+  const hit=Object.fromEntries(RES.map(r=>[r.s.id,r.c]));const hmax=Math.max(...RES.map(r=>r.c),1e-9);
+  for(const s of SRC){
+    const [x,y]=toXY(s.e,s.n), r=5+9*Math.sqrt(s.q[M.pol]/qmax);
+    s.px=x;s.py=y;s.pr=r;
+    ctx.fillStyle=css(CAT[s.cat].c);ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();
+    ctx.lineWidth=hit[s.id]>0.05*hmax&&hit[s.id]>0.05?3:1.5;ctx.strokeStyle=hit[s.id]>0.05*hmax&&hit[s.id]>0.05?css("--fg"):"#fff";ctx.stroke();
+  }
+  // labels (simple collision avoidance)
+  ctx.font="12px "+F;const boxes=SRC.map(s=>[s.px-s.pr,s.py-s.pr,2*s.pr,2*s.pr]);
+  for(const s of [...SRC].sort((a,b)=>a.d-b.d)){
+    const t=shortName(s), w=ctx.measureText(t).width;
+    let placed=false;
+    for(const [dx,dy,al] of [[s.pr+4,-6,"left"],[-s.pr-4,-6,"right"],[s.pr+4,8,"left"],[-s.pr-4,8,"right"],[-w/2,-s.pr-16,"left"],[-w/2,s.pr+4,"left"]]){
+      const x0=al==="left"?s.px+dx:s.px+dx-w, y0=s.py+dy, bx=[x0-2,y0-2,w+4,16];
+      if(bx[0]<0||bx[0]+bx[2]>W||bx[1]<0||bx[1]+bx[3]>W)continue;
+      if(boxes.some(b=>!(bx[0]>b[0]+b[2]||bx[0]+bx[2]<b[0]||bx[1]>b[1]+b[3]||bx[1]+bx[3]<b[1])))continue;
+      boxes.push(bx);ctx.fillStyle="rgba(255,255,255,.85)";ctx.fillRect(...bx);
+      ctx.fillStyle=css("--fg");ctx.textAlign="left";ctx.textBaseline="top";ctx.fillText(t,x0,y0);placed=true;break;
+    }
+  }
+  // wind arrow (top-left)
+  const ax=46,ay=46;ctx.strokeStyle=css("--accent");ctx.fillStyle=css("--accent");ctx.lineWidth=3;
+  const fx=ax-24*Math.sin(to),fy=ay+24*Math.cos(to),tx=ax+24*Math.sin(to),ty=ay-24*Math.cos(to);
+  ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(tx,ty);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(tx-10*Math.sin(to)+6*Math.cos(to),ty+10*Math.cos(to)+6*Math.sin(to));ctx.lineTo(tx-10*Math.sin(to)-6*Math.cos(to),ty+10*Math.cos(to)-6*Math.sin(to));ctx.closePath();ctx.fill();
+  ctx.font="600 12px "+F;ctx.textAlign="center";ctx.textBaseline="top";ctx.fillText(`wind from ${cp(M.wd)}`,ax,ay+30);
+  ctx.font="11px "+F;ctx.fillStyle=css("--muted");ctx.fillText(`${M.ws} m/s · class ${"ABCDEF"[M.cls]}`,ax,ay+45);
+}
+function shortName(s){return {rashmi:"Rashmi Metaliks",tata:"Tata Steel (ex-Tata Metaliks)",vip:"Vidyasagar Ind. Park",town:"Town, rail & NH-16",kiln:"Brick kilns",mid:"Midnapore",jsw:"Salboni cement",ktps:"Kolaghat TPS",haldia:"Haldia complex"}[s.id]}
+function hexA(h,a){h=h.replace("#","");const n=parseInt(h.length===3?h.split("").map(c=>c+c).join(""):h,16);return`rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+
+// hover tooltip
+cv.addEventListener("mousemove",e=>{
+  const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  const s=SRC.find(s=>Math.hypot(s.px-x,s.py-y)<=s.pr+3);const t=$("tip");
+  if(!s){t.hidden=true;return}
+  const c=RES.find(q=>q.s===s).c;
+  t.innerHTML=`<b>${s.nm}</b><br>${s.d.toFixed(1)} km, ${s.b.toFixed(0)}° ${cp(s.b)}<br>${s.pol}<br>Illustrative ${PN[M.pol]} emission ${s.q[M.pol]} g/s<br>Adds ${c<.05?"≈0":c.toFixed(1)} µg m⁻³ at IIT KGP now`;
+  t.hidden=false;t.style.left=Math.min(x+14,r.width-270)+"px";t.style.top=(y+14)+"px";
+});
+cv.addEventListener("mouseleave",()=>$("tip").hidden=true);
+new ResizeObserver(()=>draw()).observe(cv);
+sync();
+</script>
+</body>
+</html>
