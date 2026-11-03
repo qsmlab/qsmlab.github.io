@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b5d57">
+<title>E-Waste Survey</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#f3f5f4;--surface:#fff;--fg:#14201d;--muted:#51605b;--line:#c5cfcb;--accent:#0b5d57;--on-accent:#fff;
+  --ok:#17633a;--ok-bg:#dcefe3;--warn:#7a4a00;--warn-bg:#fbeacb;--bad:#9b1c1c;--bad-bg:#fadfdc;--idle-bg:#e4e9e7;
+  --body:Roboto,"Segoe UI",system-ui,sans-serif;--mono:ui-monospace,"Roboto Mono",Menlo,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#111816;--surface:#1a2320;--fg:#ecf2ef;--muted:#a9b7b2;--line:#3a4743;--accent:#6fd0c5;--on-accent:#06211e;
+  --ok:#8fe0ad;--ok-bg:#173526;--warn:#f4c977;--warn-bg:#3b2c10;--bad:#ffaaa3;--bad-bg:#431c1a;--idle-bg:#2a3531;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 var(--body);padding-bottom:40px}
+header{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:10px 4px}
+h1{font-size:18px;margin:0}
+.count{font-size:14px;color:var(--muted);text-align:right}
+#sync{font-size:13px;font-weight:700;padding:3px 8px;border-radius:3px;white-space:nowrap;background:var(--ok-bg);color:var(--ok)}
+#sync.wait{background:var(--warn-bg);color:var(--warn)}
+nav{display:grid;grid-template-columns:repeat(4,1fr)}
+nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:700 15px var(--body);padding:10px 2px;cursor:pointer}
+nav button[aria-current="true"]{color:var(--accent);border-color:var(--accent)}
+main{padding-block:14px}
+section{display:flex;flex-direction:column;gap:14px}
+h2{font-size:17px;margin:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.full{grid-column:1/-1}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:700;min-width:0}
+input[type=text],input[type=search],input[type=number],input[type=date],input[type=url],select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--fg);font:16px var(--body);padding:8px 10px}
+textarea{min-height:64px;resize:vertical}
+.mono{font-family:var(--mono)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+legend{font-size:14px;font-weight:700;padding:0;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips input{position:absolute;opacity:0;width:1px;height:1px}
+.chips label{display:flex;align-items:center;min-height:44px;padding:6px 12px;border:1px solid var(--line);border-radius:4px;cursor:pointer;background:var(--surface)}
+.chips input:checked+label{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.chips input:focus-visible+label{outline:3px solid var(--accent);outline-offset:1px}
+.cond{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.cond label{justify-content:center;font-weight:700}
+.cond input[value="Operational"]:checked+label{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.cond input[value="Repairable"]:checked+label{background:var(--warn);border-color:var(--warn);color:var(--surface)}
+.cond input[value="Junk"]:checked+label{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+details summary{cursor:pointer;font-weight:700;min-height:32px}
+details .grid{margin-top:10px}
+button.b{min-height:44px;padding:8px 14px;border-radius:4px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:700 15px var(--body);cursor:pointer}
+button.p{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+button.d{color:var(--bad);border-color:var(--bad)}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.row .grow{flex:1 1 150px}
+.msg{font-size:15px;color:var(--bad);font-weight:700;margin:0}
+.msg:empty{display:none}
+.note{font-size:14px;color:var(--muted);margin:0}
+.banner{padding:10px 12px;border-radius:4px;background:var(--warn-bg);color:var(--warn);font-size:15px;margin:0 0 14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:4px;z-index:20;max-width:calc(100% - 32px);font-size:15px}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.li{display:flex;gap:10px;justify-content:space-between;align-items:flex-start;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:11px 14px;color:var(--fg);font:15px var(--body);cursor:pointer}
+.li:last-child{border-bottom:0}
+.li>div{min-width:0}
+.li strong{display:block;font-size:16px}
+.sub{color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+.pill{flex:none;font-size:13px;font-weight:700;padding:3px 8px;border-radius:3px;background:var(--idle-bg);color:var(--fg)}
+.pill.Operational,.pill.Surveyed{background:var(--ok-bg);color:var(--ok)}
+.pill.Repairable,.pill.Revisit{background:var(--warn-bg);color:var(--warn)}
+.pill.Junk{background:var(--bad-bg);color:var(--bad)}
+.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px}
+.tile b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.tile span{font-size:14px;color:var(--muted)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+tr:last-child td{font-weight:700;border-bottom:0}
+.empty{padding:22px 14px;color:var(--muted);text-align:center;margin:0}
+@media (max-width:460px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.filters .s{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="top"><h1>Chemistry E-Waste Survey</h1><span id="sync"></span></div>
+  <nav id="tabs">
+    <button type="button" data-v="record" aria-current="true">Record</button>
+    <button type="button" data-v="items">Items</button>
+    <button type="button" data-v="rooms">Rooms</button>
+    <button type="button" data-v="summary">Summary</button>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <p class="banner" id="banner" hidden></p>
+
+  <section id="v-setup" hidden>
+    <div class="panel">
+      <h2>Connect to the Google Sheet</h2>
+      <p class="note">Paste the Web app URL from your Google Sheet script. It ends in /exec. If you are the surveyor, open the link you were sent instead.</p>
+      <label class="f">Web app URL<input type="url" id="setupUrl" autocomplete="off"></label>
+      <p class="msg" id="setupMsg"></p>
+      <div class="row"><button type="button" class="b p" id="setupGo">Connect</button></div>
+    </div>
+  </section>
+
+  <section id="v-record" hidden>
+    <form id="form" autocomplete="off">
+      <section>
+        <div class="panel">
+          <h2>Room</h2>
+          <div class="grid">
+            <label class="f">Building<select id="building"></select></label>
+            <label class="f">Floor<select id="floor"></select></label>
+            <label class="f">Room No<input type="text" id="room" class="mono" list="roomList"></label>
+            <label class="f">Room type<select id="roomType"></select></label>
+            <label class="f full">Room or lab name<input type="text" id="roomName"></label>
+            <label class="f full">Person in charge<input type="text" id="person"></label>
+          </div>
+          <datalist id="roomList"></datalist>
+          <p class="note" id="roomNote"></p>
+          <div class="row">
+            <button type="button" class="b grow" id="rDone">Room finished</button>
+            <button type="button" class="b grow" id="rNone">No items here</button>
+            <button type="button" class="b grow" id="rLock">Revisit later</button>
+          </div>
+        </div>
+        <div class="panel">
+          <h2 id="itemHead">New item</h2>
+          <fieldset><legend>Item</legend><div class="chips" id="cats"></div></fieldset>
+          <fieldset><legend>Condition</legend><div class="chips cond" id="conds"></div></fieldset>
+          <div class="grid">
+            <label class="f">Make<input type="text" id="make" placeholder="Dell, HP, APC"></label>
+            <label class="f">Model or specification<input type="text" id="model" placeholder="OptiPlex 3020"></label>
+            <label class="f">Serial No<input type="text" id="serial" class="mono"></label>
+            <label class="f">Asset or stock register No<input type="text" id="asset" class="mono"></label>
+            <label class="f">Purchase year<input type="number" id="year" inputmode="numeric" min="1980" max="2030"></label>
+            <label class="f">Qty<input type="number" id="qty" inputmode="numeric" min="1" step="1" value="1"></label>
+            <label class="f full">Fault or remarks<textarea id="fault"></textarea></label>
+          </div>
+          <p class="note" id="batNote" hidden>Enter voltage and capacity under Model, for example 12 V 7 Ah. Record a battery fitted inside a UPS with the UPS.</p>
+          <details id="more"><summary>More details</summary>
+            <div class="grid">
+              <label class="f">Funding source<select id="funding"></select></label>
+              <label class="f">Project No<input type="text" id="project" class="mono"></label>
+              <label class="f">Condition based on<select id="basis"></select></label>
+              <label class="f">Data storage drive inside<select id="drive"></select></label>
+              <label class="f">Confirmed by person in charge<select id="confirmed"></select></label>
+              <label class="f">Survey date<input type="date" id="date"></label>
+            </div>
+          </details>
+          <p class="msg" id="formMsg" role="alert"></p>
+          <div class="row">
+            <button type="submit" class="b p grow" id="save">Save item</button>
+            <button type="button" class="b" id="cancel" hidden>Cancel</button>
+            <button type="button" class="b d" id="del" hidden>Delete</button>
+          </div>
+        </div>
+      </section>
+    </form>
+  </section>
+
+  <section id="v-items" hidden>
+    <div class="filters">
+      <label class="f s">Search<input type="search" id="q" placeholder="Room, make, serial No"></label>
+      <label class="f">Building<select id="fB"></select></label>
+      <label class="f">Condition<select id="fC"></select></label>
+    </div>
+    <div class="list" id="itemList"></div>
+  </section>
+
+  <section id="v-rooms" hidden>
+    <div class="filters">
+      <label class="f s">Building<select id="rB"></select></label>
+      <label class="f">Status<select id="rS"></select></label>
+    </div>
+    <div class="list" id="roomsList"></div>
+  </section>
+
+  <section id="v-summary" hidden>
+    <div class="tiles" id="tiles"></div>
+    <div class="panel"><h2>By item</h2><div class="tw" id="tCat"></div></div>
+    <div class="panel"><h2>By building</h2><div class="tw" id="tBld"></div></div>
+    <div class="panel"><h2>Room coverage</h2><div class="tw" id="tRoom"></div></div>
+    <div class="panel" id="installPanel" hidden>
+      <h2>Install</h2>
+      <div class="row"><button type="button" class="b p" id="install">Add to home screen</button></div>
+    </div>
+    <div class="panel">
+      <h2>Surveyor link</h2>
+      <p class="note">Send this link only to the surveyor. Anyone who has it can add entries to the Sheet.</p>
+      <label class="f">Link<input type="text" id="shareLink" readonly></label>
+      <div class="row"><button type="button" class="b" id="copyLink">Copy link</button></div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const FLOORS=["1","2","3","4","5","6","7"];
+const BUILDINGS={"JCGPCR":FLOORS,"High Pressure":FLOORS,"Old Building":FLOORS};
+const TYPES=["Faculty office","Research lab","Teaching lab","Department office","Server / computer room","Store room","Classroom / seminar room","Corridor / common area","Other"];
+const CATS=["Computer (all-in-one)","CPU / Tower","Monitor","Laptop","Workstation / Server","Printer / Scanner","UPS","Battery","Other computer item"];
+const CONDS=["Operational","Repairable","Junk"];
+const STATUS=["Pending","Surveyed","Revisit needed","No items"];
+const TEXT=["make","model","serial","asset","fault","project"];
+const K={url:"ew_url",items:"ew_items",rooms:"ew_rooms",queue:"ew_queue",loc:"ew_loc"};
+
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+const keep=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}};
+let url=load(K.url,""),items=load(K.items,[]),rooms=load(K.rooms,[]),queue=load(K.queue,[]);
+let view="record",editId=null,dupWarned=false,syncing=false,lastPull=0;
+
+const opt=(v,l=v)=>`<option value="${esc(v)}">${esc(l)}</option>`;
+const fill=(id,vals,blank)=>{$(id).innerHTML=(blank!=null?opt("",blank):"")+vals.map(v=>opt(v)).join("")};
+fill("building",Object.keys(BUILDINGS),"Select");fill("fB",Object.keys(BUILDINGS),"All");fill("rB",Object.keys(BUILDINGS),"All");
+fill("roomType",TYPES,"Select");fill("funding",["Institute","Department","Project","Unknown"],"");
+fill("basis",["Tested by surveyor","Stated by room user","Not tested"],"");
+fill("drive",["Yes","No","Not applicable"],"");fill("confirmed",["Yes","No","Not applicable"],"");
+fill("fC",CONDS,"All");fill("rS",STATUS,"All");
+function fillFloors(){const v=$("floor").value,f=BUILDINGS[$("building").value]||[];fill("floor",f,"Select");$("floor").value=f.includes(v)?v:""}
+const radios=(el,name,vals)=>{$(el).innerHTML=vals.map((v,i)=>`<input type="radio" name="${name}" id="${name}${i}" value="${esc(v)}"><label for="${name}${i}">${esc(v)}</label>`).join("")};
+radios("cats","cat",CATS);radios("conds","cond",CONDS);
+const radioVal=n=>document.querySelector(`input[name=${n}]:checked`)?.value||"";
+const setRadio=(n,v)=>document.querySelectorAll(`input[name=${n}]`).forEach(r=>r.checked=r.value===v);
+
+const today=()=>new Date().toLocaleDateString("en-CA");
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const normRoom=s=>s.trim().toUpperCase();
+const roomId=(b,r)=>`${b}_${r}`.replace(/[^A-Za-z0-9-]/g,"-");
+const sum=a=>a.reduce((n,i)=>n+(Number(i.qty)||0),0);
+const byRoom=(b,r)=>items.filter(i=>i.building===b&&i.room===r);
+function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2600)}
+const banner=t=>{$("banner").textContent=t||"";$("banner").hidden=!t};
+
+/* ---- Saving: every change is kept on the phone first, then sent to the Sheet ---- */
+function persist(){
+  const ok=keep(K.items,items)&&keep(K.rooms,rooms)&&keep(K.queue,queue);
+  if(!ok)banner("This phone is out of storage for the app. Connect to the network so entries can be sent.");
+}
+function syncLabel(){
+  const n=queue.length,e=$("sync");e.className=n?"wait":"";e.textContent=n?`${n} waiting to send`:"All sent";
+}
+function change(op){queue.push(op);persist();syncLabel();paint();sync()}
+function upsert(arr,d){const i=arr.findIndex(x=>x.id===d.id);if(i<0)arr.push(d);else arr[i]=d}
+async function send(ops){
+  const r=await fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({ops})});
+  const j=await r.json();if(!j.ok)throw new Error(j.error||"Not saved");
+}
+async function pull(){
+  const r=await fetch(url,{cache:"no-store"}),j=await r.json();
+  if(!j.ok)throw new Error(j.error||"Not read");
+  if(!queue.length){items=j.items;rooms=j.rooms;persist();paint()}
+  lastPull=Date.now();
+}
+async function sync(force){
+  if(syncing||!url)return;syncing=true;
+  try{
+    while(queue.length){
+      const batch=queue.slice(0,40);await send(batch);
+      queue=queue.slice(batch.length);persist();syncLabel();
+    }
+    if(force||Date.now()-lastPull>60000)await pull();
+    if($("banner").dataset.net){banner("");delete $("banner").dataset.net}
+  }catch{
+    if(queue.length){banner("No connection to the Sheet. Entries are safe on this phone and will be sent automatically.");$("banner").dataset.net="1"}
+  }
+  syncing=false;syncLabel();
+}
+addEventListener("online",()=>sync());
+setInterval(()=>{if(queue.length)sync()},30000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)sync()});
+
+/* ---- Record ---- */
+const LOC=["building","floor","room","roomType","roomName","person"];
+const saveLoc=()=>keep(K.loc,Object.fromEntries(LOC.map(k=>[k,$(k).value])));
+const loc=()=>({building:$("building").value,floor:$("floor").value,room:normRoom($("room").value),roomType:$("roomType").value,roomName:$("roomName").value.trim(),person:$("person").value.trim()});
+const locMissing=l=>l.building&&l.floor&&l.room?"":"Select the building and floor, and enter the room number.";
+function clearItem(){
+  TEXT.forEach(k=>$(k).value="");$("year").value="";$("qty").value=1;
+  ["funding","basis","drive","confirmed"].forEach(k=>$(k).value="");
+  $("date").value=today();setRadio("cat","");setRadio("cond","");
+  $("more").open=false;$("batNote").hidden=true;$("formMsg").textContent="";
+  editId=null;dupWarned=false;$("itemHead").textContent="New item";$("save").textContent="Save item";
+  $("cancel").hidden=true;$("del").hidden=true;$("del").textContent="Delete";delete $("del").dataset.arm;
+}
+function roomNote(){
+  const l=loc(),r=l.building&&l.room?byRoom(l.building,l.room):[],rec=rooms.find(x=>x.building===l.building&&x.room===l.room);
+  $("roomNote").textContent=!l.room?"":`${sum(r)} ${sum(r)===1?"item":"items"} recorded in this room${rec?". Status: "+rec.status:""}`;
+  $("roomList").innerHTML=rooms.filter(x=>x.building===$("building").value).map(x=>opt(x.room)).join("");
+}
+function upsertRoom(l,status){
+  const id=roomId(l.building,l.room),old=rooms.find(r=>r.id===id);
+  const next={id,...l,status:status||old?.status||"Pending",visitDate:today(),remarks:old?.remarks||""};
+  if(old&&Object.keys(next).every(k=>old[k]===next[k]))return;
+  upsert(rooms,next);change({op:"room",id,data:next});
+}
+$("form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const l=loc(),m=$("formMsg"),cat=radioVal("cat"),cond=radioVal("cond"),qty=parseInt($("qty").value,10);
+  const miss=locMissing(l)||(!l.roomType&&"Select the room type.")||(!cat&&"Select the item.")||(!cond&&"Select the condition.")||(!(qty>=1)&&"Enter a quantity of 1 or more.");
+  if(miss){m.textContent=miss;return}
+  const id=editId||newId();
+  const d={id,...l,category:cat,condition:cond,qty,year:$("year").value?Number($("year").value):null,
+    funding:$("funding").value,basis:$("basis").value,drive:$("drive").value,confirmed:$("confirmed").value,date:$("date").value||today(),
+    createdAt:items.find(x=>x.id===id)?.createdAt||new Date().toISOString()};
+  TEXT.forEach(k=>d[k]=$(k).value.trim());
+  const dup=d.serial&&items.find(x=>x.id!==id&&(x.serial||"").toLowerCase()===d.serial.toLowerCase());
+  if(dup&&!dupWarned){dupWarned=true;m.textContent=`Serial No ${d.serial} is already recorded in room ${dup.room}, ${dup.building}. Press Save again to keep both.`;return}
+  upsert(items,d);change({op:"item",id,data:d});upsertRoom(l);saveLoc();
+  toast(`Saved ${cat} in room ${l.room}`);clearItem();roomNote();scrollTo({top:0});
+});
+for(const [id,st,t] of [["rDone","Surveyed","Room marked as finished"],["rNone","No items","Room marked as having no items"],["rLock","Revisit needed","Room marked to revisit"]]){
+  $(id).addEventListener("click",()=>{
+    const l=loc(),miss=locMissing(l);$("formMsg").textContent=miss;if(miss)return;
+    upsertRoom(l,st);saveLoc();toast(t);roomNote();
+  });
+}
+$("cancel").onclick=clearItem;
+$("del").onclick=()=>{
+  const b=$("del");
+  if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Confirm delete";return}
+  const id=editId;items=items.filter(x=>x.id!==id);change({op:"delItem",id});toast("Item deleted");clearItem();show("items");
+};
+$("cats").addEventListener("change",()=>$("batNote").hidden=radioVal("cat")!=="Battery");
+LOC.forEach(k=>$(k).addEventListener("change",()=>{
+  if(k==="building")fillFloors();
+  if(k==="room"||k==="building"){
+    $("room").value=normRoom($("room").value);
+    const r=rooms.find(x=>x.building===$("building").value&&x.room===$("room").value);
+    if(r){$("floor").value=r.floor;$("roomType").value=r.roomType;$("roomName").value=r.roomName||"";$("person").value=r.person||""}
+  }
+  saveLoc();roomNote();
+}));
+function setLoc(o){$("building").value=o.building||"";fillFloors();LOC.forEach(k=>$(k).value=o[k]||"");roomNote()}
+function editItem(id){
+  const i=items.find(x=>x.id===id);if(!i)return;
+  clearItem();setLoc(i);editId=id;
+  TEXT.forEach(k=>$(k).value=i[k]||"");
+  ["funding","basis","drive","confirmed","date"].forEach(k=>$(k).value=i[k]||"");
+  $("year").value=i.year||"";$("qty").value=i.qty||1;setRadio("cat",i.category);setRadio("cond",i.condition);
+  $("batNote").hidden=i.category!=="Battery";
+  $("itemHead").textContent="Edit item";$("save").textContent="Save changes";$("cancel").hidden=false;$("del").hidden=false;
+  show("record");scrollTo({top:0});
+}
+
+/* ---- Lists ---- */
+const LIMIT=300;
+const flr=f=>/^\d$/.test(f)?"Floor "+f:f+" floor";
+const floorRank=r=>(BUILDINGS[r.building]||[]).indexOf(r.floor);
+const roomSort=(a,b)=>a.building.localeCompare(b.building)||floorRank(a)-floorRank(b)||a.room.localeCompare(b.room,undefined,{numeric:true});
+function renderItems(){
+  const q=$("q").value.trim().toLowerCase(),fb=$("fB").value,fc=$("fC").value;
+  const rows=items.filter(i=>(!fb||i.building===fb)&&(!fc||i.condition===fc)&&(!q||[i.room,i.roomName,i.person,i.category,i.make,i.model,i.serial,i.asset].join(" ").toLowerCase().includes(q)))
+    .sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  $("itemList").innerHTML=rows.length?rows.slice(0,LIMIT).map(i=>`<button type="button" class="li" data-id="${esc(i.id)}"><div><strong>${esc(i.category)}${i.qty>1?" × "+esc(i.qty):""}</strong><div class="sub">${esc([i.make,i.model].filter(Boolean).join(" "))}</div><div class="sub"><span class="mono">${esc(i.room)}</span>, ${esc(flr(i.floor))}, ${esc(i.building)}${i.serial?` · S/N <span class="mono">${esc(i.serial)}</span>`:""}</div></div><span class="pill ${esc(i.condition)}">${esc(i.condition)}</span></button>`).join("")+(rows.length>LIMIT?`<p class="empty">Showing the latest ${LIMIT} of ${rows.length}. Search to narrow the list.</p>`:"")
+    :`<p class="empty">${items.length?"No items match this search.":"No items yet. Add the first one under Record."}</p>`;
+}
+function renderRooms(){
+  const fb=$("rB").value,fs=$("rS").value,rows=rooms.filter(r=>(!fb||r.building===fb)&&(!fs||r.status===fs)).sort(roomSort);
+  $("roomsList").innerHTML=rows.length?rows.map(r=>`<button type="button" class="li" data-id="${esc(r.id)}"><div><strong class="mono">${esc(r.room)}</strong><div class="sub">${esc([r.roomName,r.person].filter(Boolean).join(", "))}</div><div class="sub">${esc(flr(r.floor))}, ${esc(r.building)} · ${sum(byRoom(r.building,r.room))} ${sum(byRoom(r.building,r.room))===1?"item":"items"}</div></div><span class="pill ${esc(r.status.split(" ")[0])}">${esc(r.status)}</span></button>`).join("")
+    :`<p class="empty">${rooms.length?"No rooms match this filter.":"Rooms appear here as they are visited."}</p>`;
+}
+$("itemList").onclick=e=>{const b=e.target.closest(".li");if(b)editItem(b.dataset.id)};
+$("roomsList").onclick=e=>{const b=e.target.closest(".li");if(!b)return;const r=rooms.find(x=>x.id===b.dataset.id);if(r){clearItem();setLoc(r);saveLoc();show("record");scrollTo({top:0})}};
+["q","fB","fC"].forEach(i=>$(i).addEventListener("input",renderItems));
+["rB","rS"].forEach(i=>$(i).addEventListener("input",renderRooms));
+
+/* ---- Summary ---- */
+function counts(a){const c={};CONDS.forEach(k=>c[k]=sum(a.filter(i=>i.condition===k)));c.Total=sum(a);return c}
+function table(label,rows){
+  const keys=[...CONDS,"Total"],tot=counts(items);
+  return`<table><thead><tr>${[label,...keys].map(h=>`<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.map(([n,c])=>`<tr><td>${esc(n)}</td>${keys.map(k=>`<td>${c[k]}</td>`).join("")}</tr>`).join("")}<tr><td>Total</td>${keys.map(k=>`<td>${tot[k]}</td>`).join("")}</tr></tbody></table>`;
+}
+function renderSummary(){
+  const c=counts(items);
+  $("tiles").innerHTML=[["Total",c.Total],...CONDS.map(k=>[k,c[k]])].map(([l,v])=>`<div class="tile"><b>${v}</b><span>${l}</span></div>`).join("");
+  $("tCat").innerHTML=table("Item",CATS.map(n=>[n,counts(items.filter(i=>i.category===n))]));
+  $("tBld").innerHTML=table("Building",Object.keys(BUILDINGS).map(n=>[n,counts(items.filter(i=>i.building===n))]));
+  $("tRoom").innerHTML=`<table><tbody>${STATUS.map(s=>`<tr><td>${s}</td><td>${rooms.filter(r=>r.status===s).length}</td></tr>`).join("")}<tr><td>Rooms listed</td><td>${rooms.length}</td></tr></tbody></table>`;
+  $("shareLink").value=location.origin+location.pathname+"#c="+encodeURIComponent(url);
+}
+$("copyLink").onclick=async()=>{
+  try{await navigator.clipboard.writeText($("shareLink").value);toast("Link copied")}
+  catch{$("shareLink").select();toast("Link selected. Copy it from the box.")}
+};
+
+/* ---- Setup and shell ---- */
+function paint(){
+  roomNote();
+  if(view==="items")renderItems();if(view==="rooms")renderRooms();if(view==="summary")renderSummary();
+}
+function show(v){
+  view=v;
+  ["setup","record","items","rooms","summary"].forEach(n=>$("v-"+n).hidden=n!==v);
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-current",String(b.dataset.v===v)));
+  $("tabs").hidden=v==="setup";$("sync").hidden=v==="setup";
+  paint();if(v!=="setup"&&v!=="record")sync();
+}
+$("tabs").onclick=e=>{const b=e.target.closest("button");if(b)show(b.dataset.v)};
+$("setupGo").onclick=async()=>{
+  const u=$("setupUrl").value.trim(),m=$("setupMsg"),b=$("setupGo");m.textContent="";
+  if(!/^https:\/\/script\.google\.com\/.+\/exec$/.test(u)){m.textContent="This does not look right. The URL starts with https://script.google.com and ends in /exec.";return}
+  b.disabled=true;
+  try{
+    const r=await fetch(u+"?ping=1"),j=await r.json();if(!j.ok)throw 0;
+    url=u;keep(K.url,u);show("summary");sync(true);toast("Connected");
+  }catch{m.textContent="Could not reach the Sheet. Check the deployment is set to Anyone, then try again."}
+  b.disabled=false;
+};
+let installEvt=null;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;$("installPanel").hidden=false});
+$("install").onclick=async()=>{if(!installEvt)return;installEvt.prompt();await installEvt.userChoice;installEvt=null;$("installPanel").hidden=true};
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+const hash=/^#c=(.+)$/.exec(location.hash);
+if(hash){try{url=decodeURIComponent(hash[1]);keep(K.url,url)}catch{}history.replaceState(null,"",location.pathname)}
+$("date").value=today();syncLabel();
+const saved=load(K.loc,null);if(saved)setLoc(saved);
+if(url){show("record");sync(true)}else show("setup");
+</script>
+</body>
+</html>
