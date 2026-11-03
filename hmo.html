@@ -1,0 +1,2031 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Simple Hückel MO calculator: SMILES or drawn structures, symmetrization, point group, Hückel matrix, symmetry-labelled orbitals.">
+<title>Hückel MO Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+body { margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+/* Layout: a working bench — input column on the left, results sheet on the right; stacks on phones. */
+:root {
+  --bg: #f4f5f2;
+  --panel: #ffffff;
+  --ink: #15191e;
+  --muted: #59616b;
+  --line: #d6d9d3;
+  --soft: #eceee9;
+  --accent: #1c4f8a;
+  --accent-ink: #ffffff;
+  --pos: #1d56b8;
+  --neg: #c4401a;
+  --pos-fill: rgba(29, 86, 184, 0.38);
+  --neg-fill: rgba(196, 64, 26, 0.38);
+  --bond: #1f252c;
+  --sel: #e3ebf5;
+  --warn-ink: #7a4b00;
+  --warn-bg: #fdf3dc;
+  --err-ink: #8f1d12;
+  --err-bg: #fbe5e1;
+  --font-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-display: "IBM Plex Serif", Georgia, serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101316; --panel: #171b20; --ink: #e9ecef; --muted: #9aa3ad; --line: #2c333b; --soft: #1f252b;
+    --accent: #8db8f2; --accent-ink: #0d1520; --pos: #7fb0ff; --neg: #ff9466;
+    --pos-fill: rgba(127, 176, 255, 0.36); --neg-fill: rgba(255, 148, 102, 0.36); --bond: #d9dee3; --sel: #1f2a38;
+    --warn-ink: #f2c66d; --warn-bg: #2a2310; --err-ink: #ffb4a6; --err-bg: #3a1a15; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101316; --panel: #171b20; --ink: #e9ecef; --muted: #9aa3ad; --line: #2c333b; --soft: #1f252b;
+  --accent: #8db8f2; --accent-ink: #0d1520; --pos: #7fb0ff; --neg: #ff9466;
+  --pos-fill: rgba(127, 176, 255, 0.36); --neg-fill: rgba(255, 148, 102, 0.36); --bond: #d9dee3; --sel: #1f2a38;
+  --warn-ink: #f2c66d; --warn-bg: #2a2310; --err-ink: #ffb4a6; --err-bg: #3a1a15; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1400px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 18px; }
+header.top h1 { font-family: var(--font-display); font-weight: 600; font-size: 1.75rem; margin: 0; letter-spacing: -0.01em; }
+header.top p { margin: 0; color: var(--muted); max-width: 70ch; }
+.eq { font-family: var(--font-mono); font-size: 0.92em; }
+.grid { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 980px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+h2 { font-size: 1.05rem; font-weight: 600; margin: 0 0 10px; text-wrap: balance; }
+h3 { font-size: 0.95rem; font-weight: 600; margin: 0 0 8px; }
+.label { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+.hint { color: var(--muted); font-size: 0.86rem; margin: 8px 0 0; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+input[type=text], input[type=number], select {
+  font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 7px; padding: 8px 10px; min-width: 0;
+}
+input[type=text] { font-family: var(--font-mono); flex: 1 1 200px; }
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button { font: inherit; color: var(--ink); background: var(--soft); border: 1px solid var(--line); border-radius: 7px; padding: 7px 12px; cursor: pointer; }
+button:hover { border-color: var(--muted); }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button.on { background: var(--sel); border-color: var(--accent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: -4px 0 14px; }
+.tab { border: none; background: none; border-bottom: 2px solid transparent; border-radius: 0; padding: 8px 10px; color: var(--muted); font-weight: 500; }
+.tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+.tools { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; }
+.tools button { padding: 5px 9px; font-size: 0.86rem; }
+.tools .sep { width: 1px; background: var(--line); margin: 2px 3px; }
+#canvas { width: 100%; height: auto; display: block; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; touch-action: none; cursor: crosshair; }
+.err { background: var(--err-bg); color: var(--err-ink); border-radius: 8px; padding: 10px 12px; font-size: 0.92rem; }
+.warn { background: var(--warn-bg); color: var(--warn-ink); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; }
+.warn ul { margin: 0; padding-left: 18px; }
+details.opt > summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+details.opt[open] > summary { margin-bottom: 8px; }
+.ptable { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.ptable th, .ptable td { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+.ptable input { width: 64px; padding: 3px 6px; font-family: var(--font-mono); font-size: 0.85rem; }
+.ptable td.d { color: var(--muted); }
+/* summary */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px 18px; margin: 0; }
+.facts div { min-width: 0; }
+.facts dt { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+.facts dd { margin: 2px 0 0; font-size: 1.02rem; overflow-wrap: anywhere; }
+.facts dd .big { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.two { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 760px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.88rem; color: var(--muted); margin-top: 8px; }
+.toggles label { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
+svg text { font-family: var(--font-ui); }
+.figure svg { width: 100%; height: auto; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.84rem; color: var(--muted); margin-top: 6px; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; border: 1.5px solid; }
+.sw.p { background: var(--pos-fill); border-color: var(--pos); }
+.sw.n { background: var(--neg-fill); border-color: var(--neg); }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.mo { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 6px 8px; cursor: pointer; text-align: left; font: inherit; color: var(--ink); display: flex; flex-direction: column; gap: 2px; }
+.mo:hover { border-color: var(--muted); }
+.mo.sel { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--sel); }
+.mo svg { width: 100%; height: auto; display: block; }
+.mo .cap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 2px 6px; font-size: 0.82rem; padding: 0 4px; }
+.mo .en { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); padding: 0 4px; }
+.tag { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 999px; background: var(--soft); color: var(--muted); border: 1px solid var(--line); }
+.tag.h { color: var(--accent); border-color: var(--accent); }
+.detail { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 760px) { .detail { grid-template-columns: minmax(0, 1fr); } }
+.detail h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin: 0 0 4px; }
+.nav { display: flex; gap: 6px; margin-top: 10px; }
+.scroll { overflow-x: auto; max-width: 100%; }
+table.data { border-collapse: collapse; font-size: 0.86rem; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 4px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+table.data th { font-weight: 600; color: var(--muted); background: var(--soft); position: sticky; top: 0; }
+table.data td.l, table.data th.l { text-align: left; }
+table.data td.z { color: var(--muted); }
+table.data td.diag { background: var(--sel); }
+.steps { margin: 0; padding-left: 20px; }
+.steps li { margin-bottom: 5px; }
+.sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.sub { color: var(--muted); font-size: 0.86rem; }
+.empty { color: var(--muted); padding: 24px; text-align: center; }
+@media (prefers-reduced-motion: no-preference) { .mo, button { transition: border-color .12s, background-color .12s; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Hückel MO Calculator</h1>
+    <p>Enter a SMILES string or draw the molecule. The calculator symmetrizes the structure, finds the π system, builds and diagonalizes the Hückel matrix, and labels every orbital by symmetry. Energies are given as <span class="eq">E = α + xβ</span> with β &lt; 0.</p>
+  </header>
+
+  <main class="grid">
+    <section class="stack">
+      <div class="card">
+        <div class="tabs" role="tablist">
+          <button class="tab active" id="tab-smiles" role="tab" aria-selected="true">SMILES</button>
+          <button class="tab" id="tab-build" role="tab" aria-selected="false">Build from fragments</button>
+        </div>
+
+        <div id="pane-smiles">
+          <label class="label" for="smiles">SMILES</label>
+          <form class="row" id="smiles-form">
+            <input type="text" id="smiles" value="c1ccc2ccccc2c1" spellcheck="false" autocomplete="off" aria-label="SMILES string">
+            <button class="primary" type="submit" id="run-smiles">Calculate</button>
+          </form>
+          <div style="margin-top:12px">
+            <label class="label" for="examples">Examples</label>
+            <select id="examples" style="width:100%"></select>
+          </div>
+          <p class="hint">Reads the organic subset, aromatic lowercase atoms, bracket atoms such as <span class="mono">[CH-]</span>, <span class="mono">[nH]</span>, <span class="mono">[N+]</span>, <span class="mono">[CH2]</span> (radical), ring closures and branches. Hydrogens are implicit.</p>
+        </div>
+
+        <div id="pane-build" hidden>
+          <div class="tools" id="tools-a" aria-label="Drawing tools"></div>
+          <div class="tools" id="tools-b" aria-label="Elements and fragments"></div>
+          <svg id="canvas" viewBox="0 0 600 380" role="img" aria-label="Molecule drawing area"></svg>
+          <p class="hint" id="build-hint">Click a bond with a ring tool to fuse a ring. Click an atom with a ring or group to attach it. With the bond tool, click a bond to change its order (single → double → triple → aromatic) or drag from an atom.</p>
+          <div class="row" style="margin-top:10px">
+            <button id="b-undo">Undo</button>
+            <button id="b-clear">Clear</button>
+            <button id="b-load">Copy SMILES into drawing</button>
+            <span style="flex:1"></span>
+            <button class="primary" id="b-run">Calculate</button>
+          </div>
+          <p class="hint">SMILES of drawing: <span class="mono" id="b-smiles">—</span></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <details class="opt" id="opt-electrons" open>
+          <summary>π electrons and charge</summary>
+          <div class="row">
+            <label for="electrons" class="sub">Number of π electrons</label>
+            <input type="number" id="electrons" min="0" step="1" placeholder="auto" style="width:100px">
+            <button id="e-auto">Use automatic count</button>
+          </div>
+          <p class="hint">Leave blank to count electrons from the structure. Set a number to study ions, for example 2 for the cyclopropenyl cation drawn as a neutral ring.</p>
+        </details>
+      </div>
+
+      <div class="card">
+        <details class="opt" id="opt-params">
+          <summary>Heteroatom parameters</summary>
+          <p class="hint" style="margin-top:0">α<sub>X</sub> = α + h·β and β<sub>CX</sub> = k·β (Streitwieser values). Bonds between two heteroatoms use k = √(k<sub>X</sub>·k<sub>Y</sub>). Edit a value to recalculate.</p>
+          <div class="scroll"><table class="ptable" id="ptable"></table></div>
+          <div class="row" style="margin-top:8px"><button id="p-reset">Reset to defaults</button></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="stack" id="results" aria-live="polite">
+      <div class="card empty">Calculating…</div>
+    </section>
+  </main>
+</div>
+<script>
+'use strict';
+/* ================= Hückel core: parsing, geometry, symmetry, π system, diagonalisation ================= */
+
+const VALENCE = { B: [3], C: [4], N: [3, 5], O: [2], P: [3, 5], S: [2, 4, 6], F: [1], Cl: [1], Br: [1], I: [1] };
+
+/* ---------- SMILES parser ---------- */
+function parseSMILES(str) {
+  const s = str.trim();
+  if (!s) throw new Error('Enter a SMILES string.');
+  const atoms = [], bonds = [];
+  const ringOpen = {};
+  const stack = [];
+  let prev = -1, pending = null, i = 0;
+
+  function bondOrder(sym, a, b) {
+    if (sym === '=') return 2;
+    if (sym === '#') return 3;
+    if (sym === ':') return 1.5;
+    if (sym === '-' || sym === '/' || sym === '\\') return 1;
+    return (atoms[a].arom && atoms[b].arom) ? 1.5 : 1;
+  }
+  function addBond(a, b, sym) {
+    if (a === b) throw new Error('An atom cannot bond to itself.');
+    if (bonds.some(x => (x.a === a && x.b === b) || (x.a === b && x.b === a))) throw new Error('Duplicate bond between atoms ' + (a + 1) + ' and ' + (b + 1) + '.');
+    bonds.push({ a, b, order: bondOrder(sym, a, b) });
+  }
+  function addAtom(at) {
+    atoms.push(at);
+    const idx = atoms.length - 1;
+    if (prev >= 0) addBond(prev, idx, pending);
+    prev = idx; pending = null;
+  }
+
+  while (i < s.length) {
+    const ch = s[i];
+    if (ch === ' ') break;
+    if (ch === '(') { if (prev < 0) throw new Error('Branch "(" must follow an atom.'); stack.push(prev); i++; continue; }
+    if (ch === ')') { if (!stack.length) throw new Error('Unbalanced ")" at position ' + (i + 1) + '.'); prev = stack.pop(); i++; continue; }
+    if ('-=#:/\\'.includes(ch)) { pending = ch; i++; continue; }
+    if (ch === '.') { prev = -1; pending = null; i++; continue; }
+    if (/[0-9%]/.test(ch)) {
+      let num;
+      if (ch === '%') { num = s.substr(i + 1, 2); if (!/^\d\d$/.test(num)) throw new Error('Ring label after % must have two digits.'); i += 3; }
+      else { num = ch; i++; }
+      if (prev < 0) throw new Error('Ring closure ' + num + ' must follow an atom.');
+      if (ringOpen[num]) {
+        const r = ringOpen[num]; delete ringOpen[num];
+        addBond(r.atom, prev, pending || r.bond); pending = null;
+      } else { ringOpen[num] = { atom: prev, bond: pending }; pending = null; }
+      continue;
+    }
+    if (ch === '[') {
+      const j = s.indexOf(']', i);
+      if (j < 0) throw new Error('Missing "]" for bracket atom at position ' + (i + 1) + '.');
+      const content = s.slice(i + 1, j);
+      const m = content.match(/^(\d+)?(se|as|[bcnops]|[A-Z][a-z]?)(@@?|@[A-Z]{2}\d*)?(H\d*)?([+-](?:\d+|[+-]*))?(?::\d+)?$/);
+      if (!m) throw new Error('Cannot read bracket atom [' + content + '].');
+      let el = m[2], arom = false;
+      if (el[0] === el[0].toLowerCase()) { arom = true; el = el[0].toUpperCase() + el.slice(1); }
+      let h = 0;
+      if (m[4]) h = m[4].length > 1 ? parseInt(m[4].slice(1), 10) : 1;
+      let charge = 0;
+      if (m[5]) {
+        const sign = m[5][0] === '+' ? 1 : -1;
+        const rest = m[5].slice(1);
+        if (/^\d+$/.test(rest)) charge = sign * parseInt(rest, 10);
+        else charge = sign * (1 + rest.length);
+      }
+      i = j + 1;
+      addAtom({ el, arom, charge, hExp: h, bracket: true });
+      continue;
+    }
+    let tok = null;
+    if (s.startsWith('Cl', i)) tok = 'Cl';
+    else if (s.startsWith('Br', i)) tok = 'Br';
+    else if ('BCNOPSFI'.includes(ch)) tok = ch;
+    else if ('bcnops'.includes(ch)) tok = ch;
+    if (!tok) throw new Error('Unexpected character "' + ch + '" at position ' + (i + 1) + '.');
+    i += tok.length;
+    const arom = tok.length === 1 && 'bcnops'.includes(tok);
+    addAtom({ el: arom ? tok.toUpperCase() : tok, arom, charge: 0, hExp: null, bracket: false });
+  }
+  if (Object.keys(ringOpen).length) throw new Error('Ring bond ' + Object.keys(ringOpen)[0] + ' is never closed.');
+  if (stack.length) throw new Error('Unbalanced "(".');
+  if (!atoms.length) throw new Error('No atoms found.');
+  const mol = { atoms, bonds };
+  finishMol(mol);
+  return mol;
+}
+
+/* implicit hydrogens, adjacency */
+function finishMol(mol) {
+  const { atoms, bonds } = mol;
+  atoms.forEach(a => { a.sum = 0; a.hasMult = false; });
+  bonds.forEach(b => {
+    const o = b.order === 1.5 ? 1 : b.order;
+    atoms[b.a].sum += o; atoms[b.b].sum += o;
+    if (b.order > 1) { atoms[b.a].hasMult = true; atoms[b.b].hasMult = true; }
+    if (b.order === 1.5) { atoms[b.a].arom = true; atoms[b.b].arom = true; }
+  });
+  atoms.forEach(a => {
+    if (a.bracket) { a.h = a.hExp || 0; return; }
+    const vals = VALENCE[a.el];
+    if (!vals) { a.h = 0; return; }
+    let need = a.sum + (a.arom ? 1 : 0);
+    let v = vals.find(x => x >= need);
+    if (v === undefined) v = need;
+    a.h = Math.max(0, v - need);
+  });
+  buildAdj(mol);
+  return mol;
+}
+function buildAdj(mol) {
+  mol.adj = mol.atoms.map(() => []);
+  mol.bonds.forEach((b, k) => {
+    mol.adj[b.a].push({ to: b.b, bond: k, order: b.order });
+    mol.adj[b.b].push({ to: b.a, bond: k, order: b.order });
+  });
+}
+
+/* ---------- SMILES writer ---------- */
+function writeSMILES(mol) {
+  const { atoms, bonds, adj } = mol;
+  const n = atoms.length;
+  if (!n) return '';
+  const visited = new Uint8Array(n);
+  const tree = new Set(), back = new Set();
+  function dfs1(v, pe) {
+    visited[v] = 1;
+    for (const e of adj[v]) {
+      if (e.bond === pe) continue;
+      if (!visited[e.to]) { tree.add(e.bond); dfs1(e.to, e.bond); }
+      else if (!tree.has(e.bond)) back.add(e.bond);
+    }
+  }
+  const roots = [];
+  for (let v = 0; v < n; v++) if (!visited[v]) { roots.push(v); dfs1(v, -1); }
+  const ringDigit = new Map();
+  const free = [];
+  let nextDigit = 1;
+  function getDigit() { if (free.length) { free.sort((a, b) => a - b); return free.shift(); } return nextDigit++; }
+  function digitStr(d) { return d < 10 ? String(d) : '%' + d; }
+  function bondSym(b) {
+    const A = atoms[b.a], B = atoms[b.b];
+    if (b.order === 2) return '=';
+    if (b.order === 3) return '#';
+    if (b.order === 1.5) return (A.arom && B.arom) ? '' : ':';
+    if (A.arom && B.arom) return '-';
+    return '';
+  }
+  function atomStr(v) {
+    const a = atoms[v];
+    const organic = ['B', 'C', 'N', 'O', 'P', 'S', 'F', 'Cl', 'Br', 'I'];
+    const aromOk = ['B', 'C', 'N', 'O', 'P', 'S'];
+    const sym = a.arom && aromOk.includes(a.el) ? a.el.toLowerCase() : a.el;
+    let canOrganic = organic.includes(a.el) && a.charge === 0 && !a.radical;
+    if (canOrganic) {
+      const vals = VALENCE[a.el];
+      const need = a.sum + (a.arom ? 1 : 0);
+      const v = vals.find(x => x >= need);
+      const implied = v === undefined ? 0 : v - need;
+      if (implied !== a.h) canOrganic = false;
+    }
+    if (canOrganic) return sym;
+    let str = '[' + sym;
+    if (a.h === 1) str += 'H'; else if (a.h > 1) str += 'H' + a.h;
+    if (a.charge === 1) str += '+'; else if (a.charge === -1) str += '-';
+    else if (a.charge > 1) str += '+' + a.charge; else if (a.charge < -1) str += '-' + (-a.charge);
+    return str + ']';
+  }
+  const vis2 = new Uint8Array(n);
+  function dfs2(v, pe) {
+    vis2[v] = 1;
+    let out = atomStr(v);
+    for (const e of adj[v]) {
+      if (!back.has(e.bond)) continue;
+      const b = bonds[e.bond];
+      if (ringDigit.has(e.bond)) {
+        const d = ringDigit.get(e.bond);
+        out += digitStr(d); free.push(d); ringDigit.delete(e.bond); ringDigit.set(e.bond + '_closed', d);
+      } else if (!ringDigit.has(e.bond + '_closed')) {
+        const d = getDigit(); ringDigit.set(e.bond, d); out += bondSym(b) + digitStr(d);
+      }
+    }
+    const kids = adj[v].filter(e => tree.has(e.bond) && e.bond !== pe && !vis2[e.to]);
+    kids.forEach((e, idx) => {
+      if (vis2[e.to]) return;
+      const sub = bondSym(bonds[e.bond]) + dfs2(e.to, e.bond);
+      out += idx < kids.length - 1 ? '(' + sub + ')' : sub;
+    });
+    return out;
+  }
+  return roots.map(r => dfs2(r, -1)).join('.');
+}
+
+/* ---------- rings ---------- */
+function components(n, adj) {
+  const comp = new Int32Array(n).fill(-1); let c = 0;
+  for (let v = 0; v < n; v++) {
+    if (comp[v] >= 0) continue;
+    const q = [v]; comp[v] = c;
+    while (q.length) { const u = q.pop(); for (const e of adj[u]) if (comp[e.to] < 0) { comp[e.to] = c; q.push(e.to); } }
+    c++;
+  }
+  return { comp, count: c };
+}
+function findRings(mol) {
+  const n = mol.atoms.length, E = mol.bonds.length, adj = mol.adj;
+  const cyc = E - n + components(n, adj).count;
+  if (cyc <= 0) return [];
+  const cand = [], seen = new Set();
+  mol.bonds.forEach((bd, ei) => {
+    const prev = new Int32Array(n).fill(-2), prevE = new Int32Array(n).fill(-1);
+    prev[bd.a] = -1; const q = [bd.a]; let qh = 0, found = false;
+    while (qh < q.length && !found) {
+      const u = q[qh++];
+      for (const e of adj[u]) {
+        if (e.bond === ei || prev[e.to] !== -2) continue;
+        prev[e.to] = u; prevE[e.to] = e.bond; q.push(e.to);
+        if (e.to === bd.b) { found = true; break; }
+      }
+    }
+    if (!found) return;
+    const path = [], edges = [ei];
+    let v = bd.b;
+    while (v !== -1) { path.push(v); if (prevE[v] >= 0) edges.push(prevE[v]); v = prev[v]; }
+    edges.sort((x, y) => x - y);
+    const key = edges.join(',');
+    if (seen.has(key)) return;
+    seen.add(key);
+    cand.push({ atoms: path.reverse(), edges });
+  });
+  cand.sort((x, y) => x.atoms.length - y.atoms.length);
+  const basis = [], rings = [];
+  for (const c of cand) {
+    const vec = new Uint8Array(E); c.edges.forEach(e => { vec[e] = 1; });
+    for (const b of basis) if (vec[b.pivot]) for (let k = 0; k < E; k++) vec[k] ^= b.vec[k];
+    const piv = vec.indexOf(1);
+    if (piv < 0) continue;
+    basis.push({ vec, pivot: piv }); rings.push(c.atoms);
+    if (rings.length === cyc) break;
+  }
+  return rings;
+}
+
+/* ---------- 2D layout ---------- */
+const TAU = Math.PI * 2;
+function angNorm(a) { a %= TAU; if (a < 0) a += TAU; return a; }
+function isLinearCenter(mol, u) {
+  const a = mol.atoms[u];
+  const ords = mol.adj[u].map(e => e.order);
+  if (ords.includes(3)) return true;
+  if (ords.filter(o => o === 2).length >= 2 && mol.adj[u].length === 2 && a.h === 0) return true;
+  return false;
+}
+function placeRings(rings) {
+  const P = new Map();
+  const done = new Array(rings.length).fill(false);
+  let start = 0, best = -1;
+  rings.forEach((r, i) => {
+    let s = 0; rings.forEach((q, j) => { if (i !== j) s += r.filter(a => q.includes(a)).length; });
+    s = s * 100 + r.length;
+    if (s > best) { best = s; start = i; }
+  });
+  const r0 = rings[start], m0 = r0.length, R0 = 1 / (2 * Math.sin(Math.PI / m0));
+  r0.forEach((a, j) => { const t = Math.PI / 2 + TAU * j / m0; P.set(a, [R0 * Math.cos(t), R0 * Math.sin(t)]); });
+  done[start] = true;
+  for (;;) {
+    let pick = -1, cnt = 0;
+    rings.forEach((r, i) => { if (done[i]) return; const c = r.filter(a => P.has(a)).length; if (c > cnt) { cnt = c; pick = i; } });
+    if (pick < 0) break;
+    const r = rings[pick], m = r.length, R = 1 / (2 * Math.sin(Math.PI / m)), ap = 1 / (2 * Math.tan(Math.PI / m));
+    let k = -1;
+    for (let j = 0; j < m; j++) if (P.has(r[j]) && P.has(r[(j + 1) % m])) { k = j; break; }
+    const placedAll = [...P.values()];
+    if (k >= 0) {
+      const a = P.get(r[k]), b = P.get(r[(k + 1) % m]);
+      const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      const ex = b[0] - a[0], ey = b[1] - a[1], L = Math.hypot(ex, ey) || 1;
+      const nx = -ey / L, ny = ex / L;
+      const scale = L;
+      let bestScore = Infinity, bestPred = null;
+      for (const sgn of [1, -1]) {
+        const C = [mid[0] + sgn * nx * ap * scale, mid[1] + sgn * ny * ap * scale];
+        const ta = Math.atan2(a[1] - C[1], a[0] - C[0]), tb = Math.atan2(b[1] - C[1], b[0] - C[0]);
+        let d = tb - ta; while (d > Math.PI) d -= TAU; while (d < -Math.PI) d += TAU;
+        const step = Math.sign(d) * TAU / m;
+        const pred = [];
+        let score = 0;
+        for (let j = 0; j < m; j++) {
+          const at = r[(k + j) % m];
+          const p = [C[0] + R * scale * Math.cos(ta + j * step), C[1] + R * scale * Math.sin(ta + j * step)];
+          pred.push([at, p]);
+          if (P.has(at)) { const q = P.get(at); score += (q[0] - p[0]) ** 2 + (q[1] - p[1]) ** 2; }
+          else for (const q of placedAll) { const dd = Math.hypot(q[0] - p[0], q[1] - p[1]); if (dd < 0.8) score += (0.8 - dd) * 10; }
+        }
+        if (score < bestScore) { bestScore = score; bestPred = pred; }
+      }
+      bestPred.forEach(([at, p]) => { if (!P.has(at)) P.set(at, p); });
+    } else {
+      const js = r.findIndex(a => P.has(a));
+      const sp = P.get(r[js]);
+      let cx = 0, cy = 0; placedAll.forEach(p => { cx += p[0]; cy += p[1]; }); cx /= placedAll.length; cy /= placedAll.length;
+      let dx = sp[0] - cx, dy = sp[1] - cy; const dl = Math.hypot(dx, dy) || 1; dx /= dl; dy /= dl;
+      const C = [sp[0] + dx * R, sp[1] + dy * R];
+      const t0 = Math.atan2(sp[1] - C[1], sp[0] - C[0]);
+      for (let j = 0; j < m; j++) { const at = r[(js + j) % m]; if (!P.has(at)) P.set(at, [C[0] + R * Math.cos(t0 + j * TAU / m), C[1] + R * Math.sin(t0 + j * TAU / m)]); }
+    }
+    done[pick] = true;
+  }
+  return P;
+}
+
+function layoutMol(mol) {
+  const n = mol.atoms.length, adj = mol.adj;
+  const rings = findRings(mol);
+  mol.rings = rings;
+  const par = rings.map((_, i) => i);
+  const fnd = x => { while (par[x] !== x) { par[x] = par[par[x]]; x = par[x]; } return x; };
+  for (let i = 0; i < rings.length; i++) for (let j = i + 1; j < rings.length; j++)
+    if (rings[i].some(a => rings[j].includes(a))) par[fnd(i)] = fnd(j);
+  const sysMap = new Map();
+  rings.forEach((r, i) => { const k = fnd(i); if (!sysMap.has(k)) sysMap.set(k, []); sysMap.get(k).push(r); });
+  const systems = [...sysMap.values()].map(rs => ({ rings: rs, atoms: new Set(rs.flat()), local: placeRings(rs), placed: false }));
+  const atomSys = new Int32Array(n).fill(-1);
+  systems.forEach((s, i) => s.atoms.forEach(a => { atomSys[a] = i; }));
+
+  const pos = new Array(n).fill(null);
+  const placed = new Uint8Array(n);
+  const { comp, count } = components(n, adj);
+  const compBoxes = [];
+  for (let c = 0; c < count; c++) {
+    const members = []; for (let v = 0; v < n; v++) if (comp[v] === c) members.push(v);
+    const queue = [];
+    let rootSys = -1, rootSize = 0;
+    systems.forEach((s, i) => { const first = [...s.atoms][0]; if (comp[first] === c && s.atoms.size > rootSize) { rootSize = s.atoms.size; rootSys = i; } });
+    if (rootSys >= 0) {
+      const s = systems[rootSys]; s.placed = true;
+      s.atoms.forEach(a => { pos[a] = s.local.get(a).slice(); placed[a] = 1; queue.push(a); });
+    } else {
+      // graph centre
+      let root = members[0], bestEcc = Infinity;
+      for (const v of members) {
+        const dist = new Map([[v, 0]]); const q = [v]; let ecc = 0;
+        while (q.length) { const u = q.shift(); for (const e of adj[u]) if (!dist.has(e.to)) { dist.set(e.to, dist.get(u) + 1); ecc = Math.max(ecc, dist.get(u) + 1); q.push(e.to); } }
+        if (ecc < bestEcc) { bestEcc = ecc; root = v; }
+      }
+      pos[root] = [0, 0]; placed[root] = 1; queue.push(root);
+    }
+    while (queue.length) {
+      const u = queue.shift();
+      const nb = adj[u];
+      const pl = nb.filter(e => placed[e.to]).map(e => e.to);
+      const nw = nb.filter(e => !placed[e.to]).map(e => e.to);
+      if (!nw.length) continue;
+      const dirs = chooseDirs(mol, pos, placed, u, pl, nw.length);
+      nw.forEach((v, idx) => {
+        if (placed[v]) return;
+        const ang = dirs[idx];
+        const dv = [Math.cos(ang), Math.sin(ang)];
+        if (atomSys[v] >= 0 && !systems[atomSys[v]].placed) {
+          const s = systems[atomSys[v]]; s.placed = true;
+          const Lv = s.local.get(v);
+          const inner = adj[v].filter(e => s.atoms.has(e.to)).map(e => s.local.get(e.to));
+          let ox = 0, oy = 0; inner.forEach(p => { ox += p[0]; oy += p[1]; });
+          ox = Lv[0] - ox / inner.length; oy = Lv[1] - oy / inner.length;
+          const rot = (ang + Math.PI) - Math.atan2(oy, ox);
+          const cr = Math.cos(rot), sr = Math.sin(rot);
+          const T = [pos[u][0] + dv[0], pos[u][1] + dv[1]];
+          s.atoms.forEach(a => {
+            if (placed[a]) return;
+            const L = s.local.get(a); const x = L[0] - Lv[0], y = L[1] - Lv[1];
+            pos[a] = [T[0] + cr * x - sr * y, T[1] + sr * x + cr * y]; placed[a] = 1; queue.push(a);
+          });
+        } else {
+          pos[v] = [pos[u][0] + dv[0], pos[u][1] + dv[1]]; placed[v] = 1; queue.push(v);
+        }
+      });
+    }
+    let minx = Infinity, maxx = -Infinity, miny = Infinity, maxy = -Infinity;
+    members.forEach(v => { minx = Math.min(minx, pos[v][0]); maxx = Math.max(maxx, pos[v][0]); miny = Math.min(miny, pos[v][1]); maxy = Math.max(maxy, pos[v][1]); });
+    compBoxes.push({ members, minx, maxx, miny, maxy });
+  }
+  let xoff = 0;
+  compBoxes.forEach(b => {
+    const cy = (b.miny + b.maxy) / 2;
+    b.members.forEach(v => { pos[v][0] += xoff - b.minx; pos[v][1] -= cy; });
+    xoff += (b.maxx - b.minx) + 2;
+  });
+  relax(mol, pos);
+  return pos;
+}
+function chooseDirs(mol, pos, placed, u, pl, k) {
+  const pu = pos[u];
+  const angs = pl.map(w => Math.atan2(pos[w][1] - pu[1], pos[w][0] - pu[0]));
+  const lin = isLinearCenter(mol, u);
+  if (!angs.length) {
+    if (k === 1) return [0];
+    if (k === 2) return lin ? [Math.PI, 0] : [7 * Math.PI / 6, -Math.PI / 6];
+    if (k === 3) return [Math.PI / 2, 7 * Math.PI / 6, -Math.PI / 6];
+    return Array.from({ length: k }, (_, j) => Math.PI / 2 + TAU * j / k);
+  }
+  if (angs.length === 1) {
+    const back = angs[0];
+    if (lin && k === 1) return [back + Math.PI];
+    if (k === 1) {
+      const p = pl[0];
+      const cands = [back + 2 * Math.PI / 3, back - 2 * Math.PI / 3];
+      const g = mol.adj[p].map(e => e.to).filter(w => w !== u && placed[w]);
+      if (g.length) {
+        const ax = pu[0] - pos[p][0], ay = pu[1] - pos[p][1];
+        const side = (q) => Math.sign(ax * (q[1] - pos[p][1]) - ay * (q[0] - pos[p][0]));
+        const gs = side(pos[g[0]]);
+        for (const c of cands) { const q = [pu[0] + Math.cos(c), pu[1] + Math.sin(c)]; if (side(q) !== gs) return [c]; }
+      }
+      // otherwise choose the candidate farthest from all placed atoms
+      let best = cands[0], bd = -1;
+      for (const c of cands) {
+        const q = [pu[0] + Math.cos(c), pu[1] + Math.sin(c)];
+        let md = Infinity; pos.forEach((P, i) => { if (P && placed[i] && i !== u) md = Math.min(md, Math.hypot(P[0] - q[0], P[1] - q[1])); });
+        if (md > bd + 1e-9) { bd = md; best = c; }
+      }
+      return [best];
+    }
+    if (k === 2) return [back + 2 * Math.PI / 3, back - 2 * Math.PI / 3];
+    return Array.from({ length: k }, (_, j) => back + TAU * (j + 1) / (k + 1));
+  }
+  const s = angs.map(angNorm).sort((a, b) => a - b);
+  let gi = 0, gsz = -1;
+  for (let j = 0; j < s.length; j++) { const nxt = j + 1 < s.length ? s[j + 1] : s[0] + TAU; if (nxt - s[j] > gsz) { gsz = nxt - s[j]; gi = j; } }
+  return Array.from({ length: k }, (_, j) => s[gi] + gsz * (j + 1) / (k + 1));
+}
+function relax(mol, pos) {
+  const n = pos.length; if (n < 3) return;
+  const near = new Set();
+  mol.bonds.forEach(b => { near.add(b.a + ',' + b.b); near.add(b.b + ',' + b.a); });
+  const ang = [];
+  for (let u = 0; u < n; u++) {
+    const nb = mol.adj[u].map(e => e.to);
+    for (let i = 0; i < nb.length; i++) for (let j = i + 1; j < nb.length; j++) {
+      const a = nb[i], b = nb[j];
+      near.add(a + ',' + b); near.add(b + ',' + a);
+      ang.push([a, b, Math.hypot(pos[a][0] - pos[b][0], pos[a][1] - pos[b][1])]);
+    }
+  }
+  let minD = Infinity;
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (!near.has(i + ',' + j)) minD = Math.min(minD, Math.hypot(pos[i][0] - pos[j][0], pos[i][1] - pos[j][1]));
+  if (minD > 0.8) return;
+  for (let it = 0; it < 300; it++) {
+    const f = pos.map(() => [0, 0]);
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+      if (near.has(i + ',' + j)) continue;
+      let dx = pos[j][0] - pos[i][0], dy = pos[j][1] - pos[i][1]; let d = Math.hypot(dx, dy);
+      if (d < 1e-6) { dx = 0.01 * (i - j); dy = 0.013; d = Math.hypot(dx, dy); }
+      if (d < 1.3) { const m = (1.3 - d) * 0.15 / d; f[i][0] -= dx * m; f[i][1] -= dy * m; f[j][0] += dx * m; f[j][1] += dy * m; }
+    }
+    mol.bonds.forEach(b => {
+      const dx = pos[b.b][0] - pos[b.a][0], dy = pos[b.b][1] - pos[b.a][1], d = Math.hypot(dx, dy) || 1e-6;
+      const m = (d - 1) * 0.3 / d; f[b.a][0] += dx * m; f[b.a][1] += dy * m; f[b.b][0] -= dx * m; f[b.b][1] -= dy * m;
+    });
+    ang.forEach(([a, b, t]) => {
+      const dx = pos[b][0] - pos[a][0], dy = pos[b][1] - pos[a][1], d = Math.hypot(dx, dy) || 1e-6;
+      const m = (d - t) * 0.15 / d; f[a][0] += dx * m; f[a][1] += dy * m; f[b][0] -= dx * m; f[b][1] -= dy * m;
+    });
+    for (let i = 0; i < n; i++) { pos[i][0] += f[i][0]; pos[i][1] += f[i][1]; }
+  }
+}
+
+/* ---------- graph automorphisms ---------- */
+function refineColors(n, nbrs, init) {
+  let col = init.slice(), nClass = new Set(col).size;
+  for (let it = 0; it < n + 2; it++) {
+    const keys = col.map((c, v) => c + '|' + nbrs[v].map(e => col[e.to] + ':' + e.ord).sort().join(','));
+    const uniq = [...new Set(keys)].sort();
+    const map = new Map(uniq.map((k, i) => [k, i]));
+    const nc = keys.map(k => map.get(k));
+    const cnt = uniq.length;
+    col = nc;
+    if (cnt === nClass) break;
+    nClass = cnt;
+  }
+  return col;
+}
+function findAutomorphisms(n, nbrs, colorKeys, limit, timeLimitMs) {
+  const uniq = [...new Set(colorKeys)].sort();
+  const init = colorKeys.map(k => uniq.indexOf(k));
+  const col = refineColors(n, nbrs, init);
+  const B = Array.from({ length: n }, () => new Map());
+  nbrs.forEach((l, v) => l.forEach(e => B[v].set(e.to, e.ord)));
+  const classSize = {}; col.forEach(c => { classSize[c] = (classSize[c] || 0) + 1; });
+  const order = [], parent = new Int32Array(n).fill(-1), seen = new Uint8Array(n);
+  while (order.length < n) {
+    let start = -1, bs = Infinity;
+    for (let v = 0; v < n; v++) if (!seen[v] && classSize[col[v]] < bs) { bs = classSize[col[v]]; start = v; }
+    seen[start] = 1; const q = [start];
+    while (q.length) { const u = q.shift(); order.push(u); for (const e of nbrs[u]) if (!seen[e.to]) { seen[e.to] = 1; parent[e.to] = u; q.push(e.to); } }
+  }
+  const map = new Int32Array(n).fill(-1), used = new Uint8Array(n);
+  const out = [];
+  const t0 = Date.now();
+  let aborted = false;
+  function consistent(v, w) {
+    for (const e of nbrs[v]) { if (map[e.to] >= 0 && B[w].get(map[e.to]) !== e.ord) return false; }
+    let cv = 0, cw = 0;
+    for (const e of nbrs[v]) if (map[e.to] >= 0) cv++;
+    for (const e of nbrs[w]) if (used[e.to]) cw++;
+    return cv === cw;
+  }
+  function rec(k) {
+    if (out.length >= limit) { aborted = true; return; }
+    if ((k & 7) === 0 && Date.now() - t0 > timeLimitMs) { aborted = true; return; }
+    if (k === n) { out.push(Array.from(map)); return; }
+    const v = order[k];
+    const cands = parent[v] >= 0 ? nbrs[map[parent[v]]].map(e => e.to) : [...Array(n).keys()];
+    for (const w of cands) {
+      if (used[w] || col[w] !== col[v] || nbrs[w].length !== nbrs[v].length) continue;
+      if (!consistent(v, w)) continue;
+      map[v] = w; used[w] = 1;
+      rec(k + 1);
+      map[v] = -1; used[w] = 0;
+      if (aborted) return;
+    }
+  }
+  rec(0);
+  return { autos: out, aborted };
+}
+
+/* ---------- symmetrisation and point group ---------- */
+function procrustes(X, Y) {
+  let N00 = 0, N01 = 0, N10 = 0, N11 = 0;
+  for (let i = 0; i < X.length; i++) { N00 += X[i][0] * Y[i][0]; N01 += X[i][0] * Y[i][1]; N10 += X[i][1] * Y[i][0]; N11 += X[i][1] * Y[i][1]; }
+  const th = Math.atan2(N01 - N10, N00 + N11);
+  const Rr = [[Math.cos(th), -Math.sin(th)], [Math.sin(th), Math.cos(th)]];
+  const ph2 = Math.atan2(N10 + N01, N00 - N11);
+  const Rf = [[Math.cos(ph2), Math.sin(ph2)], [Math.sin(ph2), -Math.cos(ph2)]];
+  const res = R => { let s = 0; for (let i = 0; i < X.length; i++) { const x = R[0][0] * X[i][0] + R[0][1] * X[i][1], y = R[1][0] * X[i][0] + R[1][1] * X[i][1]; s += (x - Y[i][0]) ** 2 + (y - Y[i][1]) ** 2; } return Math.sqrt(s / X.length); };
+  const er = res(Rr), ef = res(Rf);
+  return er <= ef ? { R: Rr, rms: er, det: 1 } : { R: Rf, rms: ef, det: -1 };
+}
+function compose(g, h) { return g.map((_, i) => g[h[i]]); }
+function permKey(p) { return p.join(','); }
+function closure(gens, maxSize) {
+  const n = gens[0].length;
+  const id = [...Array(n).keys()];
+  const els = new Map([[permKey(id), id]]);
+  const q = [id];
+  while (q.length) {
+    const a = q.shift();
+    for (const g of gens) {
+      const c = compose(g, a), k = permKey(c);
+      if (!els.has(k)) { els.set(k, c); q.push(c); if (els.size > maxSize) return null; }
+    }
+  }
+  return [...els.values()];
+}
+function centred(coords) {
+  let cx = 0, cy = 0; coords.forEach(p => { cx += p[0]; cy += p[1]; });
+  cx /= coords.length; cy /= coords.length;
+  return coords.map(p => [p[0] - cx, p[1] - cy]);
+}
+function symmetrize(coords, autos) {
+  let X = centred(coords);
+  const n = X.length;
+  const fit = g => procrustes(X, g.map((_, i) => X[g[i]]));
+  const scored = autos.map(g => ({ g, ...fit(g) })).sort((a, b) => a.rms - b.rms);
+  const id = [...Array(n).keys()];
+  let group = [id];
+  const has = new Set([permKey(id)]);
+  const rmsOf = new Map(scored.map(s => [permKey(s.g), s.rms]));
+  for (const s of scored) {
+    if (s.rms > 0.4) break;
+    if (has.has(permKey(s.g))) continue;
+    const cl = closure([...group.filter(p => permKey(p) !== permKey(id)), s.g], 48);
+    if (!cl) continue;
+    if (cl.every(p => (rmsOf.get(permKey(p)) ?? fit(p).rms) < 0.55)) { group = cl; group.forEach(p => has.add(permKey(p))); }
+  }
+  const rmsBefore = group.length > 1 ? Math.max(...group.map(p => fit(p).rms)) : 0;
+  let ops = group.map(p => ({ perm: p, ...fit(p) }));
+  for (let it = 0; it < 60 && group.length > 1; it++) {
+    const Xn = X.map(() => [0, 0]);
+    for (const o of ops) {
+      const R = o.R;
+      for (let i = 0; i < n; i++) {
+        const y = X[o.perm[i]];
+        Xn[i][0] += R[0][0] * y[0] + R[1][0] * y[1];
+        Xn[i][1] += R[0][1] * y[0] + R[1][1] * y[1];
+      }
+    }
+    X = Xn.map(p => [p[0] / ops.length, p[1] / ops.length]);
+    ops = group.map(p => ({ perm: p, ...fit(p) }));
+  }
+  const rmsAfter = group.length > 1 ? Math.max(...ops.map(o => o.rms)) : 0;
+  return { coords: X, ops, rmsBefore, rmsAfter };
+}
+function classifyOps(ops) {
+  const rots = ops.filter(o => o.det > 0), refl = ops.filter(o => o.det < 0);
+  let n = 1;
+  rots.forEach(o => {
+    const th = Math.abs(Math.atan2(o.R[1][0], o.R[0][0]));
+    if (th > 1e-3) n = Math.max(n, Math.round(TAU / th));
+  });
+  rots.forEach(o => {
+    const th = angNorm(Math.atan2(o.R[1][0], o.R[0][0]));
+    o.type = 'R'; o.k = Math.round(th / (TAU / n)) % n; o.s = 1;
+  });
+  let phi0 = null;
+  refl.forEach(o => {
+    o.type = 'F'; o.s = -1;
+    o.phi = Math.atan2(o.R[1][0], o.R[0][0]) / 2;
+    if (phi0 === null) phi0 = o.phi;
+    const step = Math.PI / n;
+    o.cls = n % 2 === 0 ? (((Math.round((o.phi - phi0) / step) % 2) + 2) % 2 === 0 ? 'A' : 'B') : 'A';
+    o.fixed = o.perm.filter((v, i) => v === i).length;
+  });
+  return { n, kind: refl.length ? 'D' : 'C', rots, refl };
+}
+
+/* irreducible representations of the in-plane symmetry group, expressed for p(π) orbitals.
+   Each operation o carries type 'R' (rotation C_n^k about the normal) or 'F' (in-plane C2 axis /
+   in-plane line). Character of a π-MO set under o is  o.s * trace(V^T P_o V). */
+function makeIrreps(pg) {
+  const n = pg.n, L = [];
+  const lab = (base, num, gu, prime) => ({ base, num: num || '', gu: gu || '', prime: prime || '' });
+  const cosk = (j, k) => 2 * Math.cos(TAU * j * k / n);
+  if (pg.kind === 'linear') {
+    if (pg.inv) { L.push({ lab: lab('π', '', 'u'), dim: 1, chi: o => o.type === 'F' ? -1 : 1 }); L.push({ lab: lab('π', '', 'g'), dim: 1, chi: o => 1 }); }
+    else L.push({ lab: lab('π'), dim: 1, chi: () => 1 });
+    return L;
+  }
+  if (pg.kind === 'C' && n === 1) { L.push({ lab: lab('a', '', '', '″'), dim: 1, chi: () => 1 }); return L; }
+  if (pg.kind === 'C' && n === 2) {
+    L.push({ lab: lab('a', '', 'u'), dim: 1, chi: () => 1 });
+    L.push({ lab: lab('b', '', 'g'), dim: 1, chi: o => o.k === 1 ? -1 : 1 });
+    return L;
+  }
+  if (pg.kind === 'D' && n === 1) {
+    L.push({ lab: lab('a', '2'), dim: 1, chi: () => 1 });
+    L.push({ lab: lab('b', '1'), dim: 1, chi: o => o.type === 'F' ? -1 : 1 });
+    return L;
+  }
+  if (pg.kind === 'D' && n === 2) {
+    // D2h, z normal to the plane, x along the long in-plane axis
+    const t = (cz, cx, cy) => o => o.type === 'R' ? (o.k === 1 ? cz : 1) : (o.axis === 'x' ? cx : cy);
+    L.push({ lab: lab('a', '', 'u'), dim: 1, chi: t(1, 1, 1) });
+    L.push({ lab: lab('b', '1', 'u'), dim: 1, chi: t(1, -1, -1) });
+    L.push({ lab: lab('b', '2', 'g'), dim: 1, chi: t(-1, -1, 1) });
+    L.push({ lab: lab('b', '3', 'g'), dim: 1, chi: t(-1, 1, -1) });
+    return L;
+  }
+  const even = n % 2 === 0;
+  const suffix = c2val => even ? { gu: c2val < 0 ? 'g' : 'u', prime: '' } : { gu: '', prime: '″' };
+  const nE = Math.floor((n - 1) / 2);
+  if (pg.kind === 'D') {
+    const mk = (base, num, dim, chi) => { const c2 = even ? chi({ type: 'R', k: n / 2 }) / dim : 1; const s = suffix(c2); L.push({ lab: lab(base, num, s.gu, s.prime), dim, chi }); };
+    mk('a', '1', 1, () => 1);
+    mk('a', '2', 1, o => o.type === 'F' ? -1 : 1);
+    if (even) {
+      mk('b', '1', 1, o => o.type === 'R' ? (o.k % 2 ? -1 : 1) : (o.cls === pg.primeCls ? 1 : -1));
+      mk('b', '2', 1, o => o.type === 'R' ? (o.k % 2 ? -1 : 1) : (o.cls === pg.primeCls ? -1 : 1));
+    }
+    for (let j = 1; j <= nE; j++) mk('e', nE > 1 ? String(j) : '', 2, o => o.type === 'R' ? cosk(j, o.k) : 0);
+    return L;
+  }
+  // C_nh, n >= 3
+  const mk = (base, num, dim, chi) => { const c2 = even ? chi({ type: 'R', k: n / 2 }) / dim : 1; const s = suffix(c2); L.push({ lab: lab(base, num, s.gu, s.prime), dim, chi }); };
+  mk('a', '', 1, () => 1);
+  if (even) mk('b', '', 1, o => o.k % 2 ? -1 : 1);
+  for (let j = 1; j <= nE; j++) mk('e', nE > 1 ? String(j) : '', 2, o => cosk(j, o.k));
+  return L;
+}
+function pointGroupName(pg) {
+  if (pg.kind === 'linear') return pg.inv ? 'D∞h' : 'C∞v';
+  if (pg.kind === 'C') return pg.n === 1 ? 'Cs' : 'C' + pg.n + 'h';
+  return pg.n === 1 ? 'C2v' : 'D' + pg.n + 'h';
+}
+function pointGroupOrder(pg) {
+  if (pg.kind === 'linear') return Infinity;
+  return 2 * pg.ops.length;
+}
+
+function isCollinear(coords) {
+  if (coords.length < 3) return true;
+  const X = centred(coords);
+  let sxx = 0, sxy = 0, syy = 0; X.forEach(p => { sxx += p[0] * p[0]; sxy += p[0] * p[1]; syy += p[1] * p[1]; });
+  const tr = sxx + syy, det = sxx * syy - sxy * sxy;
+  const l2 = tr / 2 - Math.sqrt(Math.max(0, tr * tr / 4 - det));
+  return l2 / coords.length < 1e-4;
+}
+function isLinearMolecule(mol) {
+  return mol.atoms.every((a, i) => mol.adj[i].length + a.h <= 2 && (mol.adj[i].length < 2 || isLinearCenter(mol, i)));
+}
+
+function analyzeSymmetry(mol, coordsIn, keyOf, bondLabel) {
+  const n = mol.atoms.length;
+  let coords = coordsIn.map(p => p.slice());
+  keyOf = keyOf || ((a) => [a.el, a.arom ? 1 : 0, a.charge, a.h].join('|'));
+  bondLabel = bondLabel || ((e) => e.order);
+  const info = { autoCount: 0, aborted: false };
+  if (n >= 2 && isCollinear(coords) && isLinearMolecule(mol)) {
+    const nbrs = mol.adj.map((l, u) => l.map(e => ({ to: e.to, ord: bondLabel(u, e) })));
+    const { autos, aborted } = findAutomorphisms(n, nbrs, mol.atoms.map(keyOf), 200, 1500);
+    info.autoCount = autos.length; info.aborted = aborted;
+    const X = centred(coords);
+    const ops = [{ perm: [...Array(n).keys()], type: 'R', k: 0, s: 1, det: 1, R: [[1, 0], [0, 1]], rms: 0 }];
+    const rev = autos.find(g => g.some((v, i) => v !== i));
+    if (rev) ops.push({ perm: rev, type: 'F', s: -1, det: -1, R: [[-1, 0], [0, 1]], rms: 0, cls: 'A', fixed: rev.filter((v, i) => v === i).length });
+    const pg = { kind: 'linear', inv: !!rev, n: 1, ops };
+    return { pg, coords: X, rmsBefore: 0, rmsAfter: 0, autosHeavy: autos, ...info };
+  }
+  // graph used for symmetry: heavy atoms, plus explicit H when heavy atoms alone are collinear
+  let gn = n, nbrs = mol.adj.map((l, u) => l.map(e => ({ to: e.to, ord: bondLabel(u, e) }))), keys = mol.atoms.map(keyOf), gcoords = coords.map(p => p.slice());
+  if (n <= 2 || isCollinear(coords)) {
+    const X = centred(coords);
+    let ax = [1, 0];
+    if (n >= 2) { const dx = X[n - 1][0] - X[0][0], dy = X[n - 1][1] - X[0][1], d = Math.hypot(dx, dy) || 1; ax = [dx / d, dy / d]; }
+    gcoords = X.map(p => p.slice());
+    mol.atoms.forEach((a, u) => {
+      if (!a.h) return;
+      const angs = mol.adj[u].map(e => Math.atan2(X[e.to][1] - X[u][1], X[e.to][0] - X[u][0]));
+      let dirs;
+      const total = angs.length + a.h;
+      if (total <= 2 && isLinearCenter(mol, u)) dirs = angs.length ? [angs[0] + Math.PI] : [Math.atan2(ax[1], ax[0])];
+      else if (!angs.length) dirs = Array.from({ length: a.h }, (_, j) => TAU * j / a.h);
+      else if (a.h === 1) dirs = [angs[0] + 2 * Math.PI / 3];
+      else if (a.h === 2) dirs = [angs[0] + 2 * Math.PI / 3, angs[0] - 2 * Math.PI / 3];
+      else dirs = Array.from({ length: a.h }, (_, j) => angs[0] + TAU * (j + 1) / (a.h + 1));
+      dirs.forEach(t => {
+        const hi = gn++;
+        gcoords.push([X[u][0] + 0.75 * Math.cos(t), X[u][1] + 0.75 * Math.sin(t)]);
+        nbrs.push([{ to: u, ord: 1 }]); nbrs[u].push({ to: hi, ord: 1 }); keys.push('H');
+      });
+    });
+  }
+  const { autos, aborted } = findAutomorphisms(gn, nbrs, keys, 4000, 2500);
+  info.autoCount = autos.length; info.aborted = aborted;
+  const sym = symmetrize(gcoords, autos);
+  const cls = classifyOps(sym.ops);
+  const pg = { kind: cls.kind, n: cls.n, ops: sym.ops.map(o => ({ ...o, perm: o.perm.slice(0, n) })) };
+  if (pg.kind === 'D' && pg.n % 2 === 0 && pg.n > 2) {
+    let a = 0, b = 0; pg.ops.forEach(o => { if (o.type === 'F') { if (o.cls === 'A') a += o.fixed; else b += o.fixed; } });
+    pg.primeCls = a >= b ? 'A' : 'B';
+  }
+  const Xh = sym.coords.slice(0, n);
+  if (pg.kind === 'D' && pg.n === 2) {
+    pg.ops.forEach(o => {
+      if (o.type !== 'F') return;
+      const c = Math.cos(o.phi), s = Math.sin(o.phi);
+      o.var = Xh.reduce((acc, p) => acc + (p[0] * c + p[1] * s) ** 2, 0);
+    });
+    const fs = pg.ops.filter(o => o.type === 'F');
+    const xop = fs[0].var >= fs[1].var ? fs[0] : fs[1];
+    fs.forEach(o => { o.axis = o === xop ? 'x' : 'y'; });
+  }
+  return { pg, coords: Xh, rmsBefore: sym.rmsBefore, rmsAfter: sym.rmsAfter, autosHeavy: autos.map(g => g.slice(0, n)), ...info };
+}
+
+/* orient for display: long axis horizontal */
+function orientCoords(coords) {
+  const X = centred(coords);
+  if (X.length < 2) return { X, th: 0 };
+  let sxx = 0, sxy = 0, syy = 0; X.forEach(p => { sxx += p[0] * p[0]; sxy += p[0] * p[1]; syy += p[1] * p[1]; });
+  let th = 0.5 * Math.atan2(2 * sxy, sxx - syy);
+  if (Math.abs(sxx - syy) < 1e-6 && Math.abs(sxy) < 1e-6) {
+    // isotropic (e.g. benzene): put a mirror line, if any, horizontal
+    th = 0;
+  }
+  const c = Math.cos(-th), s = Math.sin(-th);
+  return { X: X.map(p => [c * p[0] - s * p[1], s * p[0] + c * p[1]]), th };
+}
+
+function hasCrossings(mol, P) {
+  const B = mol.bonds;
+  const cross = (p, q, r, t) => {
+    const d = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+    const d1 = d(p, q, r), d2 = d(p, q, t), d3 = d(r, t, p), d4 = d(r, t, q);
+    return d1 * d2 < -1e-9 && d3 * d4 < -1e-9;
+  };
+  for (let i = 0; i < B.length; i++) for (let j = i + 1; j < B.length; j++) {
+    const a = B[i], b = B[j];
+    if (a.a === b.a || a.a === b.b || a.b === b.a || a.b === b.b) continue;
+    if (cross(P[a.a], P[a.b], P[b.a], P[b.b])) return true;
+  }
+  for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) if (Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]) < 0.3) return true;
+  return false;
+}
+
+/* ---------- π system and parameters ---------- */
+const DEFAULT_PARAMS = {
+  'C':   { label: 'C', desc: 'sp² carbon', h: 0.0, k: 1.0, e: 1 },
+  'C+':  { label: 'C⁺', desc: 'carbocation, empty p', h: 0.0, k: 1.0, e: 0 },
+  'C-':  { label: 'C⁻', desc: 'carbanion, lone pair', h: 0.0, k: 1.0, e: 2 },
+  'N1':  { label: 'N·', desc: 'pyridine / imine / nitrile N', h: 0.5, k: 1.0, e: 1 },
+  'N2':  { label: 'N:', desc: 'pyrrole / amine / amide N', h: 1.5, k: 0.8, e: 2 },
+  'N+':  { label: 'N⁺', desc: 'pyridinium / iminium / nitro N', h: 2.0, k: 1.0, e: 1 },
+  'O1':  { label: 'O·', desc: 'carbonyl O', h: 1.0, k: 1.0, e: 1 },
+  'O2':  { label: 'O:', desc: 'ether / hydroxyl / furan O', h: 2.0, k: 0.8, e: 2 },
+  'O+':  { label: 'O⁺', desc: 'pyrylium / oxonium O', h: 2.5, k: 1.0, e: 1 },
+  'O-':  { label: 'O⁻', desc: 'phenoxide / carboxylate O (estimate)', h: 1.0, k: 1.0, e: 2 },
+  'S1':  { label: 'S·', desc: 'thiocarbonyl S (estimate)', h: 0.5, k: 0.8, e: 1 },
+  'S2':  { label: 'S:', desc: 'thiophene / thioether S (values vary in the literature)', h: 1.0, k: 0.6, e: 2 },
+  'F':   { label: 'F', desc: 'fluoro', h: 3.0, k: 0.7, e: 2 },
+  'Cl':  { label: 'Cl', desc: 'chloro', h: 2.0, k: 0.4, e: 2 },
+  'Br':  { label: 'Br', desc: 'bromo', h: 1.5, k: 0.3, e: 2 },
+  'I':   { label: 'I', desc: 'iodo (estimate)', h: 1.0, k: 0.2, e: 2 },
+  'B':   { label: 'B', desc: 'three-coordinate boron, empty p', h: -1.0, k: 0.7, e: 0 }
+};
+const CARBON_TYPES = new Set(['C', 'C+', 'C-']);
+
+function classifyPi(mol) {
+  const n = mol.atoms.length;
+  const type = new Array(n).fill(null), donor = new Array(n).fill(null);
+  const warn = [];
+  mol.atoms.forEach((a, i) => {
+    const deg = mol.adj[i].length, val = deg + a.h, q = a.charge;
+    const mult = a.arom || a.hasMult;
+    switch (a.el) {
+      case 'C':
+        if (mult) type[i] = q < 0 ? 'C-' : q > 0 ? 'C+' : 'C';
+        else if (q === 1 && val === 3) type[i] = 'C+';
+        else if (q === 0 && val === 3) { type[i] = 'C'; a.radical = true; }
+        else if (q === -1 && val === 3) donor[i] = 'C-';
+        break;
+      case 'N':
+        if (a.arom) type[i] = q > 0 ? 'N+' : q < 0 ? 'N2' : ((a.h > 0 || deg === 3) ? 'N2' : 'N1');
+        else if (a.hasMult) type[i] = q > 0 ? 'N+' : 'N1';
+        else if ((q === 0 && val === 3) || q === -1) donor[i] = 'N2';
+        break;
+      case 'O':
+        if (a.arom) type[i] = q > 0 ? 'O+' : 'O2';
+        else if (a.hasMult) type[i] = q > 0 ? 'O+' : 'O1';
+        else if (q === 0 && val === 2) donor[i] = 'O2';
+        else if (q === -1) donor[i] = 'O-';
+        break;
+      case 'S':
+        if (a.arom) type[i] = 'S2';
+        else if (a.hasMult) { if (a.sum <= 2) type[i] = 'S1'; else warn.push('S' + (i + 1) + ' is hypervalent and is left out of the π system.'); }
+        else if (q === 0 && val === 2) donor[i] = 'S2';
+        break;
+      case 'F': case 'Cl': case 'Br': case 'I':
+        if (q === 0 && deg === 1) donor[i] = a.el;
+        break;
+      case 'B':
+        if (mult) type[i] = 'B';
+        else if (q === 0 && val === 3) donor[i] = 'B';
+        break;
+      default:
+        if (mult) warn.push(a.el + (i + 1) + ' has a multiple bond but no Hückel parameters; it is left out.');
+    }
+  });
+  const first = type.slice();
+  donor.forEach((d, i) => { if (d && mol.adj[i].some(e => first[e.to])) type[i] = d; });
+  // drop heteroatoms whose π partners were all excluded
+  type.forEach((t, i) => {
+    if (!t || CARBON_TYPES.has(t)) return;
+    if (!mol.adj[i].some(e => type[e.to])) { warn.push(mol.atoms[i].el + (i + 1) + ' has no π neighbour and is left out.'); type[i] = null; }
+  });
+  const atoms = [];
+  type.forEach((t, i) => { if (t) atoms.push(i); });
+  return { atoms, types: atoms.map(i => type[i]), typeOf: type, warn };
+}
+
+function buildHuckel(mol, pi, params) {
+  const N = pi.atoms.length;
+  const idx = new Map(pi.atoms.map((a, i) => [a, i]));
+  const M = Array.from({ length: N }, () => new Array(N).fill(0));
+  pi.types.forEach((t, i) => { M[i][i] = params[t].h; });
+  const piBonds = [];
+  mol.bonds.forEach(b => {
+    if (!idx.has(b.a) || !idx.has(b.b)) return;
+    const i = idx.get(b.a), j = idx.get(b.b);
+    const ti = pi.types[i], tj = pi.types[j];
+    const ci = CARBON_TYPES.has(ti), cj = CARBON_TYPES.has(tj);
+    let k;
+    if (ci && cj) k = 1.0;
+    else if (ci) k = params[tj].k;
+    else if (cj) k = params[ti].k;
+    else k = Math.sqrt(params[ti].k * params[tj].k);
+    M[i][j] = M[j][i] = k;
+    piBonds.push({ i, j, k, bond: b });
+  });
+  return { M, piBonds, idx };
+}
+
+/* ---------- linear algebra ---------- */
+function jacobiEigen(A0) {
+  const n = A0.length;
+  const a = A0.map(r => r.slice());
+  const V = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)));
+  for (let sweep = 0; sweep < 100; sweep++) {
+    let off = 0;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) off += a[p][q] * a[p][q];
+    if (off < 1e-24) break;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) {
+      const apq = a[p][q];
+      if (Math.abs(apq) < 1e-16) continue;
+      const theta = (a[q][q] - a[p][p]) / (2 * apq);
+      const t = (theta >= 0 ? 1 : -1) / (Math.abs(theta) + Math.sqrt(theta * theta + 1));
+      const c = 1 / Math.sqrt(t * t + 1), s = t * c;
+      for (let k = 0; k < n; k++) { const akp = a[k][p], akq = a[k][q]; a[k][p] = c * akp - s * akq; a[k][q] = s * akp + c * akq; }
+      for (let k = 0; k < n; k++) { const apk = a[p][k], aqk = a[q][k]; a[p][k] = c * apk - s * aqk; a[q][k] = s * apk + c * aqk; }
+      for (let k = 0; k < n; k++) { const vkp = V[k][p], vkq = V[k][q]; V[k][p] = c * vkp - s * vkq; V[k][q] = s * vkp + c * vkq; }
+    }
+  }
+  const vals = a.map((r, i) => r[i]);
+  const vecs = vals.map((_, j) => V.map(r => r[j]));
+  return { vals, vecs };
+}
+function dot(u, v) { let s = 0; for (let i = 0; i < u.length; i++) s += u[i] * v[i]; return s; }
+
+/* maximum matching (Edmonds) for localized reference structures */
+function maxMatching(n, adj) {
+  const match = new Array(n).fill(-1), p = new Array(n).fill(-1), base = new Array(n);
+  let used, blossom;
+  function lca(a, b) {
+    const usedL = new Array(n).fill(false);
+    for (;;) { a = base[a]; usedL[a] = true; if (match[a] === -1) break; a = p[match[a]]; }
+    for (;;) { b = base[b]; if (usedL[b]) return b; b = p[match[b]]; }
+  }
+  function markPath(v, b, child) {
+    while (base[v] !== b) { blossom[base[v]] = blossom[base[match[v]]] = true; p[v] = child; child = match[v]; v = p[match[v]]; }
+  }
+  function findPath(root) {
+    used = new Array(n).fill(false); p.fill(-1);
+    for (let i = 0; i < n; i++) base[i] = i;
+    used[root] = true; const q = [root]; let qh = 0;
+    while (qh < q.length) {
+      const v = q[qh++];
+      for (const to of adj[v]) {
+        if (base[v] === base[to] || match[v] === to) continue;
+        if (to === root || (match[to] !== -1 && p[match[to]] !== -1)) {
+          const cb = lca(v, to);
+          blossom = new Array(n).fill(false);
+          markPath(v, cb, to); markPath(to, cb, v);
+          for (let i = 0; i < n; i++) if (blossom[base[i]]) { base[i] = cb; if (!used[i]) { used[i] = true; q.push(i); } }
+        } else if (p[to] === -1) {
+          p[to] = v;
+          if (match[to] === -1) return to;
+          used[match[to]] = true; q.push(match[to]);
+        }
+      }
+    }
+    return -1;
+  }
+  for (let i = 0; i < n; i++) if (match[i] === -1) {
+    let v = findPath(i);
+    while (v !== -1) { const pv = p[v], ppv = match[pv]; match[v] = pv; match[pv] = v; v = ppv; }
+  }
+  return match.filter(m => m >= 0).length / 2;
+}
+
+/* ---------- full calculation ---------- */
+function runHuckel(molIn, params, opts) {
+  opts = opts || {};
+  const mol = molIn;
+  const steps = [], warnings = [];
+  const n = mol.atoms.length;
+  steps.push('Read ' + n + ' heavy atom' + (n === 1 ? '' : 's') + ' and ' + mol.bonds.length + ' bond' + (mol.bonds.length === 1 ? '' : 's') + '.');
+  // geometry
+  let coords;
+  if (mol.coords) coords = centred(mol.coords);
+  else coords = layoutMol(mol);
+  if (!mol.rings) mol.rings = findRings(mol);
+  // π classification first: the symmetry search uses the Hückel parameters, so resonance-equivalent
+  // atoms (e.g. the five carbons of C5H5−, the two oxygens of a nitro group) are treated as equivalent
+  const pi = classifyPi(mol);
+  const keyOf = (a, i) => {
+    const t = pi.typeOf[i];
+    return t ? ['pi', a.el, a.h, mol.adj[i].length, params[t].h, params[t].k].join('|') : [a.el, a.arom ? 1 : 0, a.charge, a.h].join('|');
+  };
+  const bondLabel = (u, e) => (pi.typeOf[u] && pi.typeOf[e.to]) ? 'p' : e.order;
+  const sym = analyzeSymmetry(mol, coords, (a) => keyOf(a, mol.atoms.indexOf(a)), bondLabel);
+  const pg = sym.pg;
+  pg.name = pointGroupName(pg);
+  const orient = orientCoords(sym.coords);
+  const disp = orient.X;
+  pg.ops.forEach(o => { if (o.type === 'F' && o.phi !== undefined) o.phiDisp = o.phi - orient.th; });
+  steps.push('Found ' + sym.autoCount + (sym.aborted ? '+' : '') + ' graph automorphism' + (sym.autoCount === 1 ? '' : 's') + '; ' +
+    (pg.kind === 'linear' ? 'molecule is linear' : pg.ops.length + ' of them are geometric 2D symmetry operations') +
+    '. Symmetrized the drawing (largest deviation ' + sym.rmsBefore.toFixed(3) + ' → ' + sym.rmsAfter.toExponential(1) + ' bond lengths). Point group ' + pg.name + '.');
+  if (pg.kind !== 'linear' && hasCrossings(mol, disp)) {
+    const restr = g => pi.atoms.map(a => g[a]).join(',');
+    const topo = new Set(sym.autosHeavy.map(restr));
+    warnings.push('The 2D drawing has crossing bonds, so the molecule is probably non-planar (a cage or a bridged system). The Hückel energies are still valid, but the symmetry labels assume a planar molecule' + (topo.size > 1 ? '; the π network itself has ' + topo.size + (sym.aborted ? '+' : '') + ' topological symmetries' : '') + '.');
+  }
+  if (sym.aborted) warnings.push('The automorphism search stopped early; the point group may be lower than the true one.');
+
+  // π system
+  pi.warn.forEach(w => warnings.push(w));
+  if (!pi.atoms.length) throw new Error('No π system found: the molecule has no sp² or sp atoms.');
+  const { M, piBonds, idx } = buildHuckel(mol, pi, params);
+  const N = pi.atoms.length;
+  const autoE = pi.types.reduce((s, t) => s + params[t].e, 0);
+  let Ne = autoE;
+  if (opts.electrons !== null && opts.electrons !== undefined && opts.electrons !== '') {
+    const v = Math.round(Number(opts.electrons));
+    if (!(v >= 0 && v <= 2 * N)) throw new Error('π-electron count must be between 0 and ' + 2 * N + ' for this π system.');
+    Ne = v;
+  }
+  steps.push('Identified ' + N + ' π centre' + (N === 1 ? '' : 's') + ' and ' + piBonds.length + ' π bond' + (piBonds.length === 1 ? '' : 's') + '; ' + Ne + ' π electron' + (Ne === 1 ? '' : 's') + (Ne !== autoE ? ' (set manually; automatic count ' + autoE + ')' : '') + '.');
+  if (mol.bonds.some(b => b.order === 3)) warnings.push('Triple bonds have two orthogonal π components; only the one conjugated with the rest of the π system is included.');
+  const piComp = components(N, Array.from({ length: N }, (_, i) => piBonds.filter(b => b.i === i || b.j === i).map(b => ({ to: b.i === i ? b.j : b.i }))));
+  if (piComp.count > 1) warnings.push('The π system has ' + piComp.count + ' separate conjugated fragments; they are solved together but do not interact.');
+
+  steps.push('Built the ' + N + ' × ' + N + ' Hückel matrix H = α·1 + β·M.');
+  // diagonalise
+  const { vals, vecs } = jacobiEigen(M);
+  let mos = vals.map((x, i) => ({ x, c: vecs[i] })).sort((a, b) => b.x - a.x);
+  steps.push('Diagonalized M (Jacobi rotations). Energies E = α + xβ with β < 0, so larger x means lower energy.');
+
+  // degenerate groups
+  const groups = [];
+  mos.forEach((m, i) => {
+    const g = groups[groups.length - 1];
+    if (g && Math.abs(g.x - m.x) < 1e-6) g.idx.push(i); else groups.push({ x: m.x, idx: [i] });
+  });
+  groups.forEach(g => { const avg = g.idx.reduce((s, i) => s + mos[i].x, 0) / g.idx.length; g.x = avg; g.idx.forEach(i => { mos[i].x = avg; }); });
+
+  // symmetry adaptation and labels
+  const irreps = makeIrreps(pg);
+  const piPerm = pg.ops.map(o => pi.atoms.map(a => idx.get(o.perm[a])));
+  const ops = pg.ops;
+  const applyOp = (k, v) => { const out = new Array(N).fill(0); const pm = piPerm[k]; for (let i = 0; i < N; i++) out[pm[i]] += ops[k].s * v[i]; return out; };
+  const chiOfSet = (V) => ops.map((o, k) => V.reduce((s, v) => s + dot(v, applyOp(k, v)), 0));
+  const decompose = (chi) => irreps.map(ir => ops.reduce((s, o, k) => s + ir.chi(o) * chi[k], 0) / ops.length);
+  const G = ops.length;
+  groups.forEach(g => {
+    let V = g.idx.map(i => mos[i].c);
+    const d = V.length;
+    const nGamma = decompose(chiOfSet(V));
+    const comps = [];
+    irreps.forEach((ir, r) => { const cnt = Math.round(nGamma[r]); if (cnt > 0 && Math.abs(nGamma[r] - cnt) < 0.2) comps.push({ ir, cnt }); });
+    g.label = comps.length ? comps : null;
+    if (d === 1) { mos[g.idx[0]].irrep = comps.length === 1 ? comps[0].ir : null; return; }
+    // project onto each irrep to obtain symmetry-adapted partners
+    const newV = [], newLab = [];
+    comps.forEach(({ ir }) => {
+      const W = Array.from({ length: d }, () => new Array(d).fill(0));
+      const PV = V.map(v => { const acc = new Array(N).fill(0); ops.forEach((o, k) => { const w = applyOp(k, v), c = ir.chi(o) * ir.dim / G; for (let i = 0; i < N; i++) acc[i] += c * w[i]; }); return acc; });
+      for (let a = 0; a < d; a++) for (let b = 0; b < d; b++) W[a][b] = dot(V[a], PV[b]);
+      for (let a = 0; a < d; a++) for (let b = a + 1; b < d; b++) { const m = (W[a][b] + W[b][a]) / 2; W[a][b] = W[b][a] = m; }
+      const e = jacobiEigen(W);
+      let sub = [];
+      e.vals.forEach((val, j) => { if (val > 0.5) { const v = new Array(N).fill(0); for (let a = 0; a < d; a++) for (let i = 0; i < N; i++) v[i] += e.vecs[j][a] * V[a][i]; sub.push(v); } });
+      // split multi-dimensional irreps with the in-plane axis that passes through most atoms
+      if (ir.dim > 1 && sub.length > 1) {
+        const fk = ops.map((o, k) => ({ o, k })).filter(x => x.o.type === 'F').sort((p, q) => q.o.fixed - p.o.fixed)[0];
+        if (fk) {
+          const m = sub.length;
+          const F = Array.from({ length: m }, (_, a) => Array.from({ length: m }, (_, b) => dot(sub[a], applyOp(fk.k, sub[b]))));
+          for (let a = 0; a < m; a++) for (let b = a + 1; b < m; b++) { const mm = (F[a][b] + F[b][a]) / 2; F[a][b] = F[b][a] = mm; }
+          const ef = jacobiEigen(F);
+          const order = ef.vals.map((v, j) => [v, j]).sort((p, q) => p[0] - q[0]);
+          sub = order.map(([, j]) => { const v = new Array(N).fill(0); for (let a = 0; a < m; a++) for (let i = 0; i < N; i++) v[i] += ef.vecs[j][a] * sub[a][i]; return v; });
+        }
+      }
+      sub.forEach(v => { const nn = Math.sqrt(dot(v, v)) || 1; newV.push(v.map(x => x / nn)); newLab.push(ir); });
+    });
+    if (newV.length === d) {
+      g.idx.forEach((mi, j) => { mos[mi].c = newV[j]; mos[mi].irrep = newLab[j]; });
+    } else g.idx.forEach(mi => { mos[mi].irrep = null; });
+  });
+  // sign convention: largest coefficient positive
+  mos.forEach(m => {
+    let bi = 0; m.c.forEach((v, i) => { if (Math.abs(v) > Math.abs(m.c[bi]) + 1e-9) bi = i; });
+    if (m.c[bi] < 0) m.c = m.c.map(v => -v);
+    m.c = m.c.map(v => (Math.abs(v) < 1e-12 ? 0 : v));
+  });
+  // Γπ
+  const chiPi = ops.map((o, k) => o.s * piPerm[k].filter((v, i) => v === i).length);
+  const gammaPi = [];
+  decompose(chiPi).forEach((v, r) => { const c = Math.round(v); if (c > 0) gammaPi.push({ ir: irreps[r], cnt: c }); });
+  steps.push('Classified every MO by the irreducible representations of ' + pg.name + '; degenerate sets were rotated into symmetry-adapted partners.');
+
+  // occupations
+  let left = Ne;
+  groups.forEach(g => {
+    const d = g.idx.length, e = Math.min(2 * d, left); left -= e;
+    g.e = e;
+    g.idx.forEach((i, j) => {
+      mos[i].occ = e / d;
+      mos[i].arrows = (j < e ? 1 : 0) + (j + d < e ? 1 : 0);
+      mos[i].group = g;
+    });
+  });
+  let homoG = null, lumoG = null;
+  groups.forEach(g => { if (g.e > 0) homoG = g; });
+  for (const g of groups) if (g.e < 2 * g.idx.length) { lumoG = g; break; }
+  const X = mos.reduce((s, m) => s + m.occ * m.x, 0);
+  // populations
+  const P = Array.from({ length: N }, () => new Array(N).fill(0));
+  mos.forEach(m => { if (!m.occ) return; for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) P[i][j] += m.occ * m.c[i] * m.c[j]; });
+  const atomsOut = pi.atoms.map((a, i) => {
+    const t = pi.types[i];
+    const e = params[t].e;
+    const sumP = piBonds.filter(b => b.i === i || b.j === i).reduce((s, b) => s + P[b.i][b.j], 0);
+    return { atom: a, type: t, e, density: P[i][i], charge: e - P[i][i], free: CARBON_TYPES.has(t) ? Math.sqrt(3) - sumP : null };
+  });
+  const bondOrders = piBonds.map(b => ({ ...b, p: P[b.i][b.j] }));
+  // delocalisation energy (hydrocarbons)
+  let deloc = null;
+  if (pi.types.every(t => CARBON_TYPES.has(t))) {
+    const madj = Array.from({ length: N }, () => []);
+    piBonds.forEach(b => { madj[b.i].push(b.j); madj[b.j].push(b.i); });
+    const m = Math.min(maxMatching(N, madj), Math.floor(Ne / 2));
+    deloc = { value: X - 2 * m, localized: m };
+  }
+  steps.push('Filled ' + Ne + ' electrons by the aufbau principle (Hund’s rule inside degenerate levels) and computed charges and bond orders.');
+  return {
+    mol, coords: disp, pg, irreps, gammaPi, sym, pi, M, piBonds, N, Ne, autoE, mos, groups, homoG, lumoG, X, P,
+    atomsOut, bondOrders, deloc, steps, warnings
+  };
+}
+
+if (typeof module !== 'undefined') module.exports = { parseSMILES, writeSMILES, finishMol, runHuckel, DEFAULT_PARAMS, layoutMol, findRings, pointGroupName };
+
+/* ================= user interface ================= */
+(function () {
+  const $ = id => document.getElementById(id);
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const MINUS = '−';
+  let PARAMS = clone(DEFAULT_PARAMS);
+  let current = null, selMO = 0, lastSource = null;
+  const view = { nums: true, charges: false, orders: false, symel: true };
+
+  const EXAMPLES = [
+    ['Hydrocarbons', [['Ethylene', 'C=C'], ['Allyl radical', 'C=C[CH2]'], ['Allyl cation', 'C=C[CH2+]'], ['1,3-Butadiene', 'C=CC=C'], ['1,3,5-Hexatriene', 'C=CC=CC=C'], ['Cyclobutadiene', 'C1=CC=C1'], ['Benzene', 'c1ccccc1'], ['Cyclooctatetraene (planar)', 'C1=CC=CC=CC=C1'], ['Fulvene', 'C=C1C=CC=C1'], ['Trimethylenemethane', 'C=C([CH2])[CH2]'], ['Benzyl radical', '[CH2]c1ccccc1'], ['Styrene', 'C=Cc1ccccc1'], ['Biphenyl', 'c1ccc(cc1)-c1ccccc1']]],
+    ['Ions', [['Cyclopropenyl cation', 'C1=C[CH+]1'], ['Cyclopentadienyl anion', 'C1=CC=C[CH-]1'], ['Tropylium cation', 'C1=CC=C[CH+]C=C1']]],
+    ['Polycyclic', [['Naphthalene', 'c1ccc2ccccc2c1'], ['Azulene', 'c1ccc2cccc2cc1'], ['Anthracene', 'c1ccc2cc3ccccc3cc2c1'], ['Phenanthrene', 'c1ccc2c(c1)ccc1ccccc12'], ['Pyrene', 'c1cc2ccc3cccc4ccc(c1)c2c34'], ['Triphenylene', 'c1ccc2c(c1)c1ccccc1c1ccccc21'], ['Coronene', 'c1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61']]],
+    ['Heteroatoms', [['Formaldehyde', 'C=O'], ['Acrolein', 'C=CC=O'], ['Pyridine', 'c1ccncc1'], ['Pyrimidine', 'c1cncnc1'], ['Pyrrole', 'c1cc[nH]c1'], ['Furan', 'c1ccoc1'], ['Thiophene', 'c1ccsc1'], ['Aniline', 'Nc1ccccc1'], ['Phenol', 'Oc1ccccc1'], ['Nitrobenzene', '[O-][N+](=O)c1ccccc1'], ['p-Benzoquinone', 'O=C1C=CC(=O)C=C1'], ['Pyridinium', 'c1cc[nH+]cc1']]],
+    ['Linear', [['Acetylene', 'C#C'], ['Butadiyne', 'C#CC#C']]]
+  ];
+
+  /* ---------- formatting ---------- */
+  function fnum(v, d = 3) { if (Math.abs(v) < 0.5 * 10 ** -d) v = 0; return (v < 0 ? MINUS : '') + Math.abs(v).toFixed(d); }
+  function fsign(v, d = 3) { if (Math.abs(v) < 0.5 * 10 ** -d) v = 0; return (v < 0 ? MINUS : '+') + Math.abs(v).toFixed(d); }
+  function energyStr(x) { if (Math.abs(x) < 5e-4) return 'α'; return 'α ' + (x > 0 ? '+' : MINUS) + ' ' + Math.abs(x).toFixed(3) + 'β'; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function irrepHTML(lab, upper) {
+    if (!lab) return '–';
+    let b = upper ? lab.base.toUpperCase() : lab.base;
+    if (lab.base === 'π' && upper) b = 'Π';
+    const sub = lab.num + lab.gu;
+    return b + (sub ? '<sub>' + sub + '</sub>' : '') + lab.prime;
+  }
+  function irrepSVG(lab) {
+    if (!lab) return '–';
+    const sub = lab.num + lab.gu;
+    return esc(lab.base) + (sub ? '<tspan dy="3" font-size="0.78em">' + sub + '</tspan><tspan dy="-3">' + lab.prime + '</tspan>' : lab.prime);
+  }
+  function comboHTML(list, upper) { return list.map(c => (c.cnt > 1 ? c.cnt : '') + irrepHTML(c.ir.lab, upper)).join(' + '); }
+  function piName(res, i) { return (i + 1) + ' ' + res.mol.atoms[res.pi.atoms[i]].el; }
+
+  /* ---------- molecule drawing ---------- */
+  function drawMol(res, o) {
+    const w = o.w, h = o.h, pad = o.pad ?? 26;
+    const P = res.coords, mol = res.mol;
+    let mnx = Infinity, mxx = -Infinity, mny = Infinity, mxy = -Infinity;
+    P.forEach(p => { mnx = Math.min(mnx, p[0]); mxx = Math.max(mxx, p[0]); mny = Math.min(mny, p[1]); mxy = Math.max(mxy, p[1]); });
+    const dx = Math.max(mxx - mnx, 1e-6), dy = Math.max(mxy - mny, 1e-6);
+    const sc = Math.min((w - 2 * pad) / dx, (h - 2 * pad) / dy, o.maxScale || 60);
+    const cx = w / 2, cy = h / 2, mx = (mnx + mxx) / 2, my = (mny + mxy) / 2;
+    const T = p => [cx + (p[0] - mx) * sc, cy - (p[1] - my) * sc];
+    const S = P.map(T);
+    const out = [];
+    const fs = Math.max(9, Math.min(15, sc * 0.36));
+    const piIndex = new Map(res.pi.atoms.map((a, i) => [a, i]));
+    // symmetry elements
+    if (o.symel && res.pg.kind !== 'linear' && res.pg.ops.length > 1) {
+      const O = T([0, 0]);
+      const ext = Math.hypot(w, h);
+      res.pg.ops.forEach(op => {
+        if (op.type !== 'F' || op.phiDisp === undefined) return;
+        const c = Math.cos(op.phiDisp), s = -Math.sin(op.phiDisp);
+        const dash = op.cls === 'B' ? '2 4' : '7 5';
+        out.push(`<line x1="${(O[0] - c * ext).toFixed(1)}" y1="${(O[1] - s * ext).toFixed(1)}" x2="${(O[0] + c * ext).toFixed(1)}" y2="${(O[1] + s * ext).toFixed(1)}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="${dash}" opacity="0.55"/>`);
+      });
+      if (res.pg.n >= 2) {
+        out.push(`<circle cx="${O[0].toFixed(1)}" cy="${O[1].toFixed(1)}" r="4" fill="var(--accent)"/>`);
+      }
+    }
+    // ring centres for inner double-bond lines
+    const ringOf = new Map();
+    (mol.rings || []).slice().sort((a, b) => a.length - b.length).forEach(r => {
+      for (let j = 0; j < r.length; j++) {
+        const a = r[j], b = r[(j + 1) % r.length], key = Math.min(a, b) + '-' + Math.max(a, b);
+        if (!ringOf.has(key)) { let x = 0, y = 0; r.forEach(i => { x += P[i][0]; y += P[i][1]; }); ringOf.set(key, T([x / r.length, y / r.length])); }
+      }
+    });
+    const labelled = mol.atoms.map((a, i) => a.el !== 'C' || mol.adj[i].length === 0);
+    const sw = Math.max(1.1, Math.min(2, sc * 0.045));
+    const line = (p, q, extra = '') => `<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}" stroke="var(--bond)" stroke-width="${sw}" stroke-linecap="round" ${extra}/>`;
+    mol.bonds.forEach(b => {
+      let p = S[b.a].slice(), q = S[b.b].slice();
+      const vx = q[0] - p[0], vy = q[1] - p[1], L = Math.hypot(vx, vy) || 1, ux = vx / L, uy = vy / L;
+      const cut = fs * 0.62;
+      if (labelled[b.a]) { p = [p[0] + ux * cut, p[1] + uy * cut]; }
+      if (labelled[b.b]) { q = [q[0] - ux * cut, q[1] - uy * cut]; }
+      const nx = -uy, ny = ux;
+      const key = Math.min(b.a, b.b) + '-' + Math.max(b.a, b.b);
+      const rc = ringOf.get(key);
+      const off = sc * 0.16;
+      if (b.order === 1) out.push(line(p, q));
+      else if (b.order === 3) {
+        out.push(line(p, q));
+        out.push(line([p[0] + nx * off * 0.8, p[1] + ny * off * 0.8], [q[0] + nx * off * 0.8, q[1] + ny * off * 0.8]));
+        out.push(line([p[0] - nx * off * 0.8, p[1] - ny * off * 0.8], [q[0] - nx * off * 0.8, q[1] - ny * off * 0.8]));
+      } else {
+        const dashed = b.order === 1.5 ? `stroke-dasharray="${(sc * 0.09).toFixed(1)} ${(sc * 0.08).toFixed(1)}"` : '';
+        if (rc) {
+          const mxp = (p[0] + q[0]) / 2, myp = (p[1] + q[1]) / 2;
+          const sgn = ((rc[0] - mxp) * nx + (rc[1] - myp) * ny) > 0 ? 1 : -1;
+          out.push(line(p, q));
+          const sh = 0.16;
+          const p2 = [p[0] + sgn * nx * off + ux * L * sh, p[1] + sgn * ny * off + uy * L * sh];
+          const q2 = [q[0] + sgn * nx * off - ux * L * sh, q[1] + sgn * ny * off - uy * L * sh];
+          out.push(line(p2, q2, dashed));
+        } else {
+          const o2 = off / 2;
+          out.push(line([p[0] + nx * o2, p[1] + ny * o2], [q[0] + nx * o2, q[1] + ny * o2]));
+          out.push(line([p[0] - nx * o2, p[1] - ny * o2], [q[0] - nx * o2, q[1] - ny * o2], dashed));
+        }
+      }
+    });
+    // atom labels
+    mol.atoms.forEach((a, i) => {
+      const [x, y] = S[i];
+      const chg = a.charge ? (Math.abs(a.charge) > 1 ? Math.abs(a.charge) : '') + (a.charge > 0 ? '+' : MINUS) : '';
+      if (labelled[i]) {
+        let t = esc(a.el);
+        if (a.h) t += 'H' + (a.h > 1 ? `<tspan dy="${(fs * 0.25).toFixed(1)}" font-size="${(fs * 0.72).toFixed(1)}">${a.h}</tspan><tspan dy="${(-fs * 0.25).toFixed(1)}"></tspan>` : '');
+        if (chg) t += `<tspan dy="${(-fs * 0.4).toFixed(1)}" font-size="${(fs * 0.72).toFixed(1)}">${chg}</tspan>`;
+        out.push(`<text x="${x.toFixed(1)}" y="${(y + fs * 0.36).toFixed(1)}" text-anchor="middle" font-size="${fs.toFixed(1)}" fill="var(--ink)" font-weight="500">${t}</text>`);
+      } else if (chg) {
+        out.push(`<text x="${(x + fs * 0.45).toFixed(1)}" y="${(y - fs * 0.35).toFixed(1)}" font-size="${(fs * 0.8).toFixed(1)}" fill="var(--ink)">${chg}</text>`);
+      } else if (a.radical) {
+        out.push(`<circle cx="${(x + fs * 0.4).toFixed(1)}" cy="${(y - fs * 0.4).toFixed(1)}" r="${Math.max(1.6, fs * 0.13).toFixed(1)}" fill="var(--ink)"/>`);
+      }
+    });
+    // lobes
+    if (o.mo) {
+      const maxR = 0.62 * sc;
+      res.pi.atoms.forEach((a, i) => {
+        const c = o.mo[i], r = Math.abs(c) * maxR;
+        if (r < 0.7) return;
+        const pos = c > 0;
+        out.push(`<circle cx="${S[a][0].toFixed(1)}" cy="${S[a][1].toFixed(1)}" r="${r.toFixed(1)}" fill="var(${pos ? '--pos-fill' : '--neg-fill'})" stroke="var(${pos ? '--pos' : '--neg'})" stroke-width="${Math.max(1, sw * 0.8).toFixed(1)}"/>`);
+      });
+    }
+    // outward directions for annotations
+    const outward = i => {
+      const nb = mol.adj[i]; let x = 0, y = 0;
+      if (!nb.length) return [0, -1];
+      nb.forEach(e => { x += S[e.to][0]; y += S[e.to][1]; });
+      x = S[i][0] - x / nb.length; y = S[i][1] - y / nb.length;
+      const L = Math.hypot(x, y);
+      if (L < 0.05 * sc) return [0.5, -0.866];
+      return [x / L, y / L];
+    };
+    if (o.nums) {
+      res.pi.atoms.forEach((a, i) => {
+        const d = outward(a), r = sc * (labelled[a] ? 0.5 : 0.36);
+        out.push(`<text x="${(S[a][0] + d[0] * r).toFixed(1)}" y="${(S[a][1] + d[1] * r + fs * 0.3).toFixed(1)}" text-anchor="middle" font-size="${(fs * 0.78).toFixed(1)}" fill="var(--muted)" class="mono">${i + 1}</text>`);
+      });
+    }
+    if (o.charges) {
+      res.atomsOut.forEach((A, i) => {
+        const a = A.atom, d = outward(a), r = sc * (o.nums ? 0.86 : 0.5);
+        out.push(`<text x="${(S[a][0] + d[0] * r).toFixed(1)}" y="${(S[a][1] + d[1] * r + fs * 0.3).toFixed(1)}" text-anchor="middle" font-size="${(fs * 0.76).toFixed(1)}" fill="${A.charge > 0.0005 ? 'var(--pos)' : A.charge < -0.0005 ? 'var(--neg)' : 'var(--muted)'}" font-weight="600">${fsign(A.charge, 3)}</text>`);
+      });
+    }
+    if (o.orders) {
+      res.bondOrders.forEach(b => {
+        const p = S[res.pi.atoms[b.i]], q = S[res.pi.atoms[b.j]];
+        const x = (p[0] + q[0]) / 2, y = (p[1] + q[1]) / 2, ww = fs * 2.5, hh = fs * 1.05;
+        out.push(`<rect x="${(x - ww / 2).toFixed(1)}" y="${(y - hh / 2).toFixed(1)}" width="${ww.toFixed(1)}" height="${hh.toFixed(1)}" rx="3" fill="var(--panel)" stroke="var(--line)"/>`);
+        out.push(`<text x="${x.toFixed(1)}" y="${(y + fs * 0.27).toFixed(1)}" text-anchor="middle" font-size="${(fs * 0.72).toFixed(1)}" fill="var(--ink)" class="mono">${b.p.toFixed(3)}</text>`);
+      });
+    }
+    return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(o.aria || 'molecule')}">${out.join('')}</svg>`;
+  }
+
+  /* ---------- energy-level diagram ---------- */
+  function drawLevels(res) {
+    const W = 420, G = res.groups;
+    const H = Math.max(320, Math.min(620, 140 + G.length * 22));
+    const top = 26, bot = H - 26;
+    const xs = G.map(g => g.x);
+    let lo = Math.min(...xs) - 0.3, hi = Math.max(...xs) + 0.3;
+    if (hi - lo < 1.5) { const m = (hi + lo) / 2; lo = m - 0.75; hi = m + 0.75; }
+    const Y = x => top + (x - lo) / (hi - lo) * (bot - top);
+    const out = [];
+    const AX = 78;
+    out.push(`<line x1="${AX}" y1="${top - 10}" x2="${AX}" y2="${bot + 10}" stroke="var(--line)" stroke-width="1"/>`);
+    out.push(`<text x="${AX - 6}" y="${top - 12}" text-anchor="end" font-size="11" fill="var(--muted)">higher E</text>`);
+    for (let t = Math.ceil(lo); t <= Math.floor(hi); t++) {
+      const y = Y(t);
+      const lab = t === 0 ? 'α' : 'α ' + (t > 0 ? '+' : MINUS) + ' ' + (Math.abs(t) === 1 ? '' : Math.abs(t)) + 'β';
+      out.push(`<line x1="${AX - 4}" y1="${y.toFixed(1)}" x2="${W - 8}" y2="${y.toFixed(1)}" stroke="var(--line)" stroke-width="1" ${t === 0 ? 'stroke-dasharray="4 4"' : 'opacity="0.55"'}/>`);
+      out.push(`<text x="${AX - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="12" fill="var(--muted)">${lab}</text>`);
+    }
+    const XC = 168, LW = 34, GAP = 10;
+    const labels = [];
+    G.forEach(g => {
+      const d = g.idx.length, tw = d * LW + (d - 1) * GAP, x0 = XC - tw / 2, y = Y(g.x);
+      g.idx.forEach((mi, j) => {
+        const m = res.mos[mi], x1 = x0 + j * (LW + GAP), sel = mi === selMO;
+        out.push(`<g class="lvl" data-mo="${mi}" style="cursor:pointer"><rect x="${x1 - 3}" y="${(y - 11).toFixed(1)}" width="${LW + 6}" height="22" fill="transparent"/>` +
+          `<line x1="${x1}" y1="${y.toFixed(1)}" x2="${x1 + LW}" y2="${y.toFixed(1)}" stroke="${sel ? 'var(--accent)' : 'var(--ink)'}" stroke-width="${sel ? 3.2 : 2}" stroke-linecap="round"/>`);
+        if (m.arrows >= 1) out.push(`<text x="${x1 + (m.arrows === 2 ? 11 : 17)}" y="${(y + 5).toFixed(1)}" text-anchor="middle" font-size="15" fill="var(--ink)">↑</text>`);
+        if (m.arrows === 2) out.push(`<text x="${x1 + 23}" y="${(y + 5).toFixed(1)}" text-anchor="middle" font-size="15" fill="var(--ink)">↓</text>`);
+        out.push('</g>');
+      });
+      let tag = '';
+      if (g === res.homoG && g === res.lumoG) tag = 'SOMO';
+      else if (g === res.homoG) tag = 'HOMO';
+      else if (g === res.lumoG) tag = 'LUMO';
+      if (tag) out.push(`<text x="${x0 - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10.5" font-weight="600" fill="var(--accent)" letter-spacing="0.04em">${tag}</text>`);
+      labels.push({ y, g });
+    });
+    labels.sort((a, b) => a.y - b.y);
+    let prev = -Infinity;
+    labels.forEach(L => {
+      const ly = Math.max(L.y, prev + 15); prev = ly;
+      const lab = L.g.label ? L.g.label.map(c => (c.cnt > 1 ? c.cnt : '') + irrepSVG(c.ir.lab)).join(' + ') : '–';
+      out.push(`<text x="244" y="${(ly + 4).toFixed(1)}" font-size="12.5" fill="var(--ink)">${lab}</text>`);
+      out.push(`<text x="${W - 8}" y="${(ly + 4).toFixed(1)}" text-anchor="end" font-size="12" fill="var(--muted)" class="mono">${fsign(L.g.x, 3)}</text>`);
+    });
+    out.push(`<text x="${W - 8}" y="${top - 12}" text-anchor="end" font-size="11" fill="var(--muted)">x</text>`);
+    return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Energy level diagram">${out.join('')}</svg>`;
+  }
+
+  /* ---------- results ---------- */
+  function renderResults() {
+    const r = current, el = $('results');
+    if (!r) return;
+    const N = r.N;
+    const homo = r.homoG, lumo = r.lumoG;
+    const gap = homo && lumo && homo !== lumo ? homo.x - lumo.x : null;
+    const gp = r.gammaPi.length ? comboHTML(r.gammaPi, true) : '–';
+    const order = r.pg.kind === 'linear' ? '∞' : 2 * r.pg.ops.length;
+    const smi = esc(writeSMILES(r.mol));
+    const warn = r.warnings.length ? `<div class="warn"><ul>${r.warnings.map(w => '<li>' + esc(w) + '</li>').join('')}</ul></div>` : '';
+    el.innerHTML = `
+      <div class="card">
+        <div class="sec-head"><h2>Result</h2><span class="sub mono" style="overflow-wrap:anywhere">${smi}</span></div>
+        <dl class="facts">
+          <div><dt>Point group</dt><dd><span class="big">${r.pg.name.replace(/(\d+|∞)([hv]?)$/, '<sub>$1$2</sub>')}</span> <span class="sub">order ${order}</span></dd></div>
+          <div><dt>π centres / electrons</dt><dd class="mono">${N} / ${r.Ne}</dd></div>
+          <div><dt>Total π energy</dt><dd class="mono">${r.Ne}α ${r.X >= 0 ? '+' : MINUS} ${Math.abs(r.X).toFixed(3)}β</dd></div>
+          <div><dt>Delocalization energy</dt><dd class="mono">${r.deloc ? fnum(r.deloc.value) + '|β|' : '<span class="sub">hydrocarbons only</span>'}</dd></div>
+          <div><dt>HOMO</dt><dd class="mono">${homo ? energyStr(homo.x) : '–'}</dd></div>
+          <div><dt>LUMO</dt><dd class="mono">${lumo ? energyStr(lumo.x) : '–'}</dd></div>
+          <div><dt>HOMO–LUMO gap</dt><dd class="mono">${gap !== null ? fnum(gap) + '|β|' : (homo && homo === lumo ? 'open shell' : '–')}</dd></div>
+          <div style="grid-column:1/-1"><dt>Γ<sub>π</sub> (reducible representation of the p<sub>z</sub> basis)</dt><dd>${gp}</dd></div>
+        </dl>
+      </div>
+      ${warn}
+      <div class="two">
+        <div class="card figure">
+          <div class="sec-head"><h2>Symmetrized structure</h2><span class="sub">π centres numbered</span></div>
+          <div id="structure"></div>
+          <div class="toggles">
+            <label><input type="checkbox" id="v-nums" ${view.nums ? 'checked' : ''}> Numbers</label>
+            <label><input type="checkbox" id="v-symel" ${view.symel ? 'checked' : ''}> Symmetry elements</label>
+            <label><input type="checkbox" id="v-charges" ${view.charges ? 'checked' : ''}> π charges</label>
+            <label><input type="checkbox" id="v-orders" ${view.orders ? 'checked' : ''}> π bond orders</label>
+          </div>
+          <p class="hint">${symText(r)}</p>
+        </div>
+        <div class="card figure">
+          <div class="sec-head"><h2>Energy levels</h2><span class="sub">select a level</span></div>
+          <div id="levels"></div>
+        </div>
+      </div>
+      <div class="card" id="detail"></div>
+      <div class="card">
+        <div class="sec-head"><h2>All molecular orbitals</h2><span class="legend"><span><span class="sw p"></span>positive</span><span><span class="sw n"></span>negative</span><span>circle radius ∝ |c|</span></span></div>
+        <div class="gallery" id="gallery"></div>
+      </div>
+      <div class="card">
+        <h2>How the result was obtained</h2>
+        <ol class="steps">${r.steps.map(s => '<li>' + esc(s) + '</li>').join('')}</ol>
+      </div>
+      ${matrixCard(r)}
+      ${coeffCard(r)}
+      ${popCard(r)}
+    `;
+    ['nums', 'symel', 'charges', 'orders'].forEach(k => {
+      $('v-' + k).addEventListener('change', e => { view[k] = e.target.checked; renderStructure(); });
+    });
+    renderStructure();
+    renderSelection();
+  }
+  function symText(r) {
+    const pg = r.pg;
+    if (pg.kind === 'linear') return 'Linear molecule. Each level shown is one component of a doubly degenerate π pair (only one set of p orbitals is treated).';
+    const rots = pg.ops.filter(o => o.type === 'R').length, refl = pg.ops.filter(o => o.type === 'F').length;
+    let t = `The molecular plane is a mirror plane (σ<sub>h</sub>). In-plane operations: ${rots} rotation${rots === 1 ? '' : 's'} about the normal`;
+    if (refl) t += ` and ${refl} in-plane axis/mirror line${refl === 1 ? '' : 's'} (dashed)`;
+    t += '. ';
+    if (pg.kind === 'D' && pg.n === 2) t += 'Axis convention: z normal to the plane, x along the long axis. ';
+    if (pg.kind === 'D' && pg.n === 1) t += 'Axis convention: z along the C<sub>2</sub> axis, molecule in the yz plane, so π orbitals are b<sub>1</sub> or a<sub>2</sub>. ';
+    if (pg.kind === 'D' && pg.n > 2 && pg.n % 2 === 0) t += 'Long dashes: C<sub>2</sub>′ axes (through more atoms); short dashes: C<sub>2</sub>″. ';
+    return t;
+  }
+  function renderStructure() {
+    const r = current;
+    $('structure').innerHTML = drawMol(r, { w: 520, h: 360, maxScale: 64, nums: view.nums, charges: view.charges, orders: view.orders, symel: view.symel, aria: 'Symmetrized structure' });
+  }
+  function renderSelection() {
+    const r = current;
+    $('levels').innerHTML = drawLevels(r);
+    $('levels').querySelectorAll('.lvl').forEach(g => g.addEventListener('click', () => select(+g.dataset.mo)));
+    // gallery
+    const gal = $('gallery');
+    gal.innerHTML = r.mos.map((m, i) => {
+      const g = m.group;
+      let tag = '';
+      if (g === r.homoG && g === r.lumoG) tag = '<span class="tag h">SOMO</span>';
+      else if (g === r.homoG) tag = '<span class="tag h">HOMO</span>';
+      else if (g === r.lumoG) tag = '<span class="tag h">LUMO</span>';
+      return `<button class="mo${i === selMO ? ' sel' : ''}" data-mo="${i}" aria-label="Orbital ${i + 1}">
+        ${drawMol(r, { w: 170, h: 120, pad: 14, maxScale: 34, mo: m.c, aria: 'Orbital ' + (i + 1) })}
+        <span class="cap"><span>ψ<sub>${i + 1}</sub> · ${irrepHTML(m.irrep && m.irrep.lab)}</span>${tag}</span>
+        <span class="en">${energyStr(m.x)} · ${fmtOcc(m.occ)} e</span>
+      </button>`;
+    }).join('');
+    gal.querySelectorAll('.mo').forEach(b => b.addEventListener('click', () => select(+b.dataset.mo)));
+    renderDetail();
+  }
+  function fmtOcc(o) { return Math.abs(o - Math.round(o)) < 1e-9 ? String(Math.round(o)) : o.toFixed(2); }
+  function renderDetail() {
+    const r = current, m = r.mos[selMO];
+    const rows = r.pi.atoms.map((a, i) => `<tr><td class="l">${piName(r, i)}</td><td class="mono">${fsign(m.c[i], 4)}</td><td class="mono">${(m.c[i] ** 2).toFixed(4)}</td></tr>`).join('');
+    const g = m.group;
+    let role = '';
+    if (g === r.homoG && g === r.lumoG) role = 'singly occupied (SOMO)';
+    else if (g === r.homoG) role = 'HOMO';
+    else if (g === r.lumoG) role = 'LUMO';
+    const deg = g.idx.length > 1 ? `${g.idx.length}-fold degenerate level (ψ${g.idx.map(k => k + 1).join(', ψ')})` : 'non-degenerate';
+    const nodes = r.piBonds.filter(b => m.c[b.i] * m.c[b.j] < -1e-9).length;
+    $('detail').innerHTML = `
+      <div class="detail">
+        <div class="figure">${drawMol(r, { w: 520, h: 340, maxScale: 64, mo: m.c, nums: true, aria: 'Selected orbital' })}</div>
+        <div>
+          <h3>ψ<sub>${selMO + 1}</sub> &nbsp;${irrepHTML(m.irrep && m.irrep.lab)}</h3>
+          <p class="mono" style="margin:0 0 6px;font-size:1.05rem">E = ${energyStr(m.x)}</p>
+          <p class="sub" style="margin:0 0 10px">${fmtOcc(m.occ)} electron${m.occ === 1 ? '' : 's'} · ${deg}${role ? ' · ' + role : ''} · ${nodes} nodal bond${nodes === 1 ? '' : 's'} (sign changes between bonded π centres)</p>
+          <div class="scroll" style="max-height:300px;overflow-y:auto"><table class="data"><thead><tr><th class="l">π centre</th><th>c</th><th>c²</th></tr></thead><tbody>${rows}</tbody></table></div>
+          <div class="nav"><button id="mo-prev">← Lower energy</button><button id="mo-next">Higher energy →</button></div>
+        </div>
+      </div>`;
+    $('mo-prev').disabled = selMO === 0;
+    $('mo-next').disabled = selMO === r.mos.length - 1;
+    $('mo-prev').addEventListener('click', () => select(selMO - 1));
+    $('mo-next').addEventListener('click', () => select(selMO + 1));
+  }
+  function select(i) {
+    if (!current || i < 0 || i >= current.mos.length) return;
+    selMO = i;
+    renderSelection();
+  }
+  function matrixCard(r) {
+    const N = r.N, M = r.M;
+    const head = r.pi.atoms.map((a, i) => `<th>${piName(r, i)}</th>`).join('');
+    const body = M.map((row, i) => `<tr><th class="l">${piName(r, i)}</th>${row.map((v, j) => `<td class="mono${i === j ? ' diag' : ''}${v === 0 && i !== j ? ' z' : ''}">${v === 0 ? (i === j ? '0' : '·') : fnum(v, 2)}</td>`).join('')}</tr>`).join('');
+    return `<div class="card"><details ${N <= 16 ? 'open' : ''}><summary><h2 style="display:inline">Hückel matrix M</h2> <span class="sub">H = α·1 + β·M; diagonal hᵢ (α<sub>i</sub> = α + hᵢβ), off-diagonal kᵢⱼ (β<sub>ij</sub> = kᵢⱼβ)</span></summary>
+      <div class="scroll" style="margin-top:8px"><table class="data"><thead><tr><th class="l"></th>${head}</tr></thead><tbody>${body}</tbody></table></div>
+      <p class="hint">Secular equation: det(M − x·1) = 0. Types: ${[...new Set(r.pi.types)].map(t => esc(PARAMS[t].label) + ' = ' + esc(PARAMS[t].desc)).join('; ')}.</p></details></div>`;
+  }
+  function coeffCard(r) {
+    const head1 = r.mos.map((m, i) => `<th>ψ<sub>${i + 1}</sub><br>${irrepHTML(m.irrep && m.irrep.lab)}</th>`).join('');
+    const head2 = r.mos.map(m => `<th class="mono">${fsign(m.x, 3)}</th>`).join('');
+    const head3 = r.mos.map(m => `<th class="mono">${fmtOcc(m.occ)}</th>`).join('');
+    const body = r.pi.atoms.map((a, i) => `<tr><th class="l">${piName(r, i)}</th>${r.mos.map(m => `<td class="mono${Math.abs(m.c[i]) < 5e-5 ? ' z' : ''}">${fsign(m.c[i], 4)}</td>`).join('')}</tr>`).join('');
+    return `<div class="card"><details ${r.N <= 16 ? 'open' : ''}><summary><h2 style="display:inline">MO coefficients</h2> <span class="sub">columns are eigenvectors, lowest energy first</span></summary>
+      <div class="scroll" style="margin-top:8px"><table class="data"><thead><tr><th class="l">MO</th>${head1}</tr><tr><th class="l">x</th>${head2}</tr><tr><th class="l">occupancy</th>${head3}</tr></thead><tbody>${body}</tbody></table></div></details></div>`;
+  }
+  function popCard(r) {
+    const rows = r.atomsOut.map((A, i) => `<tr><td class="l">${piName(r, i)}</td><td class="l">${esc(PARAMS[A.type].label)}</td><td class="mono">${A.e}</td><td class="mono">${A.density.toFixed(4)}</td><td class="mono">${fsign(A.charge, 4)}</td><td class="mono">${A.free === null ? '–' : A.free.toFixed(3)}</td></tr>`).join('');
+    const brows = r.bondOrders.map(b => `<tr><td class="l">${b.i + 1}–${b.j + 1}</td><td class="mono">${b.k.toFixed(2)}</td><td class="mono">${b.p.toFixed(4)}</td></tr>`).join('');
+    const sumQ = r.atomsOut.reduce((s, A) => s + A.charge, 0);
+    return `<div class="card"><h2>Charges and bond orders</h2>
+      <div class="row" style="align-items:flex-start;gap:20px">
+        <div class="scroll"><table class="data"><thead><tr><th class="l">π centre</th><th class="l">type</th><th>e⁻ given</th><th>q<sub>ii</sub></th><th>π charge</th><th>free valence</th></tr></thead><tbody>${rows}</tbody></table>
+        <p class="hint">q<sub>ii</sub> = Σ n<sub>k</sub>c<sub>ik</sub>²; π charge = electrons contributed − q<sub>ii</sub> (sum ${fsign(sumQ, 3)}); free valence F = √3 − Σ p<sub>ij</sub> for carbon.</p></div>
+        <div class="scroll"><table class="data"><thead><tr><th class="l">bond</th><th>k</th><th>p<sub>ij</sub></th></tr></thead><tbody>${brows || '<tr><td class="l" colspan="3">No π bonds</td></tr>'}</tbody></table>
+        <p class="hint">p<sub>ij</sub> = Σ n<sub>k</sub>c<sub>ik</sub>c<sub>jk</sub></p></div>
+      </div></div>`;
+  }
+  function showError(msg) {
+    $('results').innerHTML = `<div class="err"><strong>Could not calculate.</strong> ${esc(msg)}</div>` + (current ? '<p class="hint">The last successful result is hidden; fix the input and calculate again.</p>' : '');
+  }
+
+  /* ---------- calculation driver ---------- */
+  function calculate(source) {
+    lastSource = source;
+    try {
+      const mol = source.kind === 'smiles' ? parseSMILES(source.text) : builderToMol();
+      if (!mol.atoms.length) throw new Error('The drawing is empty. Place a ring or an atom first.');
+      const ev = $('electrons').value;
+      const res = runHuckel(mol, PARAMS, { electrons: ev === '' ? null : ev });
+      current = res;
+      selMO = res.homoG ? res.homoG.idx[res.homoG.idx.length - 1] : 0;
+      renderResults();
+    } catch (e) {
+      console.error(e);
+      showError(e.message || String(e));
+    }
+  }
+  function recalc() { if (lastSource) calculate(lastSource); }
+
+  /* ---------- parameter table ---------- */
+  function renderParams() {
+    const keys = Object.keys(PARAMS);
+    $('ptable').innerHTML = '<thead><tr><th>type</th><th>h</th><th>k</th><th>e⁻</th><th>meaning</th></tr></thead><tbody>' +
+      keys.map(k => {
+        const p = PARAMS[k], fixed = CARBON_TYPES.has(k);
+        return `<tr><td>${esc(p.label)}</td><td><input type="number" step="0.1" id="ph-${k}" data-k="${k}" data-f="h" value="${p.h}" ${fixed ? 'disabled' : ''} aria-label="h for ${esc(p.label)}"></td><td><input type="number" step="0.1" id="pk-${k}" data-k="${k}" data-f="k" value="${p.k}" ${fixed ? 'disabled' : ''} aria-label="k for ${esc(p.label)}"></td><td class="mono">${p.e}</td><td class="d">${esc(p.desc)}</td></tr>`;
+      }).join('') + '</tbody>';
+    $('ptable').querySelectorAll('input').forEach(inp => inp.addEventListener('change', e => {
+      const v = parseFloat(e.target.value);
+      if (!isFinite(v)) { e.target.value = PARAMS[e.target.dataset.k][e.target.dataset.f]; return; }
+      PARAMS[e.target.dataset.k][e.target.dataset.f] = v; recalc();
+    }));
+  }
+
+  /* ================= fragment builder ================= */
+  const canvas = $('canvas');
+  const B = { atoms: [], bonds: [], tool: 'ring:6:a', el: 'C', undo: [], W: 600, H: 380, L: 48, drag: null, hover: -1 };
+  const TOOL_A = [['bond', 'Bond'], ['atom', 'Atom'], ['charge', 'Charge ±'], ['erase', 'Erase']];
+  const ELEMENTS = ['C', 'N', 'O', 'S', 'F', 'Cl', 'Br', 'B'];
+  const RINGS = [['ring:6:a', 'Benzene'], ['ring:3', '3-ring'], ['ring:4', '4-ring'], ['ring:5', '5-ring'], ['ring:6', '6-ring'], ['ring:7', '7-ring'], ['ring:8', '8-ring']];
+  const GROUPS = { 'grp:vinyl': ['–CH=CH₂', [['C'], ['C']], [[-1, 0, 1], [0, 1, 2]], false], 'grp:cho': ['–CH=O', [['C'], ['O']], [[-1, 0, 1], [0, 1, 2]], false], 'grp:cn': ['–C≡N', [['C'], ['N']], [[-1, 0, 1], [0, 1, 3]], true], 'grp:oxo': ['=O', [['O']], [[-1, 0, 2]], false], 'grp:nh2': ['–NH₂', [['N']], [[-1, 0, 1]], false], 'grp:oh': ['–OH', [['O']], [[-1, 0, 1]], false] };
+
+  function toolButtons() {
+    $('tools-a').innerHTML = TOOL_A.map(([k, t]) => `<button data-tool="${k}" id="t-${k}">${t}</button>`).join('') + '<span class="sep"></span>' + RINGS.map(([k, t]) => `<button data-tool="${k}" id="t-${k.replace(/:/g, '-')}">${t}</button>`).join('');
+    $('tools-b').innerHTML = ELEMENTS.map(e => `<button data-el="${e}" id="el-${e}">${e}</button>`).join('') + '<span class="sep"></span>' + Object.entries(GROUPS).map(([k, g]) => `<button data-tool="${k}" id="t-${k.replace(/:/g, '-')}">${g[0]}</button>`).join('');
+    document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => { B.tool = b.dataset.tool; markTools(); }));
+    document.querySelectorAll('[data-el]').forEach(b => b.addEventListener('click', () => { B.el = b.dataset.el; B.tool = 'atom'; markTools(); }));
+    markTools();
+  }
+  function markTools() {
+    document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === B.tool));
+    document.querySelectorAll('[data-el]').forEach(b => b.classList.toggle('on', B.tool === 'atom' && b.dataset.el === B.el));
+  }
+  function snapshot() { return JSON.stringify({ atoms: B.atoms, bonds: B.bonds, W: B.W, H: B.H }); }
+  function pushUndo() { B.undo.push(snapshot()); if (B.undo.length > 80) B.undo.shift(); }
+  function restore(s) { const o = JSON.parse(s); B.atoms = o.atoms; B.bonds = o.bonds; B.W = o.W; B.H = o.H; }
+  function svgPoint(e) { const pt = canvas.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const p = pt.matrixTransform(canvas.getScreenCTM().inverse()); return [p.x, p.y]; }
+  function hitAtom(p, r = 13, except = -1) { let best = -1, bd = r; B.atoms.forEach((a, i) => { if (i === except) return; const d = Math.hypot(a.x - p[0], a.y - p[1]); if (d < bd) { bd = d; best = i; } }); return best; }
+  function hitBond(p) {
+    let best = -1, bd = 8;
+    B.bonds.forEach((b, i) => {
+      const A = B.atoms[b.a], C = B.atoms[b.b];
+      const vx = C.x - A.x, vy = C.y - A.y, L2 = vx * vx + vy * vy || 1;
+      const t = ((p[0] - A.x) * vx + (p[1] - A.y) * vy) / L2;
+      if (t < 0.15 || t > 0.85) return;
+      const d = Math.hypot(A.x + t * vx - p[0], A.y + t * vy - p[1]);
+      if (d < bd) { bd = d; best = i; }
+    });
+    return best;
+  }
+  function addAtom(el, x, y) { B.atoms.push({ el, charge: 0, x, y }); return B.atoms.length - 1; }
+  function addAtomMerge(el, x, y) { const i = hitAtom([x, y], 10); return i >= 0 ? i : addAtom(el, x, y); }
+  function bondIndex(a, b) { return B.bonds.findIndex(x => (x.a === a && x.b === b) || (x.a === b && x.b === a)); }
+  function addBond(a, b, order) { if (a === b) return; const k = bondIndex(a, b); if (k >= 0) return k; B.bonds.push({ a, b, order }); return B.bonds.length - 1; }
+  function neighbours(i) { return B.bonds.filter(b => b.a === i || b.b === i).map(b => (b.a === i ? b.b : b.a)); }
+  function freeDir(i) {
+    const a = B.atoms[i], nb = neighbours(i);
+    const angs = nb.map(j => Math.atan2(B.atoms[j].y - a.y, B.atoms[j].x - a.x));
+    if (!angs.length) return [Math.cos(-Math.PI / 6), Math.sin(-Math.PI / 6)];
+    let cands;
+    if (angs.length === 1) {
+      const lin = B.bonds.some(b => (b.a === i || b.b === i) && b.order === 3);
+      cands = lin ? [angs[0] + Math.PI] : [angs[0] + 2 * Math.PI / 3, angs[0] - 2 * Math.PI / 3];
+    } else {
+      const s = angs.map(x => ((x % TAU) + TAU) % TAU).sort((x, y) => x - y);
+      let gi = 0, gs = -1;
+      for (let j = 0; j < s.length; j++) { const nx = j + 1 < s.length ? s[j + 1] : s[0] + TAU; if (nx - s[j] > gs) { gs = nx - s[j]; gi = j; } }
+      cands = [s[gi] + gs / 2];
+    }
+    let best = cands[0], bd = -1;
+    cands.forEach(c => {
+      const q = [a.x + B.L * Math.cos(c), a.y + B.L * Math.sin(c)];
+      let md = Infinity; B.atoms.forEach((o, j) => { if (j !== i) md = Math.min(md, Math.hypot(o.x - q[0], o.y - q[1])); });
+      if (md > bd + 1e-6) { bd = md; best = c; }
+    });
+    return [Math.cos(best), Math.sin(best)];
+  }
+  function growChain(i, el) { const d = freeDir(i), a = B.atoms[i]; const j = addAtomMerge(el, a.x + d[0] * B.L, a.y + d[1] * B.L); addBond(i, j, 1); }
+  function ringPoly(C, R, t0, m, dir = 1) { return Array.from({ length: m }, (_, j) => [C[0] + R * Math.cos(t0 + dir * j * TAU / m), C[1] + R * Math.sin(t0 + dir * j * TAU / m)]); }
+  function addRing(pts, arom, fixedIdx) {
+    const m = pts.length;
+    const idx = pts.map((p, j) => (fixedIdx && fixedIdx[j] !== undefined ? fixedIdx[j] : addAtomMerge('C', p[0], p[1])));
+    for (let j = 0; j < m; j++) addBond(idx[j], idx[(j + 1) % m], arom ? 1.5 : 1);
+    return idx;
+  }
+  function ringTool(tool) { const p = tool.split(':'); return { m: +p[1], arom: p[2] === 'a' }; }
+  function fuseRing(bi, m, arom) {
+    const bd = B.bonds[bi], A = B.atoms[bd.a], C = B.atoms[bd.b];
+    const ex = C.x - A.x, ey = C.y - A.y, L = Math.hypot(ex, ey) || 1, nx = -ey / L, ny = ex / L;
+    const ap = L / (2 * Math.tan(Math.PI / m)), R = L / (2 * Math.sin(Math.PI / m));
+    const mid = [(A.x + C.x) / 2, (A.y + C.y) / 2];
+    let best = null, bs = Infinity;
+    [1, -1].forEach(s => {
+      const cen = [mid[0] + s * nx * ap, mid[1] + s * ny * ap];
+      let sc = 0; B.atoms.forEach((o, j) => { if (j !== bd.a && j !== bd.b && Math.hypot(o.x - cen[0], o.y - cen[1]) < R * 1.3) sc++; });
+      if (sc < bs) { bs = sc; best = cen; }
+    });
+    const ta = Math.atan2(A.y - best[1], A.x - best[0]), tb = Math.atan2(C.y - best[1], C.x - best[0]);
+    let d = tb - ta; while (d > Math.PI) d -= TAU; while (d < -Math.PI) d += TAU;
+    const pts = ringPoly(best, R, ta, m, Math.sign(d));
+    addRing(pts, arom, { 0: bd.a, 1: bd.b });
+  }
+  function attachRing(i, m, arom) {
+    const d = freeDir(i), a = B.atoms[i], R = B.L / (2 * Math.sin(Math.PI / m));
+    const first = [a.x + d[0] * B.L, a.y + d[1] * B.L], cen = [a.x + d[0] * (B.L + R), a.y + d[1] * (B.L + R)];
+    const t0 = Math.atan2(first[1] - cen[1], first[0] - cen[0]);
+    const idx = addRing(ringPoly(cen, R, t0, m), arom);
+    addBond(i, idx[0], 1);
+  }
+  function placeRing(p, m, arom) {
+    const R = B.L / (2 * Math.sin(Math.PI / m));
+    const t0 = m % 2 === 0 ? -Math.PI / 2 + Math.PI / m : -Math.PI / 2;
+    addRing(ringPoly(p, R, t0, m), arom);
+  }
+  function placeGroup(key, anchor, p) {
+    const [, atoms, bonds, linear] = GROUPS[key];
+    let d, start;
+    if (anchor >= 0) { d = freeDir(anchor); const a = B.atoms[anchor]; start = [a.x + d[0] * B.L, a.y + d[1] * B.L]; }
+    else { d = [Math.cos(-Math.PI / 6), Math.sin(-Math.PI / 6)]; start = p; }
+    const pos = [start];
+    for (let k = 1; k < atoms.length; k++) {
+      const prevDir = k === 1 ? d : [pos[k - 1][0] - pos[k - 2][0], pos[k - 1][1] - pos[k - 2][1]].map(v => v / B.L);
+      let nd;
+      if (linear) nd = prevDir;
+      else { const s = k % 2 ? 1 : -1, ang = Math.atan2(prevDir[1], prevDir[0]) + s * Math.PI / 3; nd = [Math.cos(ang), Math.sin(ang)]; }
+      pos.push([pos[k - 1][0] + nd[0] * B.L, pos[k - 1][1] + nd[1] * B.L]);
+    }
+    const idx = atoms.map((a, k) => addAtomMerge(a[0], pos[k][0], pos[k][1]));
+    bonds.forEach(([x, y, o]) => {
+      if (x === -1) { if (anchor >= 0) addBond(anchor, idx[y], o); }
+      else addBond(idx[x], idx[y], o);
+    });
+  }
+  function deleteAtom(i) {
+    B.bonds = B.bonds.filter(b => b.a !== i && b.b !== i).map(b => ({ a: b.a > i ? b.a - 1 : b.a, b: b.b > i ? b.b - 1 : b.b, order: b.order }));
+    B.atoms.splice(i, 1);
+  }
+  function cycleOrder(bi) { const o = B.bonds[bi].order; B.bonds[bi].order = o === 1 ? 2 : o === 2 ? 3 : o === 3 ? 1.5 : 1; }
+  function fitView() {
+    let maxx = 0, maxy = 0, minx = Infinity, miny = Infinity;
+    B.atoms.forEach(a => { maxx = Math.max(maxx, a.x); maxy = Math.max(maxy, a.y); minx = Math.min(minx, a.x); miny = Math.min(miny, a.y); });
+    if (!B.atoms.length) return;
+    let W = 600, H = 380;
+    const needW = maxx + 30, needH = maxy + 30;
+    const f = Math.max(1, needW / W, needH / H);
+    B.W = W * f; B.H = H * f;
+  }
+
+  function valence(el, q) {
+    switch (el) {
+      case 'C': return 4 - Math.abs(q);
+      case 'N': case 'P': return 3 + q;
+      case 'O': case 'S': return 2 + q;
+      case 'B': return 3 - q;
+      default: return 1;
+    }
+  }
+  function builderToMol() {
+    const atoms = B.atoms.map(a => ({ el: a.el, arom: false, charge: a.charge, hExp: 0, bracket: true }));
+    const bonds = B.bonds.map(b => ({ a: b.a, b: b.b, order: b.order }));
+    bonds.forEach(b => { if (b.order === 1.5) { atoms[b.a].arom = true; atoms[b.b].arom = true; } });
+    atoms.forEach((a, i) => {
+      let sum = 0; bonds.forEach(b => { if (b.a === i || b.b === i) sum += b.order === 1.5 ? 1 : b.order; });
+      a.hExp = Math.max(0, valence(a.el, a.charge) - sum - (a.arom ? 1 : 0));
+    });
+    const mol = { atoms, bonds };
+    finishMol(mol);
+    mol.coords = B.atoms.map(a => [a.x / B.L, -a.y / B.L]);
+    return mol;
+  }
+  function builderHCount() { try { const m = builderToMol(); return m.atoms.map(a => a.h); } catch (e) { return B.atoms.map(() => 0); } }
+
+  function renderBuilder() {
+    canvas.setAttribute('viewBox', `0 0 ${B.W} ${B.H}`);
+    const out = [];
+    const hs = builderHCount();
+    if (!B.atoms.length) out.push(`<text x="${B.W / 2}" y="${B.H / 2}" text-anchor="middle" font-size="15" fill="var(--muted)">Pick a ring or an atom, then click here</text>`);
+    const ln = (x1, y1, x2, y2, extra = '') => `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--bond)" stroke-width="2" stroke-linecap="round" ${extra}/>`;
+    B.bonds.forEach(b => {
+      const A = B.atoms[b.a], C = B.atoms[b.b];
+      const vx = C.x - A.x, vy = C.y - A.y, L = Math.hypot(vx, vy) || 1, nx = -vy / L * 4, ny = vx / L * 4;
+      if (b.order === 1) out.push(ln(A.x, A.y, C.x, C.y));
+      else if (b.order === 2) { out.push(ln(A.x + nx, A.y + ny, C.x + nx, C.y + ny)); out.push(ln(A.x - nx, A.y - ny, C.x - nx, C.y - ny)); }
+      else if (b.order === 3) { out.push(ln(A.x, A.y, C.x, C.y)); out.push(ln(A.x + nx * 1.4, A.y + ny * 1.4, C.x + nx * 1.4, C.y + ny * 1.4)); out.push(ln(A.x - nx * 1.4, A.y - ny * 1.4, C.x - nx * 1.4, C.y - ny * 1.4)); }
+      else { out.push(ln(A.x + nx * 0.6, A.y + ny * 0.6, C.x + nx * 0.6, C.y + ny * 0.6)); out.push(ln(A.x - nx * 0.9, A.y - ny * 0.9, C.x - nx * 0.9, C.y - ny * 0.9, 'stroke-dasharray="4 4"')); }
+    });
+    B.atoms.forEach((a, i) => {
+      const hov = i === B.hover;
+      const chg = a.charge ? (a.charge > 0 ? '+' : MINUS) : '';
+      const showLabel = a.el !== 'C' || a.charge || !neighbours(i).length;
+      if (showLabel) {
+        const h = hs[i];
+        const t = esc(a.el) + (h ? 'H' + (h > 1 ? `<tspan dy="3" font-size="10">${h}</tspan><tspan dy="-3"></tspan>` : '') : '') + (chg ? `<tspan dy="-6" font-size="11">${chg}</tspan>` : '');
+        out.push(`<circle cx="${a.x}" cy="${a.y}" r="11" fill="var(--bg)" stroke="${hov ? 'var(--accent)' : 'none'}" stroke-width="2"/>`);
+        out.push(`<text x="${a.x}" y="${a.y + 5}" text-anchor="middle" font-size="15" font-weight="500" fill="var(--ink)">${t}</text>`);
+      } else {
+        out.push(`<circle cx="${a.x}" cy="${a.y}" r="${hov ? 8 : 2.6}" fill="${hov ? 'none' : 'var(--bond)'}" stroke="${hov ? 'var(--accent)' : 'none'}" stroke-width="2"/>`);
+      }
+    });
+    if (B.drag && B.drag.cur) {
+      const A = B.atoms[B.drag.from];
+      const t = dragTarget(B.drag.cur, B.drag.from);
+      out.push(`<line x1="${A.x}" y1="${A.y}" x2="${t[0]}" y2="${t[1]}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 3"/>`);
+    }
+    canvas.innerHTML = out.join('');
+    try { const m = builderToMol(); $('b-smiles').textContent = m.atoms.length ? writeSMILES(m) : '—'; } catch (e) { $('b-smiles').textContent = '—'; }
+  }
+  function dragTarget(p, from) {
+    const j = hitAtom(p, 13, from);
+    if (j >= 0) return [B.atoms[j].x, B.atoms[j].y];
+    const A = B.atoms[from];
+    let ang = Math.atan2(p[1] - A.y, p[0] - A.x);
+    ang = Math.round(ang / (Math.PI / 6)) * (Math.PI / 6);
+    return [A.x + B.L * Math.cos(ang), A.y + B.L * Math.sin(ang)];
+  }
+  canvas.addEventListener('pointerdown', e => {
+    const p = svgPoint(e);
+    const a = hitAtom(p), b = a < 0 ? hitBond(p) : -1;
+    const t = B.tool;
+    if (t === 'bond') {
+      if (a >= 0) { B.drag = { from: a, start: p, cur: null, created: false }; canvas.setPointerCapture(e.pointerId); return; }
+      pushUndo();
+      if (b >= 0) cycleOrder(b);
+      else { const k = addAtom('C', p[0], p[1]); B.drag = { from: k, start: p, cur: null, created: true }; canvas.setPointerCapture(e.pointerId); }
+    } else if (t === 'atom') {
+      if (a >= 0) { pushUndo(); if (B.atoms[a].el !== B.el) B.atoms[a].el = B.el; else growChain(a, B.el); }
+      else if (b < 0) { pushUndo(); addAtom(B.el, p[0], p[1]); }
+    } else if (t === 'charge') {
+      if (a >= 0) { pushUndo(); const q = B.atoms[a].charge; B.atoms[a].charge = q === 0 ? -1 : q === -1 ? 1 : 0; }
+    } else if (t === 'erase') {
+      if (a >= 0) { pushUndo(); deleteAtom(a); } else if (b >= 0) { pushUndo(); B.bonds.splice(b, 1); }
+    } else if (t.startsWith('ring:')) {
+      const { m, arom } = ringTool(t);
+      pushUndo();
+      if (b >= 0) fuseRing(b, m, arom); else if (a >= 0) attachRing(a, m, arom); else placeRing(p, m, arom);
+    } else if (t.startsWith('grp:')) {
+      pushUndo();
+      placeGroup(t, a, p);
+    }
+    fitView(); renderBuilder();
+  });
+  canvas.addEventListener('pointermove', e => {
+    const p = svgPoint(e);
+    if (B.drag) { B.drag.cur = p; renderBuilder(); return; }
+    const h = hitAtom(p);
+    if (h !== B.hover) { B.hover = h; renderBuilder(); }
+  });
+  canvas.addEventListener('pointerleave', () => { if (!B.drag && B.hover !== -1) { B.hover = -1; renderBuilder(); } });
+  canvas.addEventListener('pointerup', e => {
+    if (!B.drag) return;
+    const p = svgPoint(e), dr = B.drag; B.drag = null;
+    const moved = Math.hypot(p[0] - dr.start[0], p[1] - dr.start[1]) > 6;
+    const tgt = hitAtom(p, 13, dr.from);
+    if (!dr.created) pushUndo();
+    if (tgt >= 0) { const k = bondIndex(dr.from, tgt); if (k >= 0) cycleOrder(k); else addBond(dr.from, tgt, 1); }
+    else if (!moved) { if (!dr.created) growChain(dr.from, 'C'); }
+    else { const q = dragTarget(p, dr.from); const j = addAtomMerge('C', q[0], q[1]); addBond(dr.from, j, 1); }
+    fitView(); renderBuilder();
+  });
+  $('b-undo').addEventListener('click', () => { if (B.undo.length) { restore(B.undo.pop()); renderBuilder(); } });
+  $('b-clear').addEventListener('click', () => { pushUndo(); B.atoms = []; B.bonds = []; B.W = 600; B.H = 380; renderBuilder(); });
+  $('b-load').addEventListener('click', () => loadIntoBuilder($('smiles').value, true));
+  $('b-run').addEventListener('click', () => calculate({ kind: 'builder' }));
+  function loadIntoBuilder(smiles, undoable) {
+    try {
+      const mol = parseSMILES(smiles);
+      let coords;
+      try { coords = runHuckel(parseSMILES(smiles), PARAMS, {}).coords; } catch (e) { coords = layoutMol(mol); }
+      if (undoable) pushUndo();
+      let mnx = Infinity, mxx = -Infinity, mny = Infinity, mxy = -Infinity;
+      coords.forEach(p => { mnx = Math.min(mnx, p[0]); mxx = Math.max(mxx, p[0]); mny = Math.min(mny, p[1]); mxy = Math.max(mxy, p[1]); });
+      const wNeed = (mxx - mnx) * B.L + 80, hNeed = (mxy - mny) * B.L + 80;
+      const f = Math.max(1, wNeed / 600, hNeed / 380);
+      B.W = 600 * f; B.H = 380 * f;
+      const cx = B.W / 2 - ((mnx + mxx) / 2) * B.L, cy = B.H / 2 + ((mny + mxy) / 2) * B.L;
+      B.atoms = mol.atoms.map((a, i) => ({ el: a.el, charge: a.charge, x: cx + coords[i][0] * B.L, y: cy - coords[i][1] * B.L }));
+      B.bonds = mol.bonds.map(b => ({ a: b.a, b: b.b, order: b.order }));
+      renderBuilder();
+    } catch (e) {
+      $('b-smiles').textContent = 'Could not read the SMILES: ' + e.message;
+    }
+  }
+
+  /* ---------- tabs and inputs ---------- */
+  function setTab(build) {
+    $('tab-smiles').classList.toggle('active', !build); $('tab-build').classList.toggle('active', build);
+    $('tab-smiles').setAttribute('aria-selected', String(!build)); $('tab-build').setAttribute('aria-selected', String(build));
+    $('pane-smiles').hidden = build; $('pane-build').hidden = !build;
+    if (build) renderBuilder();
+  }
+  $('tab-smiles').addEventListener('click', () => setTab(false));
+  $('tab-build').addEventListener('click', () => setTab(true));
+  $('smiles-form').addEventListener('submit', e => { e.preventDefault(); calculate({ kind: 'smiles', text: $('smiles').value }); });
+  const ex = $('examples');
+  ex.innerHTML = '<option value="">Choose a molecule…</option>' + EXAMPLES.map(([g, list]) => `<optgroup label="${esc(g)}">${list.map(([n, s]) => `<option value="${esc(s)}">${esc(n)}</option>`).join('')}</optgroup>`).join('');
+  ex.addEventListener('change', () => { if (!ex.value) return; $('smiles').value = ex.value; $('electrons').value = ''; calculate({ kind: 'smiles', text: ex.value }); loadIntoBuilder(ex.value, false); });
+  $('electrons').addEventListener('change', recalc);
+  $('e-auto').addEventListener('click', () => { $('electrons').value = ''; recalc(); });
+  $('p-reset').addEventListener('click', () => { PARAMS = clone(DEFAULT_PARAMS); renderParams(); recalc(); });
+
+  toolButtons();
+  renderParams();
+  ex.value = 'c1ccc2ccccc2c1';
+  loadIntoBuilder('c1ccc2ccccc2c1', false);
+  calculate({ kind: 'smiles', text: 'c1ccc2ccccc2c1' });
+})();
+</script>
+</body>
+</html>
